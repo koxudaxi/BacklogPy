@@ -1,8 +1,19 @@
-=========================================
-BacklogPy - Backlog API v2 Client Library
-=========================================
+====================================================
+BacklogPy - Backlog API v2 Client Library for Python
+====================================================
+
+
+|Build Status| |Version|
+
 
 BacklogPy is Backlog API v2 Client Library for Python 2/3
+
+.. |Build Status| image:: http://img.shields.io/travis/koxudaxi/BacklogPy/master.svg?style=flat
+    :target: https://travis-ci.org/koxudaxi/BacklogPy
+    :alt: Build Status
+.. |Version| image:: http://img.shields.io/pypi/v/BacklogPy.svg?style=flat
+    :target: https://pypi.python.org/pypi/BacklogPy/
+    :alt: Version
 
 
 Install
