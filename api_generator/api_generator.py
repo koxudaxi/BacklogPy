@@ -12,10 +12,12 @@ import requests
 from autopep8 import parse_args, fix_code
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from typing import List, Generator
+from typing import List, Generator, Dict, Any, Optional
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
+
+Parameters = List[List[str]]
 
 PACKAGE_NAME = 'BacklogPy'
 
@@ -115,22 +117,23 @@ def _get_bs_from_web(download_wait_time: int = DOWNLOAD_WAIT_TIME) -> \
         yield _get_bs_from_url(url)
 
 
-def _create_init_py(space_list: List[str]):
+def _create_init_py(space_list: List[str]) -> str:
     all_list = []
     import_list = []
     for space in space_list:
-        import_list.append(f'from {PACKAGE_NAME}.api.{space} import {space.title()}')
+        import_list.append(
+            f'from {PACKAGE_NAME}.api.{space} import {space.title()}')
         all_list.append(f'\'{space.title()}\'')
     return INIT_PY_TEMPLATE.format(import_block='\n'.join(import_list),
                                    all_block=','.join(all_list))
 
 
-def _create_backlog_py(space_list: List[str]):
+def _create_backlog_py(space_list: List[str]) -> str:
     objects = ', '.join([o.title() for o in space_list])
     return BACKLOG_TEMPLATE.format(objects=objects)
 
 
-def _write_code(code: str, base_path: str, file_name: str):
+def _write_code(code: str, base_path: str, file_name: str) -> None:
     file_path = os.path.join(base_path, file_name)
     logger.info(f'write {file_path}')
     fixed_init_py = fix_code(code,
@@ -139,7 +142,7 @@ def _write_code(code: str, base_path: str, file_name: str):
         f.write(fixed_init_py)
 
 
-def _create_dir(path: str):
+def _create_dir(path: str) -> None:
     if os.path.exists(path):
         if not os.path.isdir(path):
             raise Exception(f"File Exists: {path}")
@@ -148,9 +151,10 @@ def _create_dir(path: str):
 
 
 def _create_api_from_bs_generator(
-        bs_generator: Generator[BeautifulSoup, None, None]):
+        bs_generator: Generator[BeautifulSoup, None, None]) -> None:
     api_path = f'{PACKAGE_NAME}/api'
-    stock = {}
+
+    stock: Dict[str, Any] = {}
     for bs in bs_generator:
         try:
             api = APIGenerator(bs)
@@ -162,7 +166,7 @@ def _create_api_from_bs_generator(
             stock[api.space_name]['method'].append(api.create_api_method())
 
         except Exception as e:
-            logger.error(e)
+            logger.error(str(e))
             import sys
             sys.exit(1)
 
@@ -179,18 +183,18 @@ def _create_api_from_bs_generator(
     _write_code(backlog_py, PACKAGE_NAME, 'backlog.py')
 
 
-def create_api_from_file(data_dir: str = DATA_DIR):
+def create_api_from_file(data_dir: str = DATA_DIR) -> None:
     bs_generator = _get_bs_from_file(data_dir)
     _create_api_from_bs_generator(bs_generator)
 
 
-def crete_api_from_web(download_wait_time: int = DOWNLOAD_WAIT_TIME):
+def crete_api_from_web(download_wait_time: int = DOWNLOAD_WAIT_TIME) -> None:
     bs_generator = _get_bs_from_web(download_wait_time)
     _create_api_from_bs_generator(bs_generator)
 
 
 def download_doc_file(data_dir: str,
-                      download_wait_time: int = DOWNLOAD_WAIT_TIME):
+                      download_wait_time: int = DOWNLOAD_WAIT_TIME) -> None:
     _create_dir(data_dir)
     for api_url in _get_api_urls():
         r = requests.get(api_url)
@@ -205,28 +209,28 @@ class APIGenerator:
     _under_scorer1 = re.compile(r'(.)([A-Z][a-z]+)')
     _under_scorer2 = re.compile('([a-z0-9])([A-Z])')
 
-    def __init__(self, bs: BeautifulSoup):
+    def __init__(self, bs: BeautifulSoup) -> None:
         self.bs = bs
-        self._method_type = None
-        self._api_path = None
-        self._url_parameters = None
-        self._form_parameters = None
-        self._query_parameters = None
-        self._short_path = None
-        self._space_name = None
-        self._api_name = None
-        self._api_description = None
+        self._method_type = ''
+        self._api_path = ''
+        self._url_parameters: Parameters = []
+        self._form_parameters: Parameters = []
+        self._query_parameters: Parameters = []
+        self._short_path = ''
+        self._space_name = ''
+        self._api_name = ''
+        self._api_description = ''
 
     @classmethod
-    def camel_to_snake(cls, s):
-        subbed = cls._under_scorer1.sub(r'\1_\2', s)
+    def camel_to_snake(cls, string: str) -> str:
+        subbed = cls._under_scorer1.sub(r'\1_\2', string)
         return cls._under_scorer2.sub(r'\1_\2', subbed).lower()
 
     @classmethod
-    def convert_to_correct_name(cls, s):
-        if s == 'id':
-            s = '_id'
-        return cls.camel_to_snake(s)
+    def convert_to_correct_name(cls, string: str) -> str:
+        if string == 'id':
+            string = '_id'
+        return cls.camel_to_snake(string)
 
     @property
     def api_name(self) -> str:
@@ -270,27 +274,27 @@ class APIGenerator:
         raise Exception('Not Found API Path')
 
     @property
-    def short_path(self):
+    def short_path(self) -> str:
         if self._short_path:
             return self._short_path
         self._short_path = self.api_path.replace(API_ROOT, '')
         return self._short_path
 
     @property
-    def space_name(self):
+    def space_name(self) -> str:
         if self._space_name:
             return self._space_name
         self._space_name = self.short_path.split('/')[1]
         return self._space_name
 
     @property
-    def url_parameters(self) -> List[List[str]]:
+    def url_parameters(self) -> Parameters:
         if self._url_parameters:
             return self._url_parameters
         self._url_parameters = self._get_parameters('url-parameters')
         return self._url_parameters
 
-    def _get_parameters(self, html_id: str) -> List[List[str]]:
+    def _get_parameters(self, html_id: str) -> Parameters:
         for parameters in self.bs.find_all('h3', id=html_id):
             for element in parameters.next_elements:
                 if element.name == 'tbody':
@@ -303,18 +307,18 @@ class APIGenerator:
         return []
 
     @property
-    def form_parameters(self) -> List[List[str]]:
+    def form_parameters(self) -> Parameters:
         if self._form_parameters:
             return self._form_parameters
         return self._get_parameters('form-parameters')
 
     @property
-    def query_parameters(self) -> List[List[str]]:
+    def query_parameters(self) -> Parameters:
         if self._query_parameters:
             return self._query_parameters
         return self._get_parameters('query-parameters')
 
-    def create_api_call_args(self):
+    def create_api_call_args(self) -> str:
         api_call_args = []
 
         if self.url_parameters:
@@ -338,7 +342,7 @@ class APIGenerator:
 
         return ', '.join(api_call_args)
 
-    def create_method_args(self):
+    def create_method_args(self) -> str:
         method_args = []
 
         for url_parameter in self.url_parameters:
@@ -357,8 +361,8 @@ class APIGenerator:
         else:
             return ''
 
-    def create_args_doc(self):
-        def get_arg_doc(name: str, description: str, _type: str):
+    def create_args_doc(self) -> str:
+        def get_arg_doc(name: str, description: str, _type: str) -> str:
             return f':param {_type} {name}: {description}'
 
         newline_and_indent: str = '\n        '
@@ -388,13 +392,13 @@ class APIGenerator:
                 ('form_parameters', 'form_parameters', 'dict'))
 
         if args_doc:
-            args_doc = [get_arg_doc(*a) for a in args_doc]
-            return newline_and_indent + newline_and_indent.join(args_doc) + \
-                   newline_and_indent
+            args_doc_str = [get_arg_doc(*a) for a in args_doc]
+            return newline_and_indent + newline_and_indent.join(args_doc_str) \
+                   + newline_and_indent
         else:
             return ''
 
-    def create_method_doc(self):
+    def create_method_doc(self) -> str:
         newline_and_indent: str = '\n        '
         return newline_and_indent + self.api_description + newline_and_indent
 
