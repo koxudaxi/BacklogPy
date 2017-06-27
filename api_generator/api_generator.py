@@ -12,7 +12,7 @@ import requests
 from autopep8 import parse_args, fix_code
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from typing import List, Generator, Dict, Any, Optional
+from typing import List, Generator, Dict, Any
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
@@ -85,14 +85,17 @@ __all__ = [{{all_block}}]
 
 '''
 
+DEVELOPER_URL = 'https://developer.nulab-inc.com'
+OVERVIEW_URL = 'https://developer.nulab-inc.com/docs/backlog/'
 
-def _get_api_urls() -> Generator[str, None, None]:
-    base_url = 'https://developer.nulab-inc.com'
-    overview_url = 'https://developer.nulab-inc.com/docs/backlog/'
+
+def _get_api_urls(developer_url: str = DEVELOPER_URL,
+                  overview_url: str = OVERVIEW_URL) -> Generator[
+    str, None, None]:
     bs = _get_bs_from_url(overview_url)
     api_list = bs.find('optgroup', label='Backlog API')
     for api in api_list.find_all('option'):
-        yield base_url + api['value']
+        yield developer_url + api['value']
 
 
 def _get_bs_from_file(base_dir: str = DATA_DIR) -> Generator[BeautifulSoup,
@@ -138,6 +141,7 @@ def _write_code(code: str, base_path: str, file_name: str) -> None:
     logger.info(f'write {file_path}')
     fixed_init_py = fix_code(code,
                              options=parse_args(['--aggressive', '']))
+
     with open(file_path, 'w') as f:
         f.write(fixed_init_py)
 
@@ -151,14 +155,14 @@ def _create_dir(path: str) -> None:
 
 
 def _create_api_from_bs_generator(
-        bs_generator: Generator[BeautifulSoup, None, None]) -> None:
-    api_path = f'{PACKAGE_NAME}/api'
+        bs_generator: Generator[BeautifulSoup, None, None],
+        output_dir: str = PACKAGE_NAME) -> None:
+    api_path = f'{output_dir}/api'
 
     stock: Dict[str, Any] = {}
     for bs in bs_generator:
         try:
             api = APIGenerator(bs)
-
             if api.space_name not in stock:
                 stock[api.space_name] = {}
                 stock[api.space_name]['class'] = api.create_api_class()
@@ -180,7 +184,7 @@ def _create_api_from_bs_generator(
     _write_code(init_py, api_path, '__init__.py')
 
     backlog_py = _create_backlog_py(list(stock.keys()))
-    _write_code(backlog_py, PACKAGE_NAME, 'backlog.py')
+    _write_code(backlog_py, output_dir, 'backlog.py')
 
 
 def create_api_from_file(data_dir: str = DATA_DIR) -> None:
@@ -243,7 +247,7 @@ class APIGenerator:
     @property
     def api_description(self) -> str:
         if self._api_description:
-            return self._api_name
+            return self._api_description
         api_name_element = self.bs.find('h2')
         for element in api_name_element.next_elements:
             if element.name == 'p':
@@ -300,7 +304,6 @@ class APIGenerator:
                 if element.name == 'tbody':
                     tbody: Tag = element
                     lines = tbody.find_all('tr')
-                    # for line in lines:
                     return [[td.contents[0]
                              for td in line.find_all('td') if td.contents]
                             for line in lines]
@@ -310,13 +313,15 @@ class APIGenerator:
     def form_parameters(self) -> Parameters:
         if self._form_parameters:
             return self._form_parameters
-        return self._get_parameters('form-parameters')
+        self._form_parameters = self._get_parameters('form-parameters')
+        return self._form_parameters
 
     @property
     def query_parameters(self) -> Parameters:
         if self._query_parameters:
             return self._query_parameters
-        return self._get_parameters('query-parameters')
+        self._query_parameters = self._get_parameters('query-parameters')
+        return self._query_parameters
 
     def create_api_call_args(self) -> str:
         api_call_args = []
