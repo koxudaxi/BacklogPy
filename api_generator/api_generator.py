@@ -6,18 +6,17 @@
 import os
 import re
 import time
+from enum import Enum
 from logging import getLogger, INFO
 
 import requests
 from autopep8 import parse_args, fix_code
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from typing import List, Generator, Dict, Any
+from typing import List, Generator, Dict, Any, Optional, Type, Union
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
-
-Parameters = List[List[str]]
 
 PACKAGE_NAME = 'BacklogPy'
 
@@ -69,8 +68,11 @@ API_METHOD_TEMPLATE = \
     def {api_name}(self{method_args}):
         """{method_doc}{args_doc}
         :return:  requests Response object 
-        :rtype requests.Response
+        :rtype: requests.Response
         """
+        
+        {parameter_assignment}
+        
         return self._request({api_call_args})
 '''
 
@@ -89,9 +91,89 @@ DEVELOPER_URL = 'https://developer.nulab-inc.com'
 OVERVIEW_URL = 'https://developer.nulab-inc.com/docs/backlog/'
 
 
+class Parameter:
+    _UNDER_SCORER1 = re.compile(r'(.)([A-Z][a-z]+)')
+    _UNDER_SCORER2 = re.compile('([a-z0-9])([A-Z])')
+    _REQUIRED_RE = re.compile(r' \([Rr]equired\)$')
+
+    _LIST_RE = re.compile(r'\[\]')
+
+    class Type(Enum):
+        INT = 'Number', 'int',
+        STR = 'String', 'str'
+        BOOL = 'Boolean', 'bool'
+        DICT = 'dict', 'dict'
+        STR_LIST = 'list[String]', 'list[str] or str'
+        INT_LIST = 'list[Number]', 'list[int] or int'
+
+        _doc = ''
+        _value = ''
+
+        def __new__(cls, *values: Union[str, List[str]]) -> 'Type':
+            obj: Type = object.__new__(cls)
+            obj._value_ = values[0]
+            if len(values) > 1:
+                obj._doc = values[1]
+            return obj
+
+        @property
+        def doc(self) -> str:
+            return self._doc
+
+    @classmethod
+    def camel_to_snake(cls, name: str) -> str:
+        subbed = cls._UNDER_SCORER1.sub(r'\1_\2', name)
+        return cls._UNDER_SCORER2.sub(r'\1_\2', subbed).lower()
+
+    @classmethod
+    def convert_to_correct_name(cls, name: str) -> str:
+        if name == 'id':
+            name = '_id'
+        if re.search(cls._LIST_RE, name):
+            name = re.sub(cls._LIST_RE, '', name)
+        if re.search(cls._REQUIRED_RE, name):
+            name = re.sub(cls._REQUIRED_RE, '', name)
+
+        return cls.camel_to_snake(name)
+
+    def __init__(self, raw_name: str, raw_type: str,
+                 description: Optional[str] = None,
+                 force_required: bool = False) -> None:
+
+        self.name: str = self.convert_to_correct_name(raw_name)
+
+        self.description: str = description if description else raw_name
+
+        if re.search(self._LIST_RE, raw_name):
+            self.type: Parameter.Type = self.Type(f'list[{raw_type}]')
+        else:
+            self.type: Parameter.Type = self.Type(raw_type)
+
+        if force_required or re.search(self._REQUIRED_RE, raw_name):
+            self.required: bool = True
+        else:
+            self.required: bool = False
+
+        self.key: str = re.sub(self._REQUIRED_RE, '', raw_name)
+
+    @property
+    def method_arg(self) -> str:
+        if self.required:
+            return f'{self.name}'
+
+        return f'{self.name}=None'
+
+    @property
+    def doc(self) -> str:
+        return f':param {self.type.doc} {self.name}: {self.description}'
+
+
+Parameters = List[Parameter]
+
+
 def _get_api_urls(developer_url: str = DEVELOPER_URL,
-                  overview_url: str = OVERVIEW_URL) -> Generator[
-    str, None, None]:
+                  overview_url: str = OVERVIEW_URL) -> Generator[str,
+                                                                 None, None]:
     bs = _get_bs_from_url(overview_url)
     api_list = bs.find('optgroup', label='Backlog API')
     for api in api_list.find_all('option'):
@@ -168,11 +250,13 @@ def _create_api_from_bs_generator(
                 stock[api.space_name]['class'] = api.create_api_class()
                 stock[api.space_name]['method'] = []
             stock[api.space_name]['method'].append(api.create_api_method())
+            if api.has_strict_method:
+                stock[api.space_name]['method'].append(
+                    api.create_api_method(strict=True))
 
         except Exception as e:
             logger.error(str(e))
-            import sys
-            sys.exit(1)
+            raise e
 
     _create_dir(api_path)
 
@@ -210,8 +294,7 @@ def download_doc_file(data_dir: str,
 
 
 class APIGenerator:
-    _under_scorer1 = re.compile(r'(.)([A-Z][a-z]+)')
-    _under_scorer2 = re.compile('([a-z0-9])([A-Z])')
+    newline_and_indent: str = '\n        '
 
     def __init__(self, bs: BeautifulSoup) -> None:
         self.bs = bs
@@ -225,16 +308,12 @@ class APIGenerator:
         self._api_name = ''
         self._api_description = ''
 
-    @classmethod
-    def camel_to_snake(cls, string: str) -> str:
-        subbed = cls._under_scorer1.sub(r'\1_\2', string)
-        return cls._under_scorer2.sub(r'\1_\2', subbed).lower()
-
-    @classmethod
-    def convert_to_correct_name(cls, string: str) -> str:
-        if string == 'id':
-            string = '_id'
-        return cls.camel_to_snake(string)
+    @property
+    def has_strict_method(self) -> bool:
+        if self.form_parameters or self.query_parameters:
+            return True
+        else:
+            return False
 
     @property
     def api_name(self) -> str:
@@ -295,17 +374,20 @@ class APIGenerator:
     def url_parameters(self) -> Parameters:
         if self._url_parameters:
             return self._url_parameters
-        self._url_parameters = self._get_parameters('url-parameters')
+        self._url_parameters = self._get_parameters('url-parameters', True)
         return self._url_parameters
 
-    def _get_parameters(self, html_id: str) -> Parameters:
+    def _get_parameters(self, html_id: str,
+                        force_required: bool = False) -> Parameters:
         for parameters in self.bs.find_all('h3', id=html_id):
             for element in parameters.next_elements:
                 if element.name == 'tbody':
                     tbody: Tag = element
                     lines = tbody.find_all('tr')
-                    return [[td.contents[0]
-                             for td in line.find_all('td') if td.contents]
+                    return [Parameter(*[td.contents[0]
+                                        for td in line.find_all('td') if
+                                        td.contents],
+                                      force_required=force_required)
                             for line in lines]
         return []
 
@@ -323,12 +405,12 @@ class APIGenerator:
         self._query_parameters = self._get_parameters('query-parameters')
         return self._query_parameters
 
-    def create_api_call_args(self) -> str:
+    def _create_api_call_args(self) -> str:
         api_call_args = []
 
         if self.url_parameters:
             path = re.sub(':.[^/]+', '{}', self.short_path)
-            parameter_names = [self.convert_to_correct_name(url_parameter[0])
+            parameter_names = [url_parameter.name
                                for
                                url_parameter in
                                self.url_parameters]
@@ -347,63 +429,98 @@ class APIGenerator:
 
         return ', '.join(api_call_args)
 
-    def create_method_args(self) -> str:
+    def _create_method_args(self, strict: bool = False) -> str:
         method_args = []
+        method_kwargs = []
 
         for url_parameter in self.url_parameters:
-            parameter_name = url_parameter[0]
-            method_args.append(self.convert_to_correct_name(parameter_name))
+            method_args.append(url_parameter.method_arg)
 
         if self.query_parameters:
-            method_args.append('query_parameters')
+            if strict:
+                for query_parameter in self.query_parameters:
+                    if query_parameter.required:
+                        method_args.append(query_parameter.method_arg)
+                    else:
+                        method_kwargs.append(query_parameter.method_arg)
+            else:
+                method_args.append('query_parameters')
 
         if self.form_parameters:
-            method_args.append('form_parameters')
-
-        arg_string = ', '.join(method_args)
+            if strict:
+                for form_parameter in self.form_parameters:
+                    if form_parameter.required:
+                        method_args.append(form_parameter.method_arg)
+                    else:
+                        method_kwargs.append(form_parameter.method_arg)
+            else:
+                method_args.append('form_parameters')
+        arg_string = ', '.join(method_args + method_kwargs)
         if arg_string:
             return f', {arg_string}'
         else:
             return ''
 
-    def create_args_doc(self) -> str:
-        def get_arg_doc(name: str, description: str, _type: str) -> str:
-            return f':param {_type} {name}: {description}'
+    def _create_args_doc(self, strict: bool = False) -> str:
 
-        newline_and_indent: str = '\n        '
         args_doc = []
 
         for url_parameter in self.url_parameters:
-            parameter_name = self.convert_to_correct_name(url_parameter[0])
-            parameter_raw_type = url_parameter[1]
-            if parameter_raw_type == 'Number':
-                parameter_type = 'int'
-            else:
-                parameter_type = 'str'
-            if len(url_parameter) > 2:
-                parameter_description = url_parameter[2]
-            else:
-                parameter_description = parameter_name
-
-            args_doc.append((parameter_name, parameter_description,
-                             parameter_type))
+            args_doc.append(url_parameter.doc)
 
         if self.query_parameters:
-            args_doc.append(
-                ('query_parameters', 'query_parameters', 'dict'))
+            if strict:
+                for query_parameter in self.query_parameters:
+                    args_doc.append(query_parameter.doc)
+            else:
+                args_doc.append(
+                    Parameter('query_parameters', 'dict',
+                              'query_parameters').doc)
 
         if self.form_parameters:
-            args_doc.append(
-                ('form_parameters', 'form_parameters', 'dict'))
+            if strict:
+                for form_parameters in self.form_parameters:
+                    args_doc.append(form_parameters.doc)
+            else:
+                args_doc.append(
+                    Parameter('form_parameters', 'dict',
+                              'form_parameters').doc)
 
         if args_doc:
-            args_doc_str = [get_arg_doc(*a) for a in args_doc]
-            return newline_and_indent + newline_and_indent.join(args_doc_str) \
-                   + newline_and_indent
+            return self.newline_and_indent +\
+                   self.newline_and_indent.join(args_doc) \
+                   + self.newline_and_indent
         else:
             return ''
 
-    def create_method_doc(self) -> str:
+    def _create_parameter_assignment(self) -> str:
+        parameter_assignment = []
+
+        def create_parameter_dict(parameters: Parameters) -> str:
+            def get_key_value_pair(parameter: Parameter) -> str:
+                if parameter.type == Parameter.Type.BOOL:
+                    parameter_variable = f'self._bool_to_str({parameter.name})'
+                else:
+                    parameter_variable = parameter.name
+                return f'\'{parameter.key}\': {parameter_variable}'
+
+            key_values = f',{self.newline_and_indent}    '.join(
+                [get_key_value_pair(p) for p in parameters])
+
+            return f'{{{self.newline_and_indent}{key_values}' \
+                   f'{self.newline_and_indent}}}'
+
+        if self.query_parameters:
+            query_dict = create_parameter_dict(self.query_parameters)
+            parameter_assignment.append(f'query_parameters = {query_dict}')
+
+        if self.form_parameters:
+            form_dict = create_parameter_dict(self.form_parameters)
+            parameter_assignment.append(f'form_parameters = {form_dict}')
+
+        return '\n\n'.join(parameter_assignment)
+
+    def _create_method_doc(self) -> str:
         newline_and_indent: str = '\n        '
         return newline_and_indent + self.api_description + newline_and_indent
 
@@ -412,13 +529,21 @@ class APIGenerator:
             space_name=self.space_name.title()
         )
 
-    def create_api_method(self) -> str:
+    def create_api_method(self, strict: bool = False) -> str:
+        if strict or not self.has_strict_method:
+            parameter_assignment = self._create_parameter_assignment()
+            api_name = self.api_name
+        else:
+            parameter_assignment = ''
+            api_name = f'{self.api_name}_raw'
+
         return API_METHOD_TEMPLATE.format(
-            method_args=self.create_method_args(),
-            args_doc=self.create_args_doc(),
-            method_doc=self.create_method_doc(),
-            api_name=self.api_name,
-            api_call_args=self.create_api_call_args())
+            method_args=self._create_method_args(strict),
+            args_doc=self._create_args_doc(strict),
+            method_doc=self._create_method_doc(),
+            api_name=api_name,
+            parameter_assignment=parameter_assignment,
+            api_call_args=self._create_api_call_args())
 
 
 if __name__ == '__main__':
@@ -433,7 +558,8 @@ if __name__ == '__main__':
                               required=False)
     parser_crete.set_defaults(func=create_api_from_file)
     parser_download = subparsers.add_parser('download',
-                                            help='download backlog document html')
+                                            help='download backlog '
+                                                 'document html')
     parser_download.add_argument('--data_dir', type=str, default=DATA_DIR,
                                  required=False)
     parser_download.add_argument('--download_wait_time', type=int, default=1,

@@ -190,14 +190,17 @@ class Backlog(Space1, Space2, Space3):
                         '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                         '<h3 id="method"><code>hello</code></h3>' \
                         '<h3 id="url-parameters">' \
-                        '<tbody><tr><td>hello</td><td>hello-param</td></tr>' \
-                        '<tr><td>bye</td><td>bye-param</td></tr>' \
+                        '<tbody><tr><td>hello</td><td>String</td></tr>' \
+                        '<tr><td>bye</td><td>String</td></tr>' \
                         '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+                        '</tbody></h3>' \
+                        '<h3 id="form-parameters">' \
+                        '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+                        '<tr><td>bye</td><td>String</td></tr>' \
                         '</tbody></h3></body></html>'
 
         html_list = [html_template.format(num=i) for i in range(2)]
         bs_generator = (get_bs(html) for html in html_list)
-
         expect_hello_class = '''# coding: utf-8
 
 """
@@ -214,31 +217,81 @@ class Hello(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Hello, self).__init__(space_id, api_key)
 
-    def test_api_name(self, hello, bye, num):
+    def test_api_name_raw(self, hello, bye, num, form_parameters):
         """
         hello0
 
         :param str hello: hello
         :param str bye: bye
         :param int num: description
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
-        :rtype requests.Response
+        :rtype: requests.Response
         """
-        return self._request('/hello'.format(hello, bye, num), method='hello')
 
-    def test_api_name(self, hello, bye, num):
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+
+    def test_api_name(self, hello, bye, num, hello=None, bye=None):
+        """
+        hello0
+
+        :param str hello: hello
+        :param str bye: bye
+        :param int num: description
+        :param str hello: hello
+        :param str bye: bye
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'hello': hello,
+            'bye': bye
+        }
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+
+    def test_api_name_raw(self, hello, bye, num, form_parameters):
         """
         hello1
 
         :param str hello: hello
         :param str bye: bye
         :param int num: description
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
-        :rtype requests.Response
+        :rtype: requests.Response
         """
-        return self._request('/hello'.format(hello, bye, num), method='hello')
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+
+    def test_api_name(self, hello, bye, num, hello=None, bye=None):
+        """
+        hello1
+
+        :param str hello: hello
+        :param str bye: bye
+        :param int num: description
+        :param str hello: hello
+        :param str bye: bye
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'hello': hello,
+            'bye': bye
+        }
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
 '''
         expect_init = '''# coding: utf-8
 
@@ -280,14 +333,14 @@ class Backlog(Hello):
                 self.assertEqual(f.read(), expect_backlog_py)
 
 
-class TestAPIGenerator(TestCase):
+class TestParameter(TestCase):
     def test_camel_to_snake(self):
         camel_case = 'TestCase'
         other_case = 'testCase'
         expect_snake_case = 'test_case'
-        self.assertEqual(api_generator.APIGenerator.camel_to_snake(camel_case),
+        self.assertEqual(api_generator.Parameter.camel_to_snake(camel_case),
                          expect_snake_case)
-        self.assertEqual(api_generator.APIGenerator.camel_to_snake(other_case),
+        self.assertEqual(api_generator.Parameter.camel_to_snake(other_case),
                          expect_snake_case)
 
     def test_convert_to_correct_name(self):
@@ -296,12 +349,35 @@ class TestAPIGenerator(TestCase):
         expect_snake_case = 'test_case'
         expect_id = '_id'
         self.assertEqual(
-            api_generator.APIGenerator.convert_to_correct_name(camel_case),
+            api_generator.Parameter.convert_to_correct_name(camel_case),
             expect_snake_case)
         self.assertEqual(
-            api_generator.APIGenerator.convert_to_correct_name(other_case),
+            api_generator.Parameter.convert_to_correct_name(other_case),
             expect_id)
 
+    def test_parameter_doc(self):
+        parameter_str = api_generator.Parameter('string', 'String')
+        self.assertEqual(parameter_str.doc, ':param str string: string')
+
+        parameter_int = api_generator.Parameter('number', 'Number')
+        self.assertEqual(parameter_int.doc, ':param int number: number')
+
+        parameter_bool = api_generator.Parameter('boolean', 'Boolean')
+        self.assertEqual(parameter_bool.doc, ':param bool boolean: boolean')
+
+        parameter_dict = api_generator.Parameter('dict', 'dict')
+        self.assertEqual(parameter_dict.doc, ':param dict dict: dict')
+
+        parameter_str_list = api_generator.Parameter('string[]', 'String')
+        self.assertEqual(parameter_str_list.doc,
+                         ':param list[str] or str string: string[]')
+
+        parameter_str_list = api_generator.Parameter('number[]', 'Number')
+        self.assertEqual(parameter_str_list.doc,
+                         ':param list[int] or int number: number[]')
+
+
+class TestAPIGenerator(TestCase):
     def test_api_name(self):
         html = '<html><body><h2 id="test_api_name" >hello</h2></body></html>'
 
@@ -356,11 +432,14 @@ class TestAPIGenerator(TestCase):
 
     def test_get_parameters(self):
         html = '<html><body><h3 id="param">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr></tbody></h3></body></html>'
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr></tbody></h3></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api._get_parameters('param'),
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
+        parameters = api._get_parameters('param')
+        self.assertEqual(parameters[0].name, 'hello')
+        self.assertEqual(parameters[0].type.doc, 'str')
+        self.assertEqual(parameters[1].name, 'bye')
+        self.assertEqual(parameters[1].type.doc, 'str')
 
         html = '<html><body></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
@@ -369,58 +448,88 @@ class TestAPIGenerator(TestCase):
 
     def test_url_parameters(self):
         html = '<html><body><h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.url_parameters,
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
-        self.assertEqual(api.url_parameters,
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
+        self.assertEqual(api.url_parameters[0].name, 'hello')
+        self.assertEqual(api.url_parameters[0].type.doc, 'str')
+        self.assertEqual(api.url_parameters[1].name, 'bye')
+        self.assertEqual(api.url_parameters[1].type.doc, 'str')
 
     def test_form_parameters(self):
         html = '<html><body><h3 id="form-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.form_parameters,
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
-        self.assertEqual(api.form_parameters,
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
+        self.assertEqual(api.form_parameters[0].name, 'hello')
+        self.assertEqual(api.form_parameters[0].type.doc, 'str')
+        self.assertEqual(api.form_parameters[1].name, 'bye')
+        self.assertEqual(api.form_parameters[1].type.doc, 'str')
 
     def test_query_parameters(self):
         html = '<html><body><h3 id="query-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.query_parameters,
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
-        self.assertEqual(api.query_parameters,
-                         [['hello', 'hello-param'], ['bye', 'bye-param']])
+        self.assertEqual(api.query_parameters[0].name, 'hello')
+        self.assertEqual(api.query_parameters[0].type.doc, 'str')
+        self.assertEqual(api.query_parameters[1].name, 'bye')
+        self.assertEqual(api.query_parameters[1].type.doc, 'str')
+
+    def test_has_strict_method(self):
+        html = '<html><body></body></html>'
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertFalse(api.has_strict_method)
+
+        html = '<html><body><h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertTrue(api.has_strict_method)
+
+        html = '<html><body><h3 id="form-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertTrue(api.has_strict_method)
+
+        html = '<html><body><h3 id="form-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertTrue(api.has_strict_method)
 
     def test_create_api_call_args(self):
         html = '<html><body>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
                '<h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3>' \
                '<h3 id="form-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3>' \
                '<h3 id="query-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3></body></html>'
         expect_api_call_args = "'/hello'.format(hello, bye), method='hello'," \
                                " query_parameters=query_parameters," \
                                " form_parameters=form_parameters"
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_api_call_args(), expect_api_call_args)
+        self.assertEqual(api._create_api_call_args(), expect_api_call_args)
 
         html = '<html><body>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
@@ -428,27 +537,69 @@ class TestAPIGenerator(TestCase):
                '</h3></body></html>'
         expect_api_call_args = "'/hello', method='hello'"
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_api_call_args(), expect_api_call_args)
+        self.assertEqual(api._create_api_call_args(), expect_api_call_args)
 
     def test_create_method_args(self):
         html = '<html><body>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
                '<h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3>' \
                '<h3 id="form-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3>' \
                '<h3 id="query-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3></body></html>'
         expect_create_method_args = ", hello, bye, query_parameters, form_parameters"
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_method_args(), expect_create_method_args)
+        self.assertEqual(api._create_method_args(), expect_create_method_args)
+
+        html = '<html><body>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '<h3 id="url-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="form-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+        expect_create_method_args = ", hello, bye, hello=None, bye=None," \
+                                    " hello=None, bye=None"
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api._create_method_args(strict=True),
+                         expect_create_method_args)
+
+        html = '<html><body>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '<h3 id="url-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="form-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>goodbye (Required)</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+        expect_create_method_args = ", hello, bye, goodbye, hello=None," \
+                                    " hello=None, bye=None"
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api._create_method_args(strict=True),
+                         expect_create_method_args)
 
         html = '<html><body>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
@@ -456,7 +607,7 @@ class TestAPIGenerator(TestCase):
                '</tbody></h3></body></html>'
         expect_create_method_args = ""
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_method_args(),
+        self.assertEqual(api._create_method_args(),
                          expect_create_method_args)
 
     def test_create_args_doc(self):
@@ -464,48 +615,99 @@ class TestAPIGenerator(TestCase):
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
                '<h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3>' \
                '<h3 id="form-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3>' \
                '<h3 id="query-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td><</tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '</tbody></h3></body></html>'
         expect_args_doc = '''\n        :param str hello: hello
         :param str bye: bye
         :param dict query_parameters: query_parameters
         :param dict form_parameters: form_parameters\n        '''
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_args_doc(),
-                         expect_args_doc)
-
-        html = '<html><body>' \
-               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
-               '<h3 id="method"><code>hello</code></h3>' \
-               '</tbody></h3></body></html>'
-        expect_args_doc = ""
-        api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_args_doc(),
+        self.assertEqual(api._create_args_doc(),
                          expect_args_doc)
 
         html = '<html><body>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
                '<h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td></tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="form-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+        expect_args_doc = '''\n        :param str hello: hello
+        :param str bye: bye
+        :param str hello: hello
+        :param str bye: bye
+        :param str hello: hello
+        :param str bye: bye\n        '''
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api._create_args_doc(strict=True),
+                         expect_args_doc)
+        html = '<html><body>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '</tbody></h3></body></html>'
+        expect_args_doc = ""
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api._create_args_doc(),
+                         expect_args_doc)
+
+        html = '<html><body>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '<h3 id="url-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td></tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
                '</tbody></h3></body></html>'
         expect_args_doc = '''\n        :param str hello: hello
         :param str bye: bye
         :param int num: description\n        '''
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_args_doc(),
+        self.assertEqual(api._create_args_doc(),
                          expect_args_doc)
+
+    def test_create_parameter_assignment(self):
+        html = '<html><body>' \
+               '<h2><p>hello</p></h2></body>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '<h3 id="form-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '</tbody></h3></body></html>'
+
+        expect_parameter_assignment = '''query_parameters = {
+        'hello': hello,
+            'bye': bye
+        }
+
+form_parameters = {
+        'hello': hello,
+            'bye': bye
+        }'''
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api._create_parameter_assignment(),
+                         expect_parameter_assignment)
 
     def test_create_method_doc(self):
         html = '<html><body>' \
@@ -513,15 +715,15 @@ class TestAPIGenerator(TestCase):
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
                '<h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td></tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<tbody><tr><td>hello</td><td>String</td></tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
                '</tbody></h3></body></html>'
         expect_method_doc = '''
         hello
         '''
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_method_doc(),
+        self.assertEqual(api._create_method_doc(),
                          expect_method_doc)
 
     def test_create_api_class(self):
@@ -553,26 +755,57 @@ class Hello(BacklogBase):
                '<html><body><h2><p>hello</p></h2></body></html>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
-               '<h3 id="url-parameters">' \
-               '<tbody><tr><td>hello</td><td>hello-param</td></tr>' \
-               '<tr><td>bye</td><td>bye-param</td></tr>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td></tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
                '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+               '<tr><td>boolean</td><td>Boolean</td></tr>' \
                '</tbody></h3></body></html>'
 
         expect_api_method = '''
-    def test_api_name(self, hello, bye, num):
+    def test_api_name_raw(self, query_parameters):
+        """
+        hello
+        
+        :param dict query_parameters: query_parameters
+        
+        :return:  requests Response object 
+        :rtype: requests.Response
+        """
+        
+        
+        
+        return self._request('/hello', method='hello', query_parameters=query_parameters)
+'''
+
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api.create_api_method(),
+                         expect_api_method)
+
+        expect_api_method = '''
+    def test_api_name(self, hello=None, bye=None, num=None, boolean=None):
         """
         hello
         
         :param str hello: hello
         :param str bye: bye
         :param int num: description
+        :param bool boolean: boolean
         
         :return:  requests Response object 
-        :rtype requests.Response
+        :rtype: requests.Response
         """
-        return self._request('/hello'.format(hello, bye, num), method='hello')
+        
+        query_parameters = {
+        'hello': hello,
+            'bye': bye,
+            'num': num,
+            'boolean': self._bool_to_str(boolean)
+        }
+        
+        return self._request('/hello', method='hello', query_parameters=query_parameters)
 '''
+
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.create_api_method(),
+        self.assertEqual(api.create_api_method(strict=True),
                          expect_api_method)

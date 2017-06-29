@@ -19,6 +19,7 @@ class Priorities(BacklogBase):
         Returns list of priorities.
 
         :return:  requests Response object
-        :rtype requests.Response
+        :rtype: requests.Response
         """
+
         return self._request('/priorities', method='GET')

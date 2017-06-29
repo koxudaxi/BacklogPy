@@ -19,6 +19,7 @@ class Statuses(BacklogBase):
         Returns list of statuses.
 
         :return:  requests Response object
-        :rtype requests.Response
+        :rtype: requests.Response
         """
+
         return self._request('/statuses', method='GET')

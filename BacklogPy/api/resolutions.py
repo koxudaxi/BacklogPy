@@ -19,6 +19,7 @@ class Resolutions(BacklogBase):
         Returns list of resolutions.
 
         :return:  requests Response object
-        :rtype requests.Response
+        :rtype: requests.Response
         """
+
         return self._request('/resolutions', method='GET')
