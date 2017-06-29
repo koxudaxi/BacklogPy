@@ -96,7 +96,7 @@ class BacklogBase(object):
         if headers is None:
             headers = {}
 
-        logger.error(
+        logger.debug(
             'request api method:{method} url:{url} \
             query_parameters:{query_parameters} \
             form_parameters:{form_parameters} headers:{headers}'
