@@ -33,7 +33,7 @@ The client Library has API Call methods for All Backlog v2 API:
 
     >>> from BacklogPy import Backlog
     >>> backlog = Backlog('space_name','api-key')
-    >>> response = backlog.get_project_list({'archived':'false', 'all':'false'})
+    >>> response = backlog.get_project_list(all=True, archived=True)
     >>> print(response.json()[0])
        {'archived': False,
         'chartEnabled': True,
@@ -45,6 +45,23 @@ The client Library has API Call methods for All Backlog v2 API:
         'subtaskingEnabled': False,
         'textFormattingRule': 'markdown',
         'useWikiTreeView': True}
+
+
+
+Also you can use dict parameters with '*_raw' methods:
+
+.. code-block:: python
+
+    >>> response = backlog.get_project_list_raw({'archived':'false', 'all':'false'})
+
+
+ScreenShot
+----------
+
+You can use auto-completion for methods and arguments in Interpreter(IPython) and IDE(PyCharm, Jedi and more)
+
+.. image:: docs/img/auto-completion_arguments.png
+.. image:: docs/img/auto-completion_method.png
 
 
 Development
