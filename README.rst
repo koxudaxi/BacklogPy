@@ -48,7 +48,7 @@ The client Library has API Call methods for All Backlog v2 API:
 
 
 
-Also you can use dict parameters with '*_raw' methods:
+Also you can use dict parameters with '\*_raw' methods:
 
 .. code-block:: python
 
@@ -60,8 +60,8 @@ ScreenShot
 
 You can use auto-completion for methods and arguments in Interpreter(IPython) and IDE(PyCharm, Jedi and more)
 
-.. image:: docs/img/auto-completion_arguments.png
-.. image:: docs/img/auto-completion_method.png
+.. image:: https://raw.githubusercontent.com/koxudaxi/BacklogPy/master/docs/img/auto-completion_arguments.png
+.. image:: https://raw.githubusercontent.com/koxudaxi/BacklogPy/master/docs/img/auto-completion_method.png
 
 
 Development
