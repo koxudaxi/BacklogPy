@@ -14,38 +14,28 @@ class Notifications(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Notifications, self).__init__(space_id, api_key)
 
-    def count_notification_raw(self, query_parameters):
+    def read_notification(self, _id):
         """
-        Returns number of Notifications.
+        Changes notifications read.
 
-        :param dict query_parameters: query_parameters
+        :param int _id: Notification ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request('/notifications/count',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/notifications/{}/markAsRead'.format(_id), method='POST')
 
-    def count_notification(
-            self, resource_already_read=None, already_read=None):
+    def reset_unread_notification_count(self):
         """
-        Returns number of Notifications.
-
-        :param bool resource_already_read: This parameter is optional. Set to false for unread notification count and true for already read notification count.
-        :param bool already_read: This parameter is optional. Set this parameter to false to get unread notification count since the last time checked by user and true for already read notification count.
+        Resets unread Notification count.
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        query_parameters = {
-            'resourceAlreadyRead': self._bool_to_str(resource_already_read),
-            'alreadyRead': self._bool_to_str(already_read)
-        }
-
-        return self._request('/notifications/count',
-                             method='GET', query_parameters=query_parameters)
+        return self._request('/notifications/markAsRead', method='POST')
 
     def get_notification_raw(self, query_parameters):
         """
@@ -84,25 +74,35 @@ class Notifications(BacklogBase):
         return self._request('/notifications', method='GET',
                              query_parameters=query_parameters)
 
-    def read_notification(self, _id):
+    def count_notification_raw(self, query_parameters):
         """
-        Changes notifications read.
+        Returns number of Notifications.
 
-        :param int _id: Notification ID
+        :param dict query_parameters: query_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request(
-            '/notifications/{}/markAsRead'.format(_id), method='POST')
+        return self._request('/notifications/count',
+                             method='GET', query_parameters=query_parameters)
 
-    def reset_unread_notification_count(self):
+    def count_notification(
+            self, resource_already_read=None, already_read=None):
         """
-        Resets unread Notification count.
+        Returns number of Notifications.
+
+        :param bool resource_already_read: This parameter is optional. Set to false for unread notification count and true for already read notification count.
+        :param bool already_read: This parameter is optional. Set this parameter to false to get unread notification count since the last time checked by user and true for already read notification count.
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request('/notifications/markAsRead', method='POST')
+        query_parameters = {
+            'resourceAlreadyRead': self._bool_to_str(resource_already_read),
+            'alreadyRead': self._bool_to_str(already_read)
+        }
+
+        return self._request('/notifications/count',
+                             method='GET', query_parameters=query_parameters)

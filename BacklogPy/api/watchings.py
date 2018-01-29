@@ -14,6 +14,50 @@ class Watchings(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Watchings, self).__init__(space_id, api_key)
 
+    def get_watching(self, watching_id):
+        """
+        Returns the information about a watching.
+
+        :param int watching_id: Watching ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/watchings/{}'.format(watching_id), method='GET')
+
+    def update_watching_raw(self, watching_id, form_parameters):
+        """
+        Updates a watching. User can update own note.
+
+        :param int watching_id: watching ID
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/watchings/{}'.format(watching_id),
+                             method='PATCH', form_parameters=form_parameters)
+
+    def update_watching(self, watching_id, note=None):
+        """
+        Updates a watching. User can update own note.
+
+        :param int watching_id: watching ID
+        :param str note: Note
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'note': note
+        }
+
+        return self._request('/watchings/{}'.format(watching_id),
+                             method='PATCH', form_parameters=form_parameters)
+
     def add_watching_raw(self, form_parameters):
         """
         Adds a watching. User can add a own watching.
@@ -59,18 +103,6 @@ class Watchings(BacklogBase):
         return self._request(
             '/watchings/{}'.format(watching_id), method='DELETE')
 
-    def get_watching(self, watching_id):
-        """
-        Returns the information about a watching.
-
-        :param int watching_id: Watching ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/watchings/{}'.format(watching_id), method='GET')
-
     def mark_watching_as_read(self, watching_id):
         """
         Mark a watching as read.
@@ -83,35 +115,3 @@ class Watchings(BacklogBase):
 
         return self._request(
             '/watchings/{}/markAsRead'.format(watching_id), method='POST')
-
-    def update_watching_raw(self, watching_id, form_parameters):
-        """
-        Updates a watching. User can update own note.
-
-        :param int watching_id: watching ID
-        :param dict form_parameters: form_parameters
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/watchings/{}'.format(watching_id),
-                             method='PATCH', form_parameters=form_parameters)
-
-    def update_watching(self, watching_id, note=None):
-        """
-        Updates a watching. User can update own note.
-
-        :param int watching_id: watching ID
-        :param str note: Note
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        form_parameters = {
-            'note': note
-        }
-
-        return self._request('/watchings/{}'.format(watching_id),
-                             method='PATCH', form_parameters=form_parameters)

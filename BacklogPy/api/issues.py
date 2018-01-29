@@ -14,9 +14,107 @@ class Issues(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Issues, self).__init__(space_id, api_key)
 
-    def add_comment_notification(self, issue_id_or_key, comment_id):
+    def link_shared_files_to_issue_raw(self, issue_id_or_key, form_parameters):
         """
-        Adds notifications to the comment. Only the user who added the comment can add notifications.
+        Links shared files to issue.
+
+        :param str issue_id_or_key: Issue ID or Issue key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/issues/{}/sharedFiles'.format(issue_id_or_key),
+                             method='POST', form_parameters=form_parameters)
+
+    def link_shared_files_to_issue(self, issue_id_or_key, file_id):
+        """
+        Links shared files to issue.
+
+        :param str issue_id_or_key: Issue ID or Issue key
+        :param list[int] or int file_id: Shared File ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'fileId[]': file_id
+        }
+
+        return self._request('/issues/{}/sharedFiles'.format(issue_id_or_key),
+                             method='POST', form_parameters=form_parameters)
+
+    def get_comment_list_raw(self, issue_id_or_key, query_parameters):
+        """
+        Returns list of comments in issue.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param dict query_parameters: query_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/issues/{}/comments'.format(issue_id_or_key),
+                             method='GET', query_parameters=query_parameters)
+
+    def get_comment_list(self, issue_id_or_key, min_id=None,
+                         max_id=None, count=None, order=None):
+        """
+        Returns list of comments in issue.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param int min_id: minimum ID
+        :param int max_id: maximum ID
+        :param int count: number of records to retrieve(1-100) default=20
+        :param str order: “asc” or “desc” default=“desc”
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        query_parameters = {
+            'minId': min_id,
+            'maxId': max_id,
+            'count': count,
+            'order': order
+        }
+
+        return self._request('/issues/{}/comments'.format(issue_id_or_key),
+                             method='GET', query_parameters=query_parameters)
+
+    def count_comment(self, issue_id_or_key):
+        """
+        Returns number of comments in issue.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/comments/count'.format(issue_id_or_key), method='GET')
+
+    def remove_link_to_shared_file_from_issue(self, issue_id_or_key, _id):
+        """
+        Removes link to shared file from issue.
+
+        :param str issue_id_or_key: Issue ID or Issue key
+        :param int _id: Shared File ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/sharedFiles/{}'.format(issue_id_or_key, _id), method='DELETE')
+
+    def update_comment(self, issue_id_or_key, comment_id):
+        """
+        Updates content of comment.
 
         :param str issue_id_or_key: Issue ID or Issue Key
         :param int comment_id: Comment ID
@@ -26,7 +124,21 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}/comments/{}/notifications'.format(issue_id_or_key, comment_id), method='POST')
+            '/issues/{}/comments/{}'.format(issue_id_or_key, comment_id), method='PATCH')
+
+    def get_comment(self, issue_id_or_key, comment_id):
+        """
+        Returns information about comment.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param int comment_id: Comment ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/comments/{}'.format(issue_id_or_key, comment_id), method='GET')
 
     def add_comment_raw(self, issue_id_or_key, form_parameters):
         """
@@ -64,6 +176,20 @@ class Issues(BacklogBase):
 
         return self._request('/issues/{}/comments'.format(issue_id_or_key),
                              method='POST', form_parameters=form_parameters)
+
+    def delete_issue_attachment(self, issue_id_or_key, attachment_id):
+        """
+        Deletes an attachment of issue.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param int attachment_id: Attachment file ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/attachments/{}'.format(issue_id_or_key, attachment_id), method='DELETE')
 
     def add_issue_raw(self, form_parameters):
         """
@@ -124,173 +250,22 @@ class Issues(BacklogBase):
         return self._request('/issues', method='POST',
                              form_parameters=form_parameters)
 
-    def count_comment(self, issue_id_or_key):
+    def get_list_of_issue_attachments(self, issue_id_or_key):
         """
-        Returns number of comments in issue.
+        Returns the list of issue attachments.
 
-        :param str issue_id_or_key: Issue ID or Issue Key
+        :param str issue_id_or_key: Issue ID or Issue key
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         return self._request(
-            '/issues/{}/comments/count'.format(issue_id_or_key), method='GET')
+            '/issues/{}/attachments'.format(issue_id_or_key), method='GET')
 
-    def count_issue_raw(self, query_parameters):
+    def get_list_of_comment_notifications(self, issue_id_or_key, comment_id):
         """
-        Returns number of issues.
-
-        :param dict query_parameters: query_parameters
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/issues/count', method='GET',
-                             query_parameters=query_parameters)
-
-    def count_issue(self, project_id=None, issue_type_id=None, category_id=None, version_id=None, milestone_id=None, status_id=None, priority_id=None, assignee_id=None, created_user_id=None, resolution_id=None, parent_child=None, attachment=None, shared_file=None,
-                    sort=None, order=None, offset=None, count=None, created_since=None, created_until=None, updated_since=None, updated_until=None, start_date_since=None, start_date_until=None, due_date_since=None, due_date_until=None, id=None, parent_issue_id=None, keyword=None):
-        """
-        Returns number of issues.
-
-        :param list[int] or int project_id: Project ID
-        :param list[int] or int issue_type_id: Issue Type ID
-        :param list[int] or int category_id: Category ID
-        :param list[int] or int version_id: Version ID
-        :param list[int] or int milestone_id: Milestone ID
-        :param list[int] or int status_id: Status ID
-        :param list[int] or int priority_id: Priority ID
-        :param list[int] or int assignee_id: Assignee ID
-        :param list[int] or int created_user_id: Created User ID
-        :param list[int] or int resolution_id: Resolution ID
-        :param int parent_child: Subtasking
-        :param bool attachment: True to make include Issue with Attachment
-        :param bool shared_file: True to make include Issue with File
-        :param str sort: What to sort results by
-        :param str order: Order of the sort “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str created_since: Created since
-        :param str created_until: Created until
-        :param str updated_since: Updated since
-        :param str updated_until: Updated until
-        :param str start_date_since: Start Date since
-        :param str start_date_until: Start Date until
-        :param str due_date_since: Due Date since
-        :param str due_date_until: Due Date until
-        :param list[int] or int id: Issue ID
-        :param list[int] or int parent_issue_id: Parent Issue ID
-        :param str keyword: Keyword
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        query_parameters = {
-            'projectId[]': project_id,
-            'issueTypeId[]': issue_type_id,
-            'categoryId[]': category_id,
-            'versionId[]': version_id,
-            'milestoneId[]': milestone_id,
-            'statusId[]': status_id,
-            'priorityId[]': priority_id,
-            'assigneeId[]': assignee_id,
-            'createdUserId[]': created_user_id,
-            'resolutionId[]': resolution_id,
-            'parentChild': parent_child,
-            'attachment': self._bool_to_str(attachment),
-            'sharedFile': self._bool_to_str(shared_file),
-            'sort': sort,
-            'order': order,
-            'offset': offset,
-            'count': count,
-            'createdSince': created_since,
-            'createdUntil': created_until,
-            'updatedSince': updated_since,
-            'updatedUntil': updated_until,
-            'startDateSince': start_date_since,
-            'startDateUntil': start_date_until,
-            'dueDateSince': due_date_since,
-            'dueDateUntil': due_date_until,
-            'id[]': id,
-            'parentIssueId[]': parent_issue_id,
-            'keyword': keyword
-        }
-
-        return self._request('/issues/count', method='GET',
-                             query_parameters=query_parameters)
-
-    def delete_issue_attachment(self, issue_id_or_key, attachment_id):
-        """
-        Deletes an attachment of issue.
-
-        :param str issue_id_or_key: Issue ID or Issue Key
-        :param int attachment_id: Attachment file ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}/attachments/{}'.format(issue_id_or_key, attachment_id), method='DELETE')
-
-    def delete_issue(self, issue_id_or_key):
-        """
-        Deletes issue.
-
-        :param str issue_id_or_key: Issue ID or Issue Key
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}'.format(issue_id_or_key), method='DELETE')
-
-    def get_comment_list_raw(self, issue_id_or_key, query_parameters):
-        """
-        Returns list of comments in issue.
-
-        :param str issue_id_or_key: Issue ID or Issue Key
-        :param dict query_parameters: query_parameters
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/issues/{}/comments'.format(issue_id_or_key),
-                             method='GET', query_parameters=query_parameters)
-
-    def get_comment_list(self, issue_id_or_key, min_id=None,
-                         max_id=None, count=None, order=None):
-        """
-        Returns list of comments in issue.
-
-        :param str issue_id_or_key: Issue ID or Issue Key
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        query_parameters = {
-            'minId': min_id,
-            'maxId': max_id,
-            'count': count,
-            'order': order
-        }
-
-        return self._request('/issues/{}/comments'.format(issue_id_or_key),
-                             method='GET', query_parameters=query_parameters)
-
-    def get_comment(self, issue_id_or_key, comment_id):
-        """
-        Returns information about comment.
+        Returns the list of comment notifications.
 
         :param str issue_id_or_key: Issue ID or Issue Key
         :param int comment_id: Comment ID
@@ -300,21 +275,20 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}/comments/{}'.format(issue_id_or_key, comment_id), method='GET')
+            '/issues/{}/comments/{}/notifications'.format(issue_id_or_key, comment_id), method='GET')
 
-    def get_issue_attachment(self, issue_id_or_key, attachment_id):
+    def get_list_of_linked_shared_files(self, issue_id_or_key):
         """
-        Downloads issue’s attachment file.
+        Returns the list of linked Shared Files to issues.
 
-        :param str issue_id_or_key: Issue ID or Issue Key
-        :param int attachment_id: Attachment file ID
+        :param str issue_id_or_key: Issue ID or Issue key
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         return self._request(
-            '/issues/{}/attachments/{}'.format(issue_id_or_key, attachment_id), method='GET')
+            '/issues/{}/sharedFiles'.format(issue_id_or_key), method='GET')
 
     def get_issue_list_raw(self, query_parameters):
         """
@@ -401,6 +375,132 @@ class Issues(BacklogBase):
         return self._request('/issues', method='GET',
                              query_parameters=query_parameters)
 
+    def add_comment_notification(self, issue_id_or_key, comment_id):
+        """
+        Adds notifications to the comment. Only the user who added the comment can add notifications.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param int comment_id: Comment ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/comments/{}/notifications'.format(issue_id_or_key, comment_id), method='POST')
+
+    def delete_issue(self, issue_id_or_key):
+        """
+        Deletes issue.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}'.format(issue_id_or_key), method='DELETE')
+
+    def count_issue_raw(self, query_parameters):
+        """
+        Returns number of issues.
+
+        :param dict query_parameters: query_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/issues/count', method='GET',
+                             query_parameters=query_parameters)
+
+    def count_issue(self, project_id=None, issue_type_id=None, category_id=None, version_id=None, milestone_id=None, status_id=None, priority_id=None, assignee_id=None, created_user_id=None, resolution_id=None, parent_child=None, attachment=None, shared_file=None,
+                    sort=None, order=None, offset=None, count=None, created_since=None, created_until=None, updated_since=None, updated_until=None, start_date_since=None, start_date_until=None, due_date_since=None, due_date_until=None, id=None, parent_issue_id=None, keyword=None):
+        """
+        Returns number of issues.
+
+        :param list[int] or int project_id: Project ID
+        :param list[int] or int issue_type_id: Issue Type ID
+        :param list[int] or int category_id: Category ID
+        :param list[int] or int version_id: Version ID
+        :param list[int] or int milestone_id: Milestone ID
+        :param list[int] or int status_id: Status ID
+        :param list[int] or int priority_id: Priority ID
+        :param list[int] or int assignee_id: Assignee ID
+        :param list[int] or int created_user_id: Created User ID
+        :param list[int] or int resolution_id: Resolution ID
+        :param int parent_child: Subtasking
+        :param bool attachment: True to make include Issue with Attachment
+        :param bool shared_file: True to make include Issue with File
+        :param str sort: What to sort results by
+        :param str order: Order of the sort “asc” or “desc” default=“desc”
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
+        :param str created_since: Created since
+        :param str created_until: Created until
+        :param str updated_since: Updated since
+        :param str updated_until: Updated until
+        :param str start_date_since: Start Date since
+        :param str start_date_until: Start Date until
+        :param str due_date_since: Due Date since
+        :param str due_date_until: Due Date until
+        :param list[int] or int id: Issue ID
+        :param list[int] or int parent_issue_id: Parent Issue ID
+        :param str keyword: Keyword
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        query_parameters = {
+            'projectId[]': project_id,
+            'issueTypeId[]': issue_type_id,
+            'categoryId[]': category_id,
+            'versionId[]': version_id,
+            'milestoneId[]': milestone_id,
+            'statusId[]': status_id,
+            'priorityId[]': priority_id,
+            'assigneeId[]': assignee_id,
+            'createdUserId[]': created_user_id,
+            'resolutionId[]': resolution_id,
+            'parentChild': parent_child,
+            'attachment': self._bool_to_str(attachment),
+            'sharedFile': self._bool_to_str(shared_file),
+            'sort': sort,
+            'order': order,
+            'offset': offset,
+            'count': count,
+            'createdSince': created_since,
+            'createdUntil': created_until,
+            'updatedSince': updated_since,
+            'updatedUntil': updated_until,
+            'startDateSince': start_date_since,
+            'startDateUntil': start_date_until,
+            'dueDateSince': due_date_since,
+            'dueDateUntil': due_date_until,
+            'id[]': id,
+            'parentIssueId[]': parent_issue_id,
+            'keyword': keyword
+        }
+
+        return self._request('/issues/count', method='GET',
+                             query_parameters=query_parameters)
+
+    def get_issue_attachment(self, issue_id_or_key, attachment_id):
+        """
+        Downloads issue’s attachment file.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param int attachment_id: Attachment file ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/attachments/{}'.format(issue_id_or_key, attachment_id), method='GET')
+
     def get_issue(self, issue_id_or_key):
         """
         Returns information about issue.
@@ -413,106 +513,6 @@ class Issues(BacklogBase):
 
         return self._request(
             '/issues/{}'.format(issue_id_or_key), method='GET')
-
-    def get_list_of_comment_notifications(self, issue_id_or_key, comment_id):
-        """
-        Returns the list of comment notifications.
-
-        :param str issue_id_or_key: Issue ID or Issue Key
-        :param int comment_id: Comment ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}/comments/{}/notifications'.format(issue_id_or_key, comment_id), method='GET')
-
-    def get_list_of_issue_attachments(self, issue_id_or_key):
-        """
-        Returns the list of issue attachments.
-
-        :param str issue_id_or_key: Issue ID or Issue key
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}/attachments'.format(issue_id_or_key), method='GET')
-
-    def get_list_of_linked_shared_files(self, issue_id_or_key):
-        """
-        Returns the list of linked Shared Files to issues.
-
-        :param str issue_id_or_key: Issue ID or Issue key
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}/sharedFiles'.format(issue_id_or_key), method='GET')
-
-    def link_shared_files_to_issue_raw(self, issue_id_or_key, form_parameters):
-        """
-        Links shared files to issue.
-
-        :param str issue_id_or_key: Issue ID or Issue key
-        :param dict form_parameters: form_parameters
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/issues/{}/sharedFiles'.format(issue_id_or_key),
-                             method='POST', form_parameters=form_parameters)
-
-    def link_shared_files_to_issue(self, issue_id_or_key, file_id):
-        """
-        Links shared files to issue.
-
-        :param str issue_id_or_key: Issue ID or Issue key
-        :param list[int] or int file_id: Shared File ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        form_parameters = {
-            'fileId[]': file_id
-        }
-
-        return self._request('/issues/{}/sharedFiles'.format(issue_id_or_key),
-                             method='POST', form_parameters=form_parameters)
-
-    def remove_link_to_shared_file_from_issue(self, issue_id_or_key, _id):
-        """
-        Removes link to shared file from issue.
-
-        :param str issue_id_or_key: Issue ID or Issue key
-        :param int _id: Shared File ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}/sharedFiles/{}'.format(issue_id_or_key, _id), method='DELETE')
-
-    def update_comment(self, issue_id_or_key, comment_id):
-        """
-        Updates content of comment.
-
-        :param str issue_id_or_key: Issue ID or Issue Key
-        :param int comment_id: Comment ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request(
-            '/issues/{}/comments/{}'.format(issue_id_or_key, comment_id), method='PATCH')
 
     def update_issue_raw(self, issue_id_or_key, form_parameters):
         """
