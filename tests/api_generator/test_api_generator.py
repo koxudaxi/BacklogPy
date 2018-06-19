@@ -1,10 +1,10 @@
 import os
 import uuid
-from tempfile import TemporaryDirectory, NamedTemporaryFile, gettempdir
+from tempfile import NamedTemporaryFile, TemporaryDirectory, gettempdir
+from typing import List
 from unittest import TestCase, mock
 
 from bs4 import BeautifulSoup
-from typing import List
 
 from api_generator import api_generator
 
@@ -375,6 +375,15 @@ class TestParameter(TestCase):
         parameter_str_list = api_generator.Parameter('number[]', 'Number')
         self.assertEqual(parameter_str_list.doc,
                          ':param list[int] or int number: number[]')
+
+    def test___lt__(self):
+        parameter_str_1 = api_generator.Parameter('abc', 'String')
+        parameter_str_2 = api_generator.Parameter('bcd', 'String')
+        self.assertTrue(parameter_str_1 < parameter_str_2)
+
+        parameter_str_3 = api_generator.Parameter('2', 'String')
+        parameter_str_4 = api_generator.Parameter('1', 'String')
+        self.assertTrue(parameter_str_4 < parameter_str_3)
 
 
 class TestAPIGenerator(TestCase):
@@ -809,3 +818,32 @@ class Hello(BacklogBase):
         api = api_generator.APIGenerator(get_bs(html))
         self.assertEqual(api.create_api_method(strict=True),
                          expect_api_method)
+
+    def test___lt__(self):
+        html_1 = '<html><body>' \
+                 '<h2 id="test_api_name_abc" >hello</h2>' \
+                 '<html><body><h2><p>hello</p></h2></body></html>' \
+                 '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+                 '<h3 id="method"><code>hello</code></h3>' \
+                 '<h3 id="query-parameters">' \
+                 '<tbody><tr><td>hello</td><td>String</td></tr>' \
+                 '<tr><td>bye</td><td>String</td></tr>' \
+                 '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+                 '<tr><td>boolean</td><td>Boolean</td></tr>' \
+                 '</tbody></h3></body></html>'
+
+        html_2 = '<html><body>' \
+                 '<h2 id="test_api_name_bcd" >hello</h2>' \
+                 '<html><body><h2><p>hello</p></h2></body></html>' \
+                 '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+                 '<h3 id="method"><code>hello</code></h3>' \
+                 '<h3 id="query-parameters">' \
+                 '<tbody><tr><td>hello</td><td>String</td></tr>' \
+                 '<tr><td>bye</td><td>String</td></tr>' \
+                 '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+                 '<tr><td>boolean</td><td>Boolean</td></tr>' \
+                 '</tbody></h3></body></html>'
+
+        api_1 = api_generator.APIGenerator(get_bs(html_1))
+        api_2 = api_generator.APIGenerator(get_bs(html_2))
+        self.assertTrue(api_1 < api_2)
