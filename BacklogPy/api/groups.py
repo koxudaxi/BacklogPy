@@ -14,21 +14,9 @@ class Groups(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Groups, self).__init__(space_id, api_key)
 
-    def delete_group(self, group_id):
-        """
-        Deletes group. You can’t use this API at
-
-        :param int group_id: Group ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/groups/{}'.format(group_id), method='DELETE')
-
     def add_group_raw(self, form_parameters):
         """
-        Adds new group. You can’t use this API at
+        Adds new group.
 
         :param dict form_parameters: form_parameters
 
@@ -41,7 +29,7 @@ class Groups(BacklogBase):
 
     def add_group(self, members=None):
         """
-        Adds new group. You can’t use this API at
+        Adds new group.
 
         :param list[int] or int members: User ID added to the group
 
@@ -55,6 +43,18 @@ class Groups(BacklogBase):
 
         return self._request('/groups', method='POST',
                              form_parameters=form_parameters)
+
+    def delete_group(self, group_id):
+        """
+        Deletes group.
+
+        :param int group_id: Group ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/groups/{}'.format(group_id), method='DELETE')
 
     def get_group(self, group_id):
         """
@@ -81,22 +81,22 @@ class Groups(BacklogBase):
         return self._request('/groups', method='GET',
                              query_parameters=query_parameters)
 
-    def get_list_of_groups(self, order=None, offset=None, count=None):
+    def get_list_of_groups(self, count=None, offset=None, order=None):
         """
         Returns list of groups.
 
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
         :param int count: number of records to retrieve(1-100) default=20
+        :param int offset: offset
+        :param str order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'order': order,
+            'count': count,
             'offset': offset,
-            'count': count
+            'order': order
         }
 
         return self._request('/groups', method='GET',
@@ -104,7 +104,7 @@ class Groups(BacklogBase):
 
     def update_group_raw(self, group_id, form_parameters):
         """
-        Updates information about group. You can’t use this API at
+        Updates information about group.
 
         :param int group_id: Group ID
         :param dict form_parameters: form_parameters
@@ -116,21 +116,21 @@ class Groups(BacklogBase):
         return self._request('/groups/{}'.format(group_id),
                              method='PATCH', form_parameters=form_parameters)
 
-    def update_group(self, group_id, name=None, members=None):
+    def update_group(self, group_id, members=None, name=None):
         """
-        Updates information about group. You can’t use this API at
+        Updates information about group.
 
         :param int group_id: Group ID
-        :param str name: Group Name
         :param list[int] or int members: User ID added to the group
+        :param str name: Group Name
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'name': name,
-            'members[]': members
+            'members[]': members,
+            'name': name
         }
 
         return self._request('/groups/{}'.format(group_id),
