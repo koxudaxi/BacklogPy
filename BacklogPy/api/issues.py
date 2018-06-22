@@ -51,19 +51,41 @@ class Issues(BacklogBase):
         return self._request('/issues/{}/comments'.format(issue_id_or_key),
                              method='POST', form_parameters=form_parameters)
 
-    def add_comment_notification(self, comment_id, issue_id_or_key):
+    def add_comment_notification_raw(
+            self, comment_id, issue_id_or_key, form_parameters):
         """
         Adds notifications to the comment. Only the user who added the comment can add notifications.
 
         :param int comment_id: Comment ID
         :param str issue_id_or_key: Issue ID or Issue Key
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request(
-            '/issues/{}/comments/{}/notifications'.format(comment_id, issue_id_or_key), method='POST')
+        return self._request('/issues/{}/comments/{}/notifications'.format(
+            comment_id, issue_id_or_key), method='POST', form_parameters=form_parameters)
+
+    def add_comment_notification(
+            self, comment_id, issue_id_or_key, notified_user_id=None):
+        """
+        Adds notifications to the comment. Only the user who added the comment can add notifications.
+
+        :param int comment_id: Comment ID
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param list[int] or int notified_user_id: UserID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'notifiedUserId[]': notified_user_id
+        }
+
+        return self._request('/issues/{}/comments/{}/notifications'.format(
+            comment_id, issue_id_or_key), method='POST', form_parameters=form_parameters)
 
     def add_issue_raw(self, form_parameters):
         """
@@ -78,8 +100,8 @@ class Issues(BacklogBase):
         return self._request('/issues', method='POST',
                              form_parameters=form_parameters)
 
-    def add_issue(self, issue_type_id, priority_id, summary, actual_hours=None, assignee_id=None, attachment_id=None, category_id=None, description=None,
-                  due_date=None, estimated_hours=None, milestone_id=None, notified_user_id=None, parent_issue_id=None, start_date=None, version_id=None):
+    def add_issue(self, issue_type_id, priority_id, project_id, summary, actual_hours=None, assignee_id=None, attachment_id=None, category_id=None,
+                  description=None, due_date=None, estimated_hours=None, milestone_id=None, notified_user_id=None, parent_issue_id=None, start_date=None, version_id=None):
         """
         Adds new issue.
 
@@ -95,6 +117,7 @@ class Issues(BacklogBase):
         :param list[int] or int notified_user_id: Notified User ID
         :param int parent_issue_id: Parent Issue ID
         :param int priority_id: Priority ID
+        :param int project_id: Project ID
         :param str start_date: Start Date
         :param str summary: Summary
         :param list[int] or int version_id: Version ID
@@ -116,6 +139,7 @@ class Issues(BacklogBase):
             'notifiedUserId[]': notified_user_id,
             'parentIssueId': parent_issue_id,
             'priorityId': priority_id,
+            'projectId': project_id,
             'startDate': start_date,
             'summary': summary,
             'versionId[]': version_id
@@ -500,19 +524,39 @@ class Issues(BacklogBase):
         return self._request(
             '/issues/{}/sharedFiles/{}'.format(_id, issue_id_or_key), method='DELETE')
 
-    def update_comment(self, comment_id, issue_id_or_key):
+    def update_comment_raw(self, comment_id, issue_id_or_key, form_parameters):
         """
         Updates content of comment.
 
         :param int comment_id: Comment ID
         :param str issue_id_or_key: Issue ID or Issue Key
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request(
-            '/issues/{}/comments/{}'.format(comment_id, issue_id_or_key), method='PATCH')
+        return self._request('/issues/{}/comments/{}'.format(comment_id,
+                                                             issue_id_or_key), method='PATCH', form_parameters=form_parameters)
+
+    def update_comment(self, comment_id, issue_id_or_key, content=None):
+        """
+        Updates content of comment.
+
+        :param int comment_id: Comment ID
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param str content: content
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'content': content
+        }
+
+        return self._request('/issues/{}/comments/{}'.format(comment_id,
+                                                             issue_id_or_key), method='PATCH', form_parameters=form_parameters)
 
     def update_issue_raw(self, issue_id_or_key, form_parameters):
         """

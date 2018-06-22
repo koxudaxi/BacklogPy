@@ -381,16 +381,29 @@ class APIGenerator:
 
     def _get_parameters(self, html_id: str,
                         force_required: bool = False) -> Parameters:
-        for parameters in self.bs.find_all('h3', id=html_id):
-            for element in parameters.next_elements:
-                if element.name == 'tbody':
+        parameters: Parameters = []
+
+        for h3 in self.bs.find_all('h3', id=html_id):
+            for element in h3.next_elements:
+                if element.name == 'thead':
+                    th = element.find('th')
+                    if len(th.contents[0]) and th.contents[
+                        0] != 'Parameter Name':
+                        parameters = [Parameter(*[th.contents[0]
+                                                  for th in
+                                                  element.find_all('th')
+                                                  if th.contents],
+                                                force_required=force_required)]
+                elif element.name == 'tbody':
                     tbody: Tag = element
                     lines = tbody.find_all('tr')
-                    return sorted(Parameter(*[td.contents[0]
-                                              for td in line.find_all('td')
-                                              if td.contents],
-                                            force_required=force_required)
-                                  for line in lines)
+                    return sorted(parameters +
+                                  [Parameter(*[td.contents[0]
+                                               for td in
+                                               line.find_all('td')
+                                               if td.contents],
+                                             force_required=force_required)
+                                   for line in lines])
         return []
 
     @property

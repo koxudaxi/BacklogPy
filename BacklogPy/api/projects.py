@@ -101,19 +101,21 @@ class Projects(BacklogBase):
         return self._request('/projects/{}/issueTypes'.format(project_id_or_key),
                              method='POST', form_parameters=form_parameters)
 
-    def add_issue_type(self, project_id_or_key, color):
+    def add_issue_type(self, project_id_or_key, color, name):
         """
         Adds new Issue Type to the project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str color: Background color
+        :param str name: Issue Type name
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'color': color
+            'color': color,
+            'name': name
         }
 
         return self._request('/projects/{}/issueTypes'.format(project_id_or_key),
@@ -168,13 +170,14 @@ class Projects(BacklogBase):
         return self._request('/projects', method='POST',
                              form_parameters=form_parameters)
 
-    def add_project(self, chart_enabled, key, subtasking_enabled,
+    def add_project(self, chart_enabled, key, name, subtasking_enabled,
                     text_formatting_rule, project_leader_can_edit_project_leader=None):
         """
         Adds new project.
 
         :param bool chart_enabled: Enable chart
         :param str key: Project Key
+        :param str name: Project Name
         :param bool project_leader_can_edit_project_leader: Allow project administrators to manage each other
         :param bool subtasking_enabled: Enable subtasking
         :param str text_formatting_rule: Formatting rules “backlog” or “markdown”
@@ -186,6 +189,7 @@ class Projects(BacklogBase):
         form_parameters = {
             'chartEnabled': self._bool_to_str(chart_enabled),
             'key': key,
+            'name': name,
             'projectLeaderCanEditProjectLeader': self._bool_to_str(project_leader_can_edit_project_leader),
             'subtaskingEnabled': self._bool_to_str(subtasking_enabled),
             'textFormattingRule': text_formatting_rule
@@ -1087,7 +1091,7 @@ class Projects(BacklogBase):
         return self._request('/projects/{}/customFields/{}'.format(
             _id, project_id_or_key), method='PATCH', form_parameters=form_parameters)
 
-    def update_custom_field(self, _id, project_id_or_key,
+    def update_custom_field(self, _id, project_id_or_key, name,
                             applicable_issue_types=None, description=None, required=None):
         """
         Updates Custom Field.
@@ -1096,6 +1100,7 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param list[int] or int applicable_issue_types: Type ID to enable Custom fields
         :param str description: Description
+        :param str name: Name
         :param bool required: True to make the Custom field required
 
         :return:  requests Response object
@@ -1105,6 +1110,7 @@ class Projects(BacklogBase):
         form_parameters = {
             'applicableIssueTypes[]': applicable_issue_types,
             'description': description,
+            'name': name,
             'required': self._bool_to_str(required)
         }
 

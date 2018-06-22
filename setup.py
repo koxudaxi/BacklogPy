@@ -6,7 +6,7 @@ from setuptools import setup
 
 packages = ['BacklogPy', 'BacklogPy.api']
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 requires = [
     'requests'

@@ -112,17 +112,37 @@ class Wikis(BacklogBase):
         return self._request('/wikis/count', method='GET',
                              query_parameters=query_parameters)
 
-    def delete_wiki_page(self, wiki_id):
+    def delete_wiki_page_raw(self, wiki_id, form_parameters):
         """
         Deletes Wiki page.
 
         :param int wiki_id: Wiki page ID
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/{}'.format(wiki_id), method='DELETE')
+        return self._request('/wikis/{}'.format(wiki_id),
+                             method='DELETE', form_parameters=form_parameters)
+
+    def delete_wiki_page(self, wiki_id, mail_notify=None):
+        """
+        Deletes Wiki page.
+
+        :param int wiki_id: Wiki page ID
+        :param bool mail_notify: True make to notify by Email
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'mailNotify': self._bool_to_str(mail_notify)
+        }
+
+        return self._request('/wikis/{}'.format(wiki_id),
+                             method='DELETE', form_parameters=form_parameters)
 
     def get_list_of_shared_files_on_wiki(self, wiki_id):
         """
@@ -287,18 +307,37 @@ class Wikis(BacklogBase):
         return self._request('/wikis/tags', method='GET',
                              query_parameters=query_parameters)
 
-    def link_shared_files_to_wiki(self, wiki_id):
+    def link_shared_files_to_wiki_raw(self, wiki_id, form_parameters):
         """
         Links Shared Files to Wiki.
 
         :param int wiki_id: Wiki page’s ID
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request(
-            '/wikis/{}/sharedFiles'.format(wiki_id), method='POST')
+        return self._request('/wikis/{}/sharedFiles'.format(wiki_id),
+                             method='POST', form_parameters=form_parameters)
+
+    def link_shared_files_to_wiki(self, wiki_id, file_id):
+        """
+        Links Shared Files to Wiki.
+
+        :param int wiki_id: Wiki page’s ID
+        :param list[int] or int file_id: Shared File Id
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'fileId[]': file_id
+        }
+
+        return self._request('/wikis/{}/sharedFiles'.format(wiki_id),
+                             method='POST', form_parameters=form_parameters)
 
     def remove_link_to_shared_file_from_wiki(self, _id, wiki_id):
         """

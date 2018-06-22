@@ -819,6 +819,70 @@ class Hello(BacklogBase):
         self.assertEqual(api.create_api_method(strict=True),
                          expect_api_method)
 
+    def test_create_api_method_with_broken_header(self):
+        html = '<html><body>' \
+               '<h2 id="test_api_name" >hello</h2>' \
+               '<html><body><h2><p>hello</p></h2></body></html>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '<h3 id="query-parameters">' \
+               '<thead><tr><th>header_hello</th><th>String</th><th>header description</th><tr></thead>' \
+               '<tbody><tr><td>hello</td><td>String</td></tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+               '<tr><td>boolean</td><td>Boolean</td></tr>' \
+               '</tbody></h3></body></html>'
+
+        expect_api_method = '''
+    def test_api_name_raw(self, query_parameters):
+        """
+        hello
+        
+        :param dict query_parameters: query_parameters
+        
+        :return:  requests Response object 
+        :rtype: requests.Response
+        """
+        
+        
+        
+        return self._request('/hello', method='hello', query_parameters=query_parameters)
+'''
+
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api.create_api_method(),
+                         expect_api_method)
+
+        expect_api_method = '''
+    def test_api_name(self, header_hello=None, boolean=None, bye=None, hello=None, num=None):
+        """
+        hello
+        
+        :param str header_hello: header description
+        :param bool boolean: boolean
+        :param str bye: bye
+        :param str hello: hello
+        :param int num: description
+        
+        :return:  requests Response object 
+        :rtype: requests.Response
+        """
+        
+        query_parameters = {
+        'header_hello': header_hello,
+            'boolean': self._bool_to_str(boolean),
+            'bye': bye,
+            'hello': hello,
+            'num': num
+        }
+        
+        return self._request('/hello', method='hello', query_parameters=query_parameters)
+'''
+
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api.create_api_method(strict=True),
+                         expect_api_method)
+
     def test___lt__(self):
         html_1 = '<html><body>' \
                  '<h2 id="test_api_name_abc" >hello</h2>' \

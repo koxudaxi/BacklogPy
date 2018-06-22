@@ -27,18 +27,20 @@ class Groups(BacklogBase):
         return self._request('/groups', method='POST',
                              form_parameters=form_parameters)
 
-    def add_group(self, members=None):
+    def add_group(self, name, members=None):
         """
         Adds new group.
 
         :param list[int] or int members: User ID added to the group
+        :param str name: Group Name
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'members[]': members
+            'members[]': members,
+            'name': name
         }
 
         return self._request('/groups', method='POST',
