@@ -14,21 +14,9 @@ class Groups(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Groups, self).__init__(space_id, api_key)
 
-    def delete_group(self, group_id):
-        """
-        Deletes group. You can’t use this API at
-
-        :param int group_id: Group ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/groups/{}'.format(group_id), method='DELETE')
-
     def add_group_raw(self, form_parameters):
         """
-        Adds new group. You can’t use this API at
+        Adds new group.
 
         :param dict form_parameters: form_parameters
 
@@ -39,10 +27,11 @@ class Groups(BacklogBase):
         return self._request('/groups', method='POST',
                              form_parameters=form_parameters)
 
-    def add_group(self, members=None):
+    def add_group(self, name, members=None):
         """
-        Adds new group. You can’t use this API at
+        Adds new group.
 
+        :param str name: Group Name
         :param list[int] or int members: User ID added to the group
 
         :return:  requests Response object
@@ -50,11 +39,24 @@ class Groups(BacklogBase):
         """
 
         form_parameters = {
+            'name': name,
             'members[]': members
         }
 
         return self._request('/groups', method='POST',
                              form_parameters=form_parameters)
+
+    def delete_group(self, group_id):
+        """
+        Deletes group.
+
+        :param int group_id: Group ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/groups/{}'.format(group_id), method='DELETE')
 
     def get_group(self, group_id):
         """
@@ -104,7 +106,7 @@ class Groups(BacklogBase):
 
     def update_group_raw(self, group_id, form_parameters):
         """
-        Updates information about group. You can’t use this API at
+        Updates information about group.
 
         :param int group_id: Group ID
         :param dict form_parameters: form_parameters
@@ -118,7 +120,7 @@ class Groups(BacklogBase):
 
     def update_group(self, group_id, name=None, members=None):
         """
-        Updates information about group. You can’t use this API at
+        Updates information about group.
 
         :param int group_id: Group ID
         :param str name: Group Name

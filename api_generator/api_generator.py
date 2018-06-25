@@ -7,13 +7,13 @@ import os
 import re
 import time
 from enum import Enum
-from logging import getLogger, INFO
+from logging import INFO, getLogger
+from typing import Any, Dict, Generator, List, Optional, Type, Union
 
 import requests
-from autopep8 import parse_args, fix_code
+from autopep8 import fix_code, parse_args
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from typing import List, Generator, Dict, Any, Optional, Type, Union
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
@@ -167,6 +167,9 @@ class Parameter:
     def doc(self) -> str:
         return f':param {self.type.doc} {self.name}: {self.description}'
 
+    def __lt__(self, other: 'Parameter') -> bool:
+        return self.name < other.name
+
 
 Parameters = List[Parameter]
 
@@ -242,21 +245,15 @@ def _create_api_from_bs_generator(
     api_path = f'{output_dir}/api'
 
     stock: Dict[str, Any] = {}
-    for bs in bs_generator:
-        try:
-            api = APIGenerator(bs)
-            if api.space_name not in stock:
-                stock[api.space_name] = {}
-                stock[api.space_name]['class'] = api.create_api_class()
-                stock[api.space_name]['method'] = []
-            stock[api.space_name]['method'].append(api.create_api_method())
-            if api.has_strict_method:
-                stock[api.space_name]['method'].append(
-                    api.create_api_method(strict=True))
-
-        except Exception as e:
-            logger.error(str(e))
-            raise e
+    for api in sorted(APIGenerator(bs) for bs in bs_generator):
+        if api.space_name not in stock:
+            stock[api.space_name] = {}
+            stock[api.space_name]['class'] = api.create_api_class()
+            stock[api.space_name]['method'] = []
+        stock[api.space_name]['method'].append(api.create_api_method())
+        if api.has_strict_method:
+            stock[api.space_name]['method'].append(
+                api.create_api_method(strict=True))
 
     _create_dir(api_path)
 
@@ -264,10 +261,12 @@ def _create_api_from_bs_generator(
         method_code = api_dict['class'] + ''.join(api_dict['method'])
         _write_code(method_code, api_path, f'{space}.py')
 
-    init_py = _create_init_py(list(stock.keys()))
+    sorted_stock_keys: List[str] = sorted(stock.keys())
+
+    init_py = _create_init_py(sorted_stock_keys)
     _write_code(init_py, api_path, '__init__.py')
 
-    backlog_py = _create_backlog_py(list(stock.keys()))
+    backlog_py = _create_backlog_py(sorted_stock_keys)
     _write_code(backlog_py, output_dir, 'backlog.py')
 
 
@@ -307,6 +306,9 @@ class APIGenerator:
         self._space_name = ''
         self._api_name = ''
         self._api_description = ''
+
+    def __lt__(self, other: 'APIGenerator') -> bool:
+        return self.api_name < other.api_name
 
     @property
     def has_strict_method(self) -> bool:
@@ -379,16 +381,30 @@ class APIGenerator:
 
     def _get_parameters(self, html_id: str,
                         force_required: bool = False) -> Parameters:
-        for parameters in self.bs.find_all('h3', id=html_id):
-            for element in parameters.next_elements:
-                if element.name == 'tbody':
+        parameters: Parameters = []
+
+        for h3 in self.bs.find_all('h3', id=html_id):
+            for element in h3.next_elements:
+                if element.name == 'thead':
+                    th = element.find('th')
+                    if len(th.contents[0]) and th.contents[
+                        0] != 'Parameter Name':
+                        parameters = [Parameter(*[th.contents[0]
+                                                  for th in
+                                                  element.find_all('th')
+                                                  if th.contents],
+                                                force_required=force_required)]
+                elif element.name == 'tbody':
                     tbody: Tag = element
                     lines = tbody.find_all('tr')
-                    return [Parameter(*[td.contents[0]
-                                        for td in line.find_all('td') if
-                                        td.contents],
+                    return parameters + \
+                           [Parameter(*[td.contents[0]
+                                        for td in
+                                        line.find_all('td')
+                                        if td.contents],
                                       force_required=force_required)
                             for line in lines]
+
         return []
 
     @property
@@ -487,7 +503,7 @@ class APIGenerator:
                               'form_parameters').doc)
 
         if args_doc:
-            return self.newline_and_indent +\
+            return self.newline_and_indent + \
                    self.newline_and_indent.join(args_doc) \
                    + self.newline_and_indent
         else:
