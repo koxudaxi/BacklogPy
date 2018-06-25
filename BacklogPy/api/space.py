@@ -28,14 +28,14 @@ class Space(BacklogBase):
                              query_parameters=query_parameters)
 
     def get_recent_updates(self, activity_type_id=None,
-                           count=None, max_id=None, min_id=None, order=None):
+                           min_id=None, max_id=None, count=None, order=None):
         """
         Returns recent updates in your space.
 
         :param list[int] or int activity_type_id: type(1-17)
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int max_id: maximum ID
         :param int min_id: minimum ID
+        :param int max_id: maximum ID
+        :param int count: number of records to retrieve(1-100) default=20
         :param str order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
@@ -44,9 +44,9 @@ class Space(BacklogBase):
 
         query_parameters = {
             'activityTypeId[]': activity_type_id,
-            'count': count,
-            'maxId': max_id,
             'minId': min_id,
+            'maxId': max_id,
+            'count': count,
             'order': order
         }
 

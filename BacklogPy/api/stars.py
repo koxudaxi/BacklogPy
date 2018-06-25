@@ -27,27 +27,27 @@ class Stars(BacklogBase):
         return self._request('/stars', method='POST',
                              form_parameters=form_parameters)
 
-    def add_star(self, comment_id=None, issue_id=None,
-                 pull_request_comment_id=None, pull_request_id=None, wiki_id=None):
+    def add_star(self, issue_id=None, comment_id=None, wiki_id=None,
+                 pull_request_id=None, pull_request_comment_id=None):
         """
         Adds star.
 
-        :param int comment_id: Comment ID
         :param int issue_id: Issue ID
-        :param int pull_request_comment_id: Pull request comment ID
-        :param int pull_request_id: Pull request ID
+        :param int comment_id: Comment ID
         :param int wiki_id: Wiki Page ID
+        :param int pull_request_id: Pull request ID
+        :param int pull_request_comment_id: Pull request comment ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'commentId': comment_id,
             'issueId': issue_id,
-            'pullRequestCommentId': pull_request_comment_id,
+            'commentId': comment_id,
+            'wikiId': wiki_id,
             'pullRequestId': pull_request_id,
-            'wikiId': wiki_id
+            'pullRequestCommentId': pull_request_comment_id
         }
 
         return self._request('/stars', method='POST',

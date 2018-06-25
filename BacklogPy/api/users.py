@@ -27,26 +27,26 @@ class Users(BacklogBase):
         return self._request('/users', method='POST',
                              form_parameters=form_parameters)
 
-    def add_user(self, mail_address, name, password, role_type, user_id):
+    def add_user(self, user_id, password, name, mail_address, role_type):
         """
         Adds new user to the space. “Project Administrator” cannot add “Admin” user.
 
-        :param str mail_address: Email address
-        :param str name: nickname
-        :param str password: password
-        :param int role_type: Administrator(1) Normal User(2) Reporter(3) Viewer(4) Guest Reporter(5) Guest Viewer(6)
         :param str user_id: user ID
+        :param str password: password
+        :param str name: nickname
+        :param str mail_address: Email address
+        :param int role_type: Administrator(1) Normal User(2) Reporter(3) Viewer(4) Guest Reporter(5) Guest Viewer(6)
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'mailAddress': mail_address,
-            'name': name,
+            'userId': user_id,
             'password': password,
-            'roleType': role_type,
-            'userId': user_id
+            'name': name,
+            'mailAddress': mail_address,
+            'roleType': role_type
         }
 
         return self._request('/users', method='POST',
@@ -98,22 +98,22 @@ class Users(BacklogBase):
         return self._request('/users/{}/watchings/count'.format(user_id),
                              method='GET', query_parameters=query_parameters)
 
-    def count_watching(self, user_id, already_read=None,
-                       resource_already_read=None):
+    def count_watching(
+            self, user_id, resource_already_read=None, already_read=None):
         """
         Returns the number of your watching issues.
 
         :param int user_id: User ID
-        :param bool already_read: This parameter is optional. Set this parameter to false to get unread watching count since the last time checked by user and true for already read watching count. When both alreadyRead and resourceAlreadyRead parameters set, resourceAlreadyRead will be ignored.
         :param bool resource_already_read: This parameter is optional. Set to false for unread watching count and true for already read watching count.
+        :param bool already_read: This parameter is optional. Set this parameter to false to get unread watching count since the last time checked by user and true for already read watching count. When both alreadyRead and resourceAlreadyRead parameters set, resourceAlreadyRead will be ignored.
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'alreadyRead': self._bool_to_str(already_read),
-            'resourceAlreadyRead': self._bool_to_str(resource_already_read)
+            'resourceAlreadyRead': self._bool_to_str(resource_already_read),
+            'alreadyRead': self._bool_to_str(already_read)
         }
 
         return self._request('/users/{}/watchings/count'.format(user_id),
@@ -145,22 +145,22 @@ class Users(BacklogBase):
                              method='GET', query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_issues(
-            self, count=None, offset=None, order=None):
+            self, order=None, offset=None, count=None):
         """
         Returns list of issues which the user viewed recently.
 
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int offset: offset
         :param str order: “asc” or “desc” default=“desc”
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'count': count,
+            'order': order,
             'offset': offset,
-            'order': order
+            'count': count
         }
 
         return self._request('/users/myself/recentlyViewedIssues',
@@ -180,22 +180,22 @@ class Users(BacklogBase):
                              method='GET', query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_projects(
-            self, count=None, offset=None, order=None):
+            self, order=None, offset=None, count=None):
         """
         Returns list of projects which the user viewed recently.
 
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int offset: offset
         :param str order: “asc” or “desc” default=“desc”
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'count': count,
+            'order': order,
             'offset': offset,
-            'order': order
+            'count': count
         }
 
         return self._request('/users/myself/recentlyViewedProjects',
@@ -215,22 +215,22 @@ class Users(BacklogBase):
                              method='GET', query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_wikis(
-            self, count=None, offset=None, order=None):
+            self, order=None, offset=None, count=None):
         """
         Returns list of Wikis which the user viewed recently.
 
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int offset: offset
         :param str order: “asc” or “desc” default=“desc”
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'count': count,
+            'order': order,
             'offset': offset,
-            'order': order
+            'count': count
         }
 
         return self._request('/users/myself/recentlyViewedWikis',
@@ -261,14 +261,14 @@ class Users(BacklogBase):
                              method='GET', query_parameters=query_parameters)
 
     def get_received_star_list(
-            self, user_id, count=None, max_id=None, min_id=None, order=None):
+            self, user_id, min_id=None, max_id=None, count=None, order=None):
         """
         Returns the list of stars that user received.
 
         :param int user_id: user ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int max_id: maximum ID
         :param int min_id: minimum ID
+        :param int max_id: maximum ID
+        :param int count: number of records to retrieve(1-100) default=20
         :param str order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
@@ -276,9 +276,9 @@ class Users(BacklogBase):
         """
 
         query_parameters = {
-            'count': count,
-            'maxId': max_id,
             'minId': min_id,
+            'maxId': max_id,
+            'count': count,
             'order': order
         }
 
@@ -334,15 +334,15 @@ class Users(BacklogBase):
                              method='GET', query_parameters=query_parameters)
 
     def get_user_recent_updates(
-            self, user_id, activity_type_id=None, count=None, max_id=None, min_id=None, order=None):
+            self, user_id, activity_type_id=None, min_id=None, max_id=None, count=None, order=None):
         """
         Returns user’s recent updates
 
         :param int user_id: user ID
         :param list[int] or int activity_type_id: type(1-17)
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int max_id: maximum ID
         :param int min_id: minimum ID
+        :param int max_id: maximum ID
+        :param int count: number of records to retrieve(1-100) default=20
         :param str order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
@@ -351,9 +351,9 @@ class Users(BacklogBase):
 
         query_parameters = {
             'activityTypeId[]': activity_type_id,
-            'count': count,
-            'maxId': max_id,
             'minId': min_id,
+            'maxId': max_id,
+            'count': count,
             'order': order
         }
 
@@ -374,30 +374,30 @@ class Users(BacklogBase):
         return self._request('/users/{}/watchings'.format(user_id),
                              method='GET', query_parameters=query_parameters)
 
-    def get_watching_list(self, user_id, count=None, issue_id=None,
-                          offset=None, order=None, resource_already_read=None, sort=None):
+    def get_watching_list(self, user_id, order=None, sort=None, count=None,
+                          offset=None, resource_already_read=None, issue_id=None):
         """
         Returns list of your watching issues.
 
         :param int user_id: User ID
-        :param int count: Number of records to retrieve(1-100) default=20
-        :param list[int] or int issue_id: Issue ID
-        :param int offset: Where to start returning records from the entire results. default=0
         :param str order: Order of the sort “asc” or “desc” default=“desc”
-        :param bool resource_already_read: Whether the issues already read are retrieved or not. The all watching issues are returned if this parameter is omitted. The read watching issues are returned if true. The unread watching issues are returned if false. default=null
         :param str sort: What to sort results by. The value “created”, “updated” or “issueUpdated” are allowed. default=“issueUpdated”
+        :param int count: Number of records to retrieve(1-100) default=20
+        :param int offset: Where to start returning records from the entire results. default=0
+        :param bool resource_already_read: Whether the issues already read are retrieved or not. The all watching issues are returned if this parameter is omitted. The read watching issues are returned if true. The unread watching issues are returned if false. default=null
+        :param list[int] or int issue_id: Issue ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'count': count,
-            'issueId[]': issue_id,
-            'offset': offset,
             'order': order,
+            'sort': sort,
+            'count': count,
+            'offset': offset,
             'resourceAlreadyRead': self._bool_to_str(resource_already_read),
-            'sort': sort
+            'issueId[]': issue_id
         }
 
         return self._request('/users/{}/watchings'.format(user_id),
@@ -417,15 +417,15 @@ class Users(BacklogBase):
         return self._request('/users/{}'.format(user_id),
                              method='PATCH', form_parameters=form_parameters)
 
-    def update_user(self, user_id, mail_address=None,
-                    name=None, password=None, role_type=None):
+    def update_user(self, user_id, password=None, name=None,
+                    mail_address=None, role_type=None):
         """
         Updates information about user.
 
         :param int user_id: user ID
-        :param str mail_address: Email address
-        :param str name: nickname
         :param str password: password
+        :param str name: nickname
+        :param str mail_address: Email address
         :param int role_type: Administrator(1) Normal User(2) Reporter(3) Viewer(4) Guest Reporter(5) Guest Viewer(6)
 
         :return:  requests Response object
@@ -433,9 +433,9 @@ class Users(BacklogBase):
         """
 
         form_parameters = {
-            'mailAddress': mail_address,
-            'name': name,
             'password': password,
+            'name': name,
+            'mailAddress': mail_address,
             'roleType': role_type
         }
 

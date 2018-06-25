@@ -31,16 +31,16 @@ class Groups(BacklogBase):
         """
         Adds new group.
 
-        :param list[int] or int members: User ID added to the group
         :param str name: Group Name
+        :param list[int] or int members: User ID added to the group
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'members[]': members,
-            'name': name
+            'name': name,
+            'members[]': members
         }
 
         return self._request('/groups', method='POST',
@@ -83,22 +83,22 @@ class Groups(BacklogBase):
         return self._request('/groups', method='GET',
                              query_parameters=query_parameters)
 
-    def get_list_of_groups(self, count=None, offset=None, order=None):
+    def get_list_of_groups(self, order=None, offset=None, count=None):
         """
         Returns list of groups.
 
-        :param int count: number of records to retrieve(1-100) default=20
-        :param int offset: offset
         :param str order: “asc” or “desc” default=“desc”
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'count': count,
+            'order': order,
             'offset': offset,
-            'order': order
+            'count': count
         }
 
         return self._request('/groups', method='GET',
@@ -118,21 +118,21 @@ class Groups(BacklogBase):
         return self._request('/groups/{}'.format(group_id),
                              method='PATCH', form_parameters=form_parameters)
 
-    def update_group(self, group_id, members=None, name=None):
+    def update_group(self, group_id, name=None, members=None):
         """
         Updates information about group.
 
         :param int group_id: Group ID
-        :param list[int] or int members: User ID added to the group
         :param str name: Group Name
+        :param list[int] or int members: User ID added to the group
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'members[]': members,
-            'name': name
+            'name': name,
+            'members[]': members
         }
 
         return self._request('/groups/{}'.format(group_id),

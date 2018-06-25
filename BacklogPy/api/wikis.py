@@ -27,24 +27,24 @@ class Wikis(BacklogBase):
         return self._request('/wikis', method='POST',
                              form_parameters=form_parameters)
 
-    def add_wiki_page(self, content, name, project_id, mail_notify=None):
+    def add_wiki_page(self, project_id, name, content, mail_notify=None):
         """
         Adds new Wiki page.
 
+        :param int project_id: Project ID
+        :param str name: Page Name
         :param str content: Content
         :param bool mail_notify: True make to notify by Email
-        :param str name: Page Name
-        :param int project_id: Project ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
-            'content': content,
-            'mailNotify': self._bool_to_str(mail_notify),
+            'projectId': project_id,
             'name': name,
-            'projectId': project_id
+            'content': content,
+            'mailNotify': self._bool_to_str(mail_notify)
         }
 
         return self._request('/wikis', method='POST',
@@ -182,19 +182,19 @@ class Wikis(BacklogBase):
 
         return self._request('/wikis/{}'.format(wiki_id), method='GET')
 
-    def get_wiki_page_attachment(self, attachment_id, wiki_id):
+    def get_wiki_page_attachment(self, wiki_id, attachment_id):
         """
         Downloads Wiki page’s attachment file.
 
-        :param int attachment_id: Attachment file ID
         :param int wiki_id: Wiki Page ID
+        :param int attachment_id: Attachment file ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         return self._request(
-            '/wikis/{}/attachments/{}'.format(attachment_id, wiki_id), method='GET')
+            '/wikis/{}/attachments/{}'.format(wiki_id, attachment_id), method='GET')
 
     def get_wiki_page_history_raw(self, wiki_id, query_parameters):
         """
@@ -211,14 +211,14 @@ class Wikis(BacklogBase):
                              method='GET', query_parameters=query_parameters)
 
     def get_wiki_page_history(
-            self, wiki_id, count=None, max_id=None, min_id=None, order=None):
+            self, wiki_id, min_id=None, max_id=None, count=None, order=None):
         """
         Returns history of Wiki page.
 
         :param int wiki_id: Wiki Page ID
-        :param int count: number of records to retrieve(1-10) default=20
-        :param int max_id: maximum ID
         :param int min_id: minimum ID
+        :param int max_id: maximum ID
+        :param int count: number of records to retrieve(1-10) default=20
         :param str order: “asc” or “desc”
 
         :return:  requests Response object
@@ -226,9 +226,9 @@ class Wikis(BacklogBase):
         """
 
         query_parameters = {
-            'count': count,
-            'maxId': max_id,
             'minId': min_id,
+            'maxId': max_id,
+            'count': count,
             'order': order
         }
 
@@ -339,33 +339,33 @@ class Wikis(BacklogBase):
         return self._request('/wikis/{}/sharedFiles'.format(wiki_id),
                              method='POST', form_parameters=form_parameters)
 
-    def remove_link_to_shared_file_from_wiki(self, _id, wiki_id):
+    def remove_link_to_shared_file_from_wiki(self, wiki_id, _id):
         """
         Removes link to shared file from Wiki.
 
-        :param int _id: Shared file ID
         :param int wiki_id: Wiki page’s ID
+        :param int _id: Shared file ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         return self._request(
-            '/wikis/{}/sharedFiles/{}'.format(_id, wiki_id), method='DELETE')
+            '/wikis/{}/sharedFiles/{}'.format(wiki_id, _id), method='DELETE')
 
-    def remove_wiki_attachment(self, attachment_id, wiki_id):
+    def remove_wiki_attachment(self, wiki_id, attachment_id):
         """
         Removes files attached to Wiki.
 
-        :param int attachment_id: Attachment’s ID
         :param int wiki_id: Wiki page’s ID
+        :param int attachment_id: Attachment’s ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         return self._request(
-            '/wikis/{}/attachments/{}'.format(attachment_id, wiki_id), method='DELETE')
+            '/wikis/{}/attachments/{}'.format(wiki_id, attachment_id), method='DELETE')
 
     def update_wiki_page_raw(self, wiki_id, form_parameters):
         """
@@ -381,24 +381,24 @@ class Wikis(BacklogBase):
         return self._request('/wikis/{}'.format(wiki_id),
                              method='PATCH', form_parameters=form_parameters)
 
-    def update_wiki_page(self, wiki_id, content=None,
-                         mail_notify=None, name=None):
+    def update_wiki_page(self, wiki_id, name=None,
+                         content=None, mail_notify=None):
         """
         Updates information about Wiki page.
 
         :param int wiki_id: Wiki page ID
+        :param str name: Page Name
         :param str content: Content
         :param bool mail_notify: True make to notify by Email
-        :param str name: Page Name
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         form_parameters = {
+            'name': name,
             'content': content,
-            'mailNotify': self._bool_to_str(mail_notify),
-            'name': name
+            'mailNotify': self._bool_to_str(mail_notify)
         }
 
         return self._request('/wikis/{}'.format(wiki_id),
