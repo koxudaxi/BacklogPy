@@ -854,15 +854,15 @@ class Hello(BacklogBase):
                          expect_api_method)
 
         expect_api_method = '''
-    def test_api_name(self, header_hello=None, boolean=None, bye=None, hello=None, num=None):
+    def test_api_name(self, header_hello=None, hello=None, bye=None, num=None, boolean=None):
         """
         hello
         
         :param str header_hello: header description
-        :param bool boolean: boolean
-        :param str bye: bye
         :param str hello: hello
+        :param str bye: bye
         :param int num: description
+        :param bool boolean: boolean
         
         :return:  requests Response object 
         :rtype: requests.Response
@@ -870,10 +870,10 @@ class Hello(BacklogBase):
         
         query_parameters = {
         'header_hello': header_hello,
-            'boolean': self._bool_to_str(boolean),
-            'bye': bye,
             'hello': hello,
-            'num': num
+            'bye': bye,
+            'num': num,
+            'boolean': self._bool_to_str(boolean)
         }
         
         return self._request('/hello', method='hello', query_parameters=query_parameters)
