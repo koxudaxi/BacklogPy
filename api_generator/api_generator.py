@@ -397,13 +397,14 @@ class APIGenerator:
                 elif element.name == 'tbody':
                     tbody: Tag = element
                     lines = tbody.find_all('tr')
-                    return sorted(parameters +
-                                  [Parameter(*[td.contents[0]
-                                               for td in
-                                               line.find_all('td')
-                                               if td.contents],
-                                             force_required=force_required)
-                                   for line in lines])
+                    return parameters + \
+                           [Parameter(*[td.contents[0]
+                                        for td in
+                                        line.find_all('td')
+                                        if td.contents],
+                                      force_required=force_required)
+                            for line in lines]
+
         return []
 
     @property
