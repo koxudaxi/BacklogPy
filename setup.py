@@ -6,10 +6,11 @@ from setuptools import setup
 
 packages = ['BacklogPy', 'BacklogPy.api']
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
 requires = [
-    'requests'
+    'requests',
+    'Deprecated'
 ]
 
 test_requirements = ['mock', 'nose']
