@@ -24,8 +24,10 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/wikis',
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_wiki_page(self, project_id, name, content, mail_notify=None):
         """
@@ -47,8 +49,10 @@ class Wikis(BacklogBase):
             'mailNotify': self._bool_to_str(mail_notify)
         }
 
-        return self._request('/wikis', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/wikis',
+            method='POST',
+            form_parameters=form_parameters)
 
     def attach_file_to_wiki_raw(self, wiki_id, form_parameters):
         """
@@ -61,8 +65,10 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/{}/attachments'.format(wiki_id),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}/attachments'.format(wiki_id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def attach_file_to_wiki(self, wiki_id, attachment_id=None):
         """
@@ -79,8 +85,10 @@ class Wikis(BacklogBase):
             'attachmentId[]': attachment_id
         }
 
-        return self._request('/wikis/{}/attachments'.format(wiki_id),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}/attachments'.format(wiki_id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def count_wiki_page_raw(self, query_parameters):
         """
@@ -92,8 +100,10 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/count', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/wikis/count',
+            method='GET',
+            query_parameters=query_parameters)
 
     def count_wiki_page(self, project_id_or_key=None):
         """
@@ -109,8 +119,10 @@ class Wikis(BacklogBase):
             'projectIdOrKey': project_id_or_key
         }
 
-        return self._request('/wikis/count', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/wikis/count',
+            method='GET',
+            query_parameters=query_parameters)
 
     def delete_wiki_page_raw(self, wiki_id, form_parameters):
         """
@@ -123,8 +135,10 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/{}'.format(wiki_id),
-                             method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}'.format(wiki_id),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_wiki_page(self, wiki_id, mail_notify=None):
         """
@@ -141,8 +155,10 @@ class Wikis(BacklogBase):
             'mailNotify': self._bool_to_str(mail_notify)
         }
 
-        return self._request('/wikis/{}'.format(wiki_id),
-                             method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}'.format(wiki_id),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def get_list_of_shared_files_on_wiki(self, wiki_id):
         """
@@ -155,7 +171,8 @@ class Wikis(BacklogBase):
         """
 
         return self._request(
-            '/wikis/{}/sharedFiles'.format(wiki_id), method='GET')
+            '/wikis/{}/sharedFiles'.format(wiki_id),
+            method='GET')
 
     def get_list_of_wiki_attachments(self, wiki_id):
         """
@@ -168,7 +185,8 @@ class Wikis(BacklogBase):
         """
 
         return self._request(
-            '/wikis/{}/attachments'.format(wiki_id), method='GET')
+            '/wikis/{}/attachments'.format(wiki_id),
+            method='GET')
 
     def get_wiki_page(self, wiki_id):
         """
@@ -207,19 +225,26 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/{}/history'.format(wiki_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/wikis/{}/history'.format(wiki_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_wiki_page_history(
-            self, wiki_id, min_id=None, max_id=None, count=None, order=None):
+            self,
+            wiki_id,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
         """
         Returns history of Wiki page.
 
         :param int wiki_id: Wiki Page ID
         :param int min_id: minimum ID
         :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-10) default=20
-        :param str order: “asc” or “desc”
+        :param int count: number of records to retrieve(1-100) default=20
+        :param str order: “asc” or “desc” default=desc
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -232,8 +257,10 @@ class Wikis(BacklogBase):
             'order': order
         }
 
-        return self._request('/wikis/{}/history'.format(wiki_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/wikis/{}/history'.format(wiki_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_wiki_page_list_raw(self, query_parameters):
         """
@@ -245,25 +272,31 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/wikis',
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_wiki_page_list(self, project_id_or_key=None):
+    def get_wiki_page_list(self, project_id_or_key=None, keyword=None):
         """
         Returns list of Wiki pages.
 
         :param int project_id_or_key: Project ID or Project Key
+        :param str keyword: Keyword
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         query_parameters = {
-            'projectIdOrKey': project_id_or_key
+            'projectIdOrKey': project_id_or_key,
+            'keyword': keyword
         }
 
-        return self._request('/wikis', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/wikis',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_wiki_page_star(self, wiki_id):
         """
@@ -287,8 +320,10 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/tags', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/wikis/tags',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_wiki_page_tag_list(self, project_id_or_key=None):
         """
@@ -304,8 +339,10 @@ class Wikis(BacklogBase):
             'projectIdOrKey': project_id_or_key
         }
 
-        return self._request('/wikis/tags', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/wikis/tags',
+            method='GET',
+            query_parameters=query_parameters)
 
     def link_shared_files_to_wiki_raw(self, wiki_id, form_parameters):
         """
@@ -318,8 +355,10 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/{}/sharedFiles'.format(wiki_id),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}/sharedFiles'.format(wiki_id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def link_shared_files_to_wiki(self, wiki_id, file_id):
         """
@@ -336,8 +375,10 @@ class Wikis(BacklogBase):
             'fileId[]': file_id
         }
 
-        return self._request('/wikis/{}/sharedFiles'.format(wiki_id),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}/sharedFiles'.format(wiki_id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def remove_link_to_shared_file_from_wiki(self, wiki_id, _id):
         """
@@ -378,11 +419,17 @@ class Wikis(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/wikis/{}'.format(wiki_id),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}'.format(wiki_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_wiki_page(self, wiki_id, name=None,
-                         content=None, mail_notify=None):
+    def update_wiki_page(
+            self,
+            wiki_id,
+            name=None,
+            content=None,
+            mail_notify=None):
         """
         Updates information about Wiki page.
 
@@ -401,5 +448,7 @@ class Wikis(BacklogBase):
             'mailNotify': self._bool_to_str(mail_notify)
         }
 
-        return self._request('/wikis/{}'.format(wiki_id),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/wikis/{}'.format(wiki_id),
+            method='PATCH',
+            form_parameters=form_parameters)

@@ -25,11 +25,17 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}/comments'.format(issue_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/comments'.format(issue_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_comment(self, issue_id_or_key, content,
-                    notified_user_id=None, attachment_id=None):
+    def add_comment(
+            self,
+            issue_id_or_key,
+            content,
+            notified_user_id=None,
+            attachment_id=None):
         """
         Adds a comment to the issue.
 
@@ -48,11 +54,16 @@ class Issues(BacklogBase):
             'attachmentId[]': attachment_id
         }
 
-        return self._request('/issues/{}/comments'.format(issue_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/comments'.format(issue_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_comment_notification_raw(
-            self, issue_id_or_key, comment_id, form_parameters):
+            self,
+            issue_id_or_key,
+            comment_id,
+            form_parameters):
         """
         Adds notifications to the comment. Only the user who added the comment can add notifications.
 
@@ -64,11 +75,18 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}/comments/{}/notifications'.format(
-            issue_id_or_key, comment_id), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/comments/{}/notifications'.format(
+                issue_id_or_key,
+                comment_id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_comment_notification(
-            self, issue_id_or_key, comment_id, notified_user_id=None):
+            self,
+            issue_id_or_key,
+            comment_id,
+            notified_user_id=None):
         """
         Adds notifications to the comment. Only the user who added the comment can add notifications.
 
@@ -84,8 +102,12 @@ class Issues(BacklogBase):
             'notifiedUserId[]': notified_user_id
         }
 
-        return self._request('/issues/{}/comments/{}/notifications'.format(
-            issue_id_or_key, comment_id), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/comments/{}/notifications'.format(
+                issue_id_or_key,
+                comment_id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_issue_raw(self, form_parameters):
         """
@@ -97,11 +119,29 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/issues',
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_issue(self, project_id, summary, issue_type_id, priority_id, parent_issue_id=None, description=None, start_date=None, due_date=None,
-                  estimated_hours=None, actual_hours=None, category_id=None, version_id=None, milestone_id=None, assignee_id=None, notified_user_id=None, attachment_id=None):
+    def add_issue(
+            self,
+            project_id,
+            summary,
+            issue_type_id,
+            priority_id,
+            parent_issue_id=None,
+            description=None,
+            start_date=None,
+            due_date=None,
+            estimated_hours=None,
+            actual_hours=None,
+            category_id=None,
+            version_id=None,
+            milestone_id=None,
+            assignee_id=None,
+            notified_user_id=None,
+            attachment_id=None):
         """
         Adds new issue.
 
@@ -109,8 +149,8 @@ class Issues(BacklogBase):
         :param str summary: Summary
         :param int parent_issue_id: Parent Issue ID
         :param str description: Description
-        :param str start_date: Start Date
-        :param str due_date: Due Date
+        :param str start_date: Start Date (yyyy-MM-dd)
+        :param str due_date: Due Date (yyyy-MM-dd)
         :param int estimated_hours: Estimated Hours
         :param int actual_hours: Actual Hours
         :param int issue_type_id: Issue Type ID
@@ -145,8 +185,10 @@ class Issues(BacklogBase):
             'attachmentId[]': attachment_id
         }
 
-        return self._request('/issues', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/issues',
+            method='POST',
+            form_parameters=form_parameters)
 
     def count_comment(self, issue_id_or_key):
         """
@@ -159,7 +201,8 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}/comments/count'.format(issue_id_or_key), method='GET')
+            '/issues/{}/comments/count'.format(issue_id_or_key),
+            method='GET')
 
     def count_issue_raw(self, query_parameters):
         """
@@ -171,11 +214,41 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/count', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/issues/count',
+            method='GET',
+            query_parameters=query_parameters)
 
-    def count_issue(self, project_id=None, issue_type_id=None, category_id=None, version_id=None, milestone_id=None, status_id=None, priority_id=None, assignee_id=None, created_user_id=None, resolution_id=None, parent_child=None, attachment=None, shared_file=None,
-                    sort=None, order=None, offset=None, count=None, created_since=None, created_until=None, updated_since=None, updated_until=None, start_date_since=None, start_date_until=None, due_date_since=None, due_date_until=None, id=None, parent_issue_id=None, keyword=None):
+    def count_issue(
+            self,
+            project_id=None,
+            issue_type_id=None,
+            category_id=None,
+            version_id=None,
+            milestone_id=None,
+            status_id=None,
+            priority_id=None,
+            assignee_id=None,
+            created_user_id=None,
+            resolution_id=None,
+            parent_child=None,
+            attachment=None,
+            shared_file=None,
+            sort=None,
+            order=None,
+            offset=None,
+            count=None,
+            created_since=None,
+            created_until=None,
+            updated_since=None,
+            updated_until=None,
+            start_date_since=None,
+            start_date_until=None,
+            due_date_since=None,
+            due_date_until=None,
+            id=None,
+            parent_issue_id=None,
+            keyword=None):
         """
         Returns number of issues.
 
@@ -196,14 +269,14 @@ class Issues(BacklogBase):
         :param str order: Order of the sort “asc” or “desc” default=“desc”
         :param int offset: offset
         :param int count: number of records to retrieve(1-100) default=20
-        :param str created_since: Created since
-        :param str created_until: Created until
-        :param str updated_since: Updated since
-        :param str updated_until: Updated until
-        :param str start_date_since: Start Date since
-        :param str start_date_until: Start Date until
-        :param str due_date_since: Due Date since
-        :param str due_date_until: Due Date until
+        :param str created_since: Created since (yyyy-MM-dd)
+        :param str created_until: Created until (yyyy-MM-dd)
+        :param str updated_since: Updated since (yyyy-MM-dd)
+        :param str updated_until: Updated until (yyyy-MM-dd)
+        :param str start_date_since: Start Date since (yyyy-MM-dd)
+        :param str start_date_until: Start Date until (yyyy-MM-dd)
+        :param str due_date_since: Due Date since (yyyy-MM-dd)
+        :param str due_date_until: Due Date until (yyyy-MM-dd)
         :param list[int] or int id: Issue ID
         :param list[int] or int parent_issue_id: Parent Issue ID
         :param str keyword: Keyword
@@ -243,8 +316,24 @@ class Issues(BacklogBase):
             'keyword': keyword
         }
 
-        return self._request('/issues/count', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/issues/count',
+            method='GET',
+            query_parameters=query_parameters)
+
+    def delete_comment(self, issue_id_or_key, comment_id):
+        """
+        Delete comment.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+        :param int comment_id: Comment ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/issues/{}/comments/{}'.format(issue_id_or_key,
+                                                             comment_id), method='DELETE                              ')
 
     def delete_issue(self, issue_id_or_key):
         """
@@ -257,7 +346,8 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}'.format(issue_id_or_key), method='DELETE')
+            '/issues/{}'.format(issue_id_or_key),
+            method='DELETE')
 
     def delete_issue_attachment(self, issue_id_or_key, attachment_id):
         """
@@ -298,11 +388,18 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}/comments'.format(issue_id_or_key),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/issues/{}/comments'.format(issue_id_or_key),
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_comment_list(self, issue_id_or_key, min_id=None,
-                         max_id=None, count=None, order=None):
+    def get_comment_list(
+            self,
+            issue_id_or_key,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
         """
         Returns list of comments in issue.
 
@@ -323,8 +420,10 @@ class Issues(BacklogBase):
             'order': order
         }
 
-        return self._request('/issues/{}/comments'.format(issue_id_or_key),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/issues/{}/comments'.format(issue_id_or_key),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_issue(self, issue_id_or_key):
         """
@@ -337,7 +436,8 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}'.format(issue_id_or_key), method='GET')
+            '/issues/{}'.format(issue_id_or_key),
+            method='GET')
 
     def get_issue_attachment(self, issue_id_or_key, attachment_id):
         """
@@ -363,11 +463,41 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/issues',
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_issue_list(self, project_id=None, issue_type_id=None, category_id=None, version_id=None, milestone_id=None, status_id=None, priority_id=None, assignee_id=None, created_user_id=None, resolution_id=None, parent_child=None, attachment=None, shared_file=None,
-                       sort=None, order=None, offset=None, count=None, created_since=None, created_until=None, updated_since=None, updated_until=None, start_date_since=None, start_date_until=None, due_date_since=None, due_date_until=None, id=None, parent_issue_id=None, keyword=None):
+    def get_issue_list(
+            self,
+            project_id=None,
+            issue_type_id=None,
+            category_id=None,
+            version_id=None,
+            milestone_id=None,
+            status_id=None,
+            priority_id=None,
+            assignee_id=None,
+            created_user_id=None,
+            resolution_id=None,
+            parent_child=None,
+            attachment=None,
+            shared_file=None,
+            sort=None,
+            order=None,
+            offset=None,
+            count=None,
+            created_since=None,
+            created_until=None,
+            updated_since=None,
+            updated_until=None,
+            start_date_since=None,
+            start_date_until=None,
+            due_date_since=None,
+            due_date_until=None,
+            id=None,
+            parent_issue_id=None,
+            keyword=None):
         """
         Returns list of issues.
 
@@ -388,14 +518,14 @@ class Issues(BacklogBase):
         :param str order: Order of the sort “asc” or “desc” default=“desc”
         :param int offset: offset
         :param int count: number of records to retrieve(1-100) default=20
-        :param str created_since: Created since
-        :param str created_until: Created until
-        :param str updated_since: Updated since
-        :param str updated_until: Updated until
-        :param str start_date_since: Start Date since
-        :param str start_date_until: Start Date until
-        :param str due_date_since: Due Date since
-        :param str due_date_until: Due Date until
+        :param str created_since: Created since (yyyy-MM-dd)
+        :param str created_until: Created until (yyyy-MM-dd)
+        :param str updated_since: Updated since (yyyy-MM-dd)
+        :param str updated_until: Updated until (yyyy-MM-dd)
+        :param str start_date_since: Start Date since (yyyy-MM-dd)
+        :param str start_date_until: Start Date until (yyyy-MM-dd)
+        :param str due_date_since: Due Date since (yyyy-MM-dd)
+        :param str due_date_until: Due Date until (yyyy-MM-dd)
         :param list[int] or int id: Issue ID
         :param list[int] or int parent_issue_id: Parent Issue ID
         :param str keyword: Keyword
@@ -435,8 +565,10 @@ class Issues(BacklogBase):
             'keyword': keyword
         }
 
-        return self._request('/issues', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/issues',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_comment_notifications(self, issue_id_or_key, comment_id):
         """
@@ -463,7 +595,8 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}/attachments'.format(issue_id_or_key), method='GET')
+            '/issues/{}/attachments'.format(issue_id_or_key),
+            method='GET')
 
     def get_list_of_linked_shared_files(self, issue_id_or_key):
         """
@@ -476,7 +609,8 @@ class Issues(BacklogBase):
         """
 
         return self._request(
-            '/issues/{}/sharedFiles'.format(issue_id_or_key), method='GET')
+            '/issues/{}/sharedFiles'.format(issue_id_or_key),
+            method='GET')
 
     def link_shared_files_to_issue_raw(self, issue_id_or_key, form_parameters):
         """
@@ -489,8 +623,10 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}/sharedFiles'.format(issue_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/sharedFiles'.format(issue_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def link_shared_files_to_issue(self, issue_id_or_key, file_id):
         """
@@ -507,8 +643,10 @@ class Issues(BacklogBase):
             'fileId[]': file_id
         }
 
-        return self._request('/issues/{}/sharedFiles'.format(issue_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/sharedFiles'.format(issue_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def remove_link_to_shared_file_from_issue(self, issue_id_or_key, _id):
         """
@@ -536,8 +674,12 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}/comments/{}'.format(issue_id_or_key,
-                                                             comment_id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/comments/{}'.format(
+                issue_id_or_key,
+                comment_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_comment(self, issue_id_or_key, comment_id, content=None):
         """
@@ -555,8 +697,12 @@ class Issues(BacklogBase):
             'content': content
         }
 
-        return self._request('/issues/{}/comments/{}'.format(issue_id_or_key,
-                                                             comment_id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}/comments/{}'.format(
+                issue_id_or_key,
+                comment_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_issue_raw(self, issue_id_or_key, form_parameters):
         """
@@ -569,11 +715,32 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}'.format(issue_id_or_key),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}'.format(issue_id_or_key),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_issue(self, issue_id_or_key, issue_type_id, priority_id, summary=None, parent_issue_id=None, description=None, status_id=None, resolution_id=None, start_date=None, due_date=None,
-                     estimated_hours=None, actual_hours=None, category_id=None, version_id=None, milestone_id=None, assignee_id=None, notified_user_id=None, attachment_id=None, comment=None):
+    def update_issue(
+            self,
+            issue_id_or_key,
+            issue_type_id,
+            priority_id,
+            summary=None,
+            parent_issue_id=None,
+            description=None,
+            status_id=None,
+            resolution_id=None,
+            start_date=None,
+            due_date=None,
+            estimated_hours=None,
+            actual_hours=None,
+            category_id=None,
+            version_id=None,
+            milestone_id=None,
+            assignee_id=None,
+            notified_user_id=None,
+            attachment_id=None,
+            comment=None):
         """
         Updates information about issue.
 
@@ -583,8 +750,8 @@ class Issues(BacklogBase):
         :param str description: Description
         :param int status_id: Status ID
         :param int resolution_id: Resolution ID
-        :param str start_date: Start Date
-        :param str due_date: Due Date
+        :param str start_date: Start Date (yyyy-MM-dd)
+        :param str due_date: Due Date (yyyy-MM-dd)
         :param int estimated_hours: Estimated Hours
         :param int actual_hours: Actual Hours
         :param int issue_type_id: Issue Type ID
@@ -622,5 +789,7 @@ class Issues(BacklogBase):
             'comment': comment
         }
 
-        return self._request('/issues/{}'.format(issue_id_or_key),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/issues/{}'.format(issue_id_or_key),
+            method='PATCH',
+            form_parameters=form_parameters)

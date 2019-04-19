@@ -24,8 +24,10 @@ class Watchings(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/watchings', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/watchings',
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_watching(self, issue_id_or_key, note=None):
         """
@@ -43,8 +45,10 @@ class Watchings(BacklogBase):
             'note': note
         }
 
-        return self._request('/watchings', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/watchings',
+            method='POST',
+            form_parameters=form_parameters)
 
     def delete_watching(self, watching_id):
         """
@@ -57,7 +61,8 @@ class Watchings(BacklogBase):
         """
 
         return self._request(
-            '/watchings/{}'.format(watching_id), method='DELETE')
+            '/watchings/{}'.format(watching_id),
+            method='DELETE')
 
     def get_watching(self, watching_id):
         """
@@ -82,7 +87,8 @@ class Watchings(BacklogBase):
         """
 
         return self._request(
-            '/watchings/{}/markAsRead'.format(watching_id), method='POST')
+            '/watchings/{}/markAsRead'.format(watching_id),
+            method='POST')
 
     def update_watching_raw(self, watching_id, form_parameters):
         """
@@ -95,8 +101,10 @@ class Watchings(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/watchings/{}'.format(watching_id),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/watchings/{}'.format(watching_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_watching(self, watching_id, note=None):
         """
@@ -113,5 +121,7 @@ class Watchings(BacklogBase):
             'note': note
         }
 
-        return self._request('/watchings/{}'.format(watching_id),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/watchings/{}'.format(watching_id),
+            method='PATCH',
+            form_parameters=form_parameters)

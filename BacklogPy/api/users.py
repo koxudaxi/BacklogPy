@@ -16,7 +16,7 @@ class Users(BacklogBase):
 
     def add_user_raw(self, form_parameters):
         """
-        Adds new user to the space. “Project Administrator” cannot add “Admin” user.
+        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at
 
         :param dict form_parameters: form_parameters
 
@@ -24,12 +24,14 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/users',
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_user(self, user_id, password, name, mail_address, role_type):
         """
-        Adds new user to the space. “Project Administrator” cannot add “Admin” user.
+        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at
 
         :param str user_id: user ID
         :param str password: password
@@ -49,8 +51,10 @@ class Users(BacklogBase):
             'roleType': role_type
         }
 
-        return self._request('/users', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/users',
+            method='POST',
+            form_parameters=form_parameters)
 
     def count_user_received_stars_raw(self, query_parameters):
         """
@@ -62,15 +66,17 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/:userId/stars/count',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/:userId/stars/count',
+            method='GET',
+            query_parameters=query_parameters)
 
     def count_user_received_stars(self, since=None, until=None):
         """
         Returns number of stars that user received.
 
-        :param str since: after the given date (YYYY-MM-DD)
-        :param str until: before the given date (YYYY-MM-DD)
+        :param str since: after the given date (yyyy-MM-dd)
+        :param str until: before the given date (yyyy-MM-dd)
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -81,8 +87,10 @@ class Users(BacklogBase):
             'until': until
         }
 
-        return self._request('/users/:userId/stars/count',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/:userId/stars/count',
+            method='GET',
+            query_parameters=query_parameters)
 
     def count_watching_raw(self, user_id, query_parameters):
         """
@@ -95,11 +103,16 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/{}/watchings/count'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/watchings/count'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def count_watching(
-            self, user_id, resource_already_read=None, already_read=None):
+            self,
+            user_id,
+            resource_already_read=None,
+            already_read=None):
         """
         Returns the number of your watching issues.
 
@@ -116,12 +129,14 @@ class Users(BacklogBase):
             'alreadyRead': self._bool_to_str(already_read)
         }
 
-        return self._request('/users/{}/watchings/count'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/watchings/count'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def delete_user(self, user_id):
         """
-        Deletes user from the space.
+        Deletes user from the space. You can’t use this API at
 
         :param int user_id: user ID
 
@@ -141,8 +156,10 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/myself/recentlyViewedIssues',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/myself/recentlyViewedIssues',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_issues(
             self, order=None, offset=None, count=None):
@@ -163,8 +180,10 @@ class Users(BacklogBase):
             'count': count
         }
 
-        return self._request('/users/myself/recentlyViewedIssues',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/myself/recentlyViewedIssues',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_projects_raw(self, query_parameters):
         """
@@ -176,8 +195,10 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/myself/recentlyViewedProjects',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/myself/recentlyViewedProjects',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_projects(
             self, order=None, offset=None, count=None):
@@ -198,8 +219,10 @@ class Users(BacklogBase):
             'count': count
         }
 
-        return self._request('/users/myself/recentlyViewedProjects',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/myself/recentlyViewedProjects',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_wikis_raw(self, query_parameters):
         """
@@ -211,8 +234,10 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/myself/recentlyViewedWikis',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/myself/recentlyViewedWikis',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_recently_viewed_wikis(
             self, order=None, offset=None, count=None):
@@ -233,8 +258,10 @@ class Users(BacklogBase):
             'count': count
         }
 
-        return self._request('/users/myself/recentlyViewedWikis',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/myself/recentlyViewedWikis',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_own_user(self):
         """
@@ -257,11 +284,18 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/{}/stars'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/stars'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_received_star_list(
-            self, user_id, min_id=None, max_id=None, count=None, order=None):
+            self,
+            user_id,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
         """
         Returns the list of stars that user received.
 
@@ -282,8 +316,10 @@ class Users(BacklogBase):
             'order': order
         }
 
-        return self._request('/users/{}/stars'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/stars'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_user(self, user_id):
         """
@@ -330,11 +366,19 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/{}/activities'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/activities'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_user_recent_updates(
-            self, user_id, activity_type_id=None, min_id=None, max_id=None, count=None, order=None):
+            self,
+            user_id,
+            activity_type_id=None,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
         """
         Returns user’s recent updates
 
@@ -357,8 +401,10 @@ class Users(BacklogBase):
             'order': order
         }
 
-        return self._request('/users/{}/activities'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/activities'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_watching_list_raw(self, user_id, query_parameters):
         """
@@ -371,11 +417,20 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/{}/watchings'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/watchings'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_watching_list(self, user_id, order=None, sort=None, count=None,
-                          offset=None, resource_already_read=None, issue_id=None):
+    def get_watching_list(
+            self,
+            user_id,
+            order=None,
+            sort=None,
+            count=None,
+            offset=None,
+            resource_already_read=None,
+            issue_id=None):
         """
         Returns list of your watching issues.
 
@@ -400,12 +455,14 @@ class Users(BacklogBase):
             'issueId[]': issue_id
         }
 
-        return self._request('/users/{}/watchings'.format(user_id),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/users/{}/watchings'.format(user_id),
+            method='GET',
+            query_parameters=query_parameters)
 
     def update_user_raw(self, user_id, form_parameters):
         """
-        Updates information about user.
+        Updates information about user. You can’t use this API at
 
         :param int user_id: user ID
         :param dict form_parameters: form_parameters
@@ -414,13 +471,20 @@ class Users(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/users/{}'.format(user_id),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/users/{}'.format(user_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_user(self, user_id, password=None, name=None,
-                    mail_address=None, role_type=None):
+    def update_user(
+            self,
+            user_id,
+            password=None,
+            name=None,
+            mail_address=None,
+            role_type=None):
         """
-        Updates information about user.
+        Updates information about user. You can’t use this API at
 
         :param int user_id: user ID
         :param str password: password
@@ -439,5 +503,7 @@ class Users(BacklogBase):
             'roleType': role_type
         }
 
-        return self._request('/users/{}'.format(user_id),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/users/{}'.format(user_id),
+            method='PATCH',
+            form_parameters=form_parameters)
