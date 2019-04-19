@@ -60,9 +60,9 @@ class BacklogBase(object):
         :rtype: dict
         """
 
-        return dict([(k, v)
-                     for k, v in parameters.items()
-                     if v is not None])
+        return {k: v
+                for k, v in parameters.items()
+                if v is not None}
 
     def _request(self, path, method='GET',
                  query_parameters=None, form_parameters=None,

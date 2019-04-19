@@ -320,6 +320,7 @@ from BacklogPy.api import *
 class Backlog(Hello):
     pass
 '''
+
         with TemporaryDirectory() as target_directory:
             api_generator._create_api_from_bs_generator(bs_generator,
                                                         target_directory)
@@ -331,6 +332,127 @@ class Backlog(Hello):
 
             with open(os.path.join(target_directory, 'backlog.py')) as f:
                 self.assertEqual(f.read(), expect_backlog_py)
+
+        html_template = '<html><body>' \
+                        '<h2 id="test_api_name"><p>hello{num} ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h2></body>' \
+                        '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+                        '<h3 id="method"><code>hello</code></h3>' \
+                        '<h3 id="url-parameters">' \
+                        '<tbody><tr><td>hello</td><td>String</td></tr>' \
+                        '<tr><td>bye</td><td>String</td></tr>' \
+                        '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+                        '</tbody></h3>' \
+                        '<h3 id="form-parameters">' \
+                        '<tbody><tr><td>hello</td><td>String</td><</tr>' \
+                        '<tr><td>bye</td><td>String</td></tr>' \
+                        '</tbody></h3></body></html>'
+
+        html_list = [html_template.format(num=i) for i in range(2)]
+        bs_generator = (get_bs(html) for html in html_list)
+        expect_hello_class = '''# coding: utf-8
+
+"""
+    This file was created by Backlog APIGenerator
+"""
+
+
+from __future__ import unicode_literals, absolute_import
+
+from deprecated import deprecated
+
+from BacklogPy.base import BacklogBase
+
+
+class Hello(BacklogBase):
+    def __init__(self, space_id, api_key):
+        super(Hello, self).__init__(space_id, api_key)
+
+    @deprecated(reason="xxx https://backlogpy.org")
+    def test_api_name_raw(self, hello, bye, num, form_parameters):
+        """
+        hello0 ※ Deprecated API. xxx https://backlogpy.org
+
+        :param str hello: hello
+        :param str bye: bye
+        :param int num: description
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+
+    @deprecated(reason="xxx https://backlogpy.org")
+    def test_api_name(self, hello, bye, num, hello=None, bye=None):
+        """
+        hello0 ※ Deprecated API. xxx https://backlogpy.org
+
+        :param str hello: hello
+        :param str bye: bye
+        :param int num: description
+        :param str hello: hello
+        :param str bye: bye
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'hello': hello,
+            'bye': bye
+        }
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+
+    @deprecated(reason="xxx https://backlogpy.org")
+    def test_api_name_raw(self, hello, bye, num, form_parameters):
+        """
+        hello1 ※ Deprecated API. xxx https://backlogpy.org
+
+        :param str hello: hello
+        :param str bye: bye
+        :param int num: description
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+
+    @deprecated(reason="xxx https://backlogpy.org")
+    def test_api_name(self, hello, bye, num, hello=None, bye=None):
+        """
+        hello1 ※ Deprecated API. xxx https://backlogpy.org
+
+        :param str hello: hello
+        :param str bye: bye
+        :param int num: description
+        :param str hello: hello
+        :param str bye: bye
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'hello': hello,
+            'bye': bye
+        }
+
+        return self._request('/hello'.format(hello, bye, num),
+                             method='hello', form_parameters=form_parameters)
+'''
+
+        with TemporaryDirectory() as target_directory:
+            api_generator._create_api_from_bs_generator(bs_generator,
+                                                        target_directory)
+            with open(os.path.join(target_directory, 'api/hello.py')) as f:
+                self.assertEqual(f.read(), expect_hello_class)
 
 
 class TestParameter(TestCase):
@@ -399,11 +521,19 @@ class TestAPIGenerator(TestCase):
         api = api_generator.APIGenerator(get_bs(html))
         self.assertEqual(api.api_description, 'hello')
         self.assertEqual(api.api_description, 'hello')
+        self.assertFalse(api.deprecated)
+        self.assertEqual(api.modules, set())
 
         html = '<html><body><h2><span>hello<span/></h2></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
         with self.assertRaises(Exception):
             _ = api.api_description
+
+        html = '<html><body><h2><p>hello ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h2></body></html>'
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api.api_description, 'hello ※ Deprecated API. xxx https://backlogpy.org')
+        self.assertTrue(api.deprecated)
+        self.assertEqual(api.modules, {'from deprecated import deprecated'})
 
     def test_method_type(self):
         html = '<html><body><h3 id="method"><code>hello</code></h3></body></html>'
@@ -745,7 +875,7 @@ form_parameters = {
 
 
 from __future__ import unicode_literals, absolute_import
-
+{module_import}
 from BacklogPy.base import BacklogBase
 
 
@@ -817,6 +947,39 @@ class Hello(BacklogBase):
 
         api = api_generator.APIGenerator(get_bs(html))
         self.assertEqual(api.create_api_method(strict=True),
+                         expect_api_method)
+
+        html = '<html><body>' \
+               '<h2 id="test_api_name" >hello</h2>' \
+               '<html><body><h2><p>hello ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h2></html>' \
+               '<h3 id="url"><code>/api/v2/hello</code></h3>' \
+               '<h3 id="method"><code>hello</code></h3>' \
+               '<h3 id="query-parameters">' \
+               '<tbody><tr><td>hello</td><td>String</td></tr>' \
+               '<tr><td>bye</td><td>String</td></tr>' \
+               '<tr><td>num</td><td>Number</td><td>description</td></tr>' \
+               '<tr><td>boolean</td><td>Boolean</td></tr>' \
+               '</tbody></h3></body></html>'
+
+        expect_api_method = '''
+    @deprecated(reason="xxx https://backlogpy.org")
+    def test_api_name_raw(self, query_parameters):
+        """
+        hello ※ Deprecated API. xxx https://backlogpy.org
+        
+        :param dict query_parameters: query_parameters
+        
+        :return:  requests Response object 
+        :rtype: requests.Response
+        """
+        
+        
+        
+        return self._request('/hello', method='hello', query_parameters=query_parameters)
+'''
+
+        api = api_generator.APIGenerator(get_bs(html))
+        self.assertEqual(api.create_api_method(),
                          expect_api_method)
 
     def test_create_api_method_with_broken_header(self):

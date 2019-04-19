@@ -14,6 +14,7 @@ from BacklogPy.api.resolutions import Resolutions
 from BacklogPy.api.space import Space
 from BacklogPy.api.stars import Stars
 from BacklogPy.api.statuses import Statuses
+from BacklogPy.api.teams import Teams
 from BacklogPy.api.users import Users
 from BacklogPy.api.watchings import Watchings
 from BacklogPy.api.wikis import Wikis
@@ -28,6 +29,7 @@ __all__ = [
     'Space',
     'Stars',
     'Statuses',
+    'Teams',
     'Users',
     'Watchings',
     'Wikis']

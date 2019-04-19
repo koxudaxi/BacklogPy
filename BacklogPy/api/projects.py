@@ -7,6 +7,8 @@
 
 from __future__ import unicode_literals, absolute_import
 
+from deprecated import deprecated
+
 from BacklogPy.base import BacklogBase
 
 
@@ -25,8 +27,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/categories'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/categories'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_category(self, project_id_or_key, name):
         """
@@ -43,8 +47,10 @@ class Projects(BacklogBase):
             'name': name
         }
 
-        return self._request('/projects/{}/categories'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/categories'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_custom_field_raw(self, project_id_or_key, form_parameters):
         """
@@ -57,11 +63,19 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/customFields'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/customFields'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_custom_field(self, project_id_or_key, type_id, name,
-                         applicable_issue_types=None, description=None, required=None):
+    def add_custom_field(
+            self,
+            project_id_or_key,
+            type_id,
+            name,
+            applicable_issue_types=None,
+            description=None,
+            required=None):
         """
         Adds new Custom Field to the project.
 
@@ -84,8 +98,10 @@ class Projects(BacklogBase):
             'required': self._bool_to_str(required)
         }
 
-        return self._request('/projects/{}/customFields'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/customFields'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_issue_type_raw(self, project_id_or_key, form_parameters):
         """
@@ -98,8 +114,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/issueTypes'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/issueTypes'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_issue_type(self, project_id_or_key, name, color):
         """
@@ -118,8 +136,10 @@ class Projects(BacklogBase):
             'color': color
         }
 
-        return self._request('/projects/{}/issueTypes'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/issueTypes'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_list_item_for_list_type_custom_field_raw(
             self, project_id_or_key, _id, form_parameters):
@@ -134,8 +154,12 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/customFields/{}/items'.format(
-            project_id_or_key, _id), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/customFields/{}/items'.format(
+                project_id_or_key,
+                _id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_list_item_for_list_type_custom_field(
             self, project_id_or_key, _id, name=None):
@@ -154,8 +178,12 @@ class Projects(BacklogBase):
             'name': name
         }
 
-        return self._request('/projects/{}/customFields/{}/items'.format(
-            project_id_or_key, _id), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/customFields/{}/items'.format(
+                project_id_or_key,
+                _id),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_project_raw(self, form_parameters):
         """
@@ -167,11 +195,19 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/projects',
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_project(self, name, key, chart_enabled, subtasking_enabled,
-                    text_formatting_rule, project_leader_can_edit_project_leader=None):
+    def add_project(
+            self,
+            name,
+            key,
+            chart_enabled,
+            subtasking_enabled,
+            text_formatting_rule,
+            project_leader_can_edit_project_leader=None):
         """
         Adds new project.
 
@@ -192,11 +228,12 @@ class Projects(BacklogBase):
             'chartEnabled': self._bool_to_str(chart_enabled),
             'projectLeaderCanEditProjectLeader': self._bool_to_str(project_leader_can_edit_project_leader),
             'subtaskingEnabled': self._bool_to_str(subtasking_enabled),
-            'textFormattingRule': text_formatting_rule
-        }
+            'textFormattingRule': text_formatting_rule}
 
-        return self._request('/projects', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/projects',
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_project_administrator_raw(
             self, project_id_or_key, form_parameters):
@@ -210,8 +247,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/administrators'.format(
-            project_id_or_key), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/administrators'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_project_administrator(self, project_id_or_key, user_id=None):
         """
@@ -228,8 +267,86 @@ class Projects(BacklogBase):
             'userId': user_id
         }
 
-        return self._request('/projects/{}/administrators'.format(
-            project_id_or_key), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/administrators'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
+
+    @deprecated(
+        reason="Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
+    def add_project_group_raw(self, project_id_or_key, form_parameters):
+        """
+        Add group to project. ※ Deprecated API. Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/groups'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
+
+    @deprecated(
+        reason="Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
+    def add_project_group(self, project_id_or_key, group_id=None):
+        """
+        Add group to project. ※ Deprecated API. Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int group_id: Group ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'groupId': group_id
+        }
+
+        return self._request(
+            '/projects/{}/groups'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
+
+    def add_project_team_raw(self, project_id_or_key, form_parameters):
+        """
+        Add team to project.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/teams'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
+
+    def add_project_team(self, project_id_or_key, team_id=None):
+        """
+        Add team to project.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int team_id: Team ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'teamId': team_id
+        }
+
+        return self._request(
+            '/projects/{}/teams'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_project_user_raw(self, project_id_or_key, form_parameters):
         """
@@ -242,8 +359,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/users'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/users'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_project_user(self, project_id_or_key, user_id=None):
         """
@@ -260,11 +379,16 @@ class Projects(BacklogBase):
             'userId': user_id
         }
 
-        return self._request('/projects/{}/users'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/users'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_pull_request_raw(self, project_id_or_key,
-                             repo_id_or_name, form_parameters):
+    def add_pull_request_raw(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            form_parameters):
         """
         Adds pull requests.
 
@@ -276,11 +400,25 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests'.format(
-            project_id_or_key, repo_id_or_name), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests'.format(
+                project_id_or_key,
+                repo_id_or_name),
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_pull_request(self, project_id_or_key, repo_id_or_name, summary, description=None, base=None,
-                         branch=None, issue_id=None, assignee_id=None, notified_user_id=None, attachment_id=None):
+    def add_pull_request(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            summary,
+            description=None,
+            base=None,
+            branch=None,
+            issue_id=None,
+            assignee_id=None,
+            notified_user_id=None,
+            attachment_id=None):
         """
         Adds pull requests.
 
@@ -310,11 +448,19 @@ class Projects(BacklogBase):
             'attachmentId[]': attachment_id
         }
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests'.format(
-            project_id_or_key, repo_id_or_name), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests'.format(
+                project_id_or_key,
+                repo_id_or_name),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_pull_request_comment_raw(
-            self, project_id_or_key, repo_id_or_name, number, form_parameters):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            form_parameters):
         """
         Adds comments on pull requests.
 
@@ -327,11 +473,21 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
-            project_id_or_key, repo_id_or_name, number), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_pull_request_comment(
-            self, project_id_or_key, repo_id_or_name, number, content, notified_user_id=None):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            content,
+            notified_user_id=None):
         """
         Adds comments on pull requests.
 
@@ -350,8 +506,13 @@ class Projects(BacklogBase):
             'notifiedUserId[]': notified_user_id
         }
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
-            project_id_or_key, repo_id_or_name, number), method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_version_milestone_raw(self, project_id_or_key, form_parameters):
         """
@@ -364,19 +525,26 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/versions'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/versions'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_version_milestone(self, project_id_or_key, name,
-                              description=None, start_date=None, release_due_date=None):
+    def add_version_milestone(
+            self,
+            project_id_or_key,
+            name,
+            description=None,
+            start_date=None,
+            release_due_date=None):
         """
         Adds new Version/Milestone to the project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str name: Version name
         :param str description: Version description
-        :param str start_date: Start Date
-        :param str release_due_date: Release Due Date
+        :param str start_date: Start Date (yyyy-MM-dd)
+        :param str release_due_date: End Date (yyyy-MM-dd)
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -389,8 +557,10 @@ class Projects(BacklogBase):
             'releaseDueDate': release_due_date
         }
 
-        return self._request('/projects/{}/versions'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/versions'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def add_webhook_raw(self, project_id_or_key, form_parameters):
         """
@@ -403,11 +573,19 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/webhooks'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/webhooks'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_webhook(self, project_id_or_key, name=None, description=None,
-                    hook_url=None, all_event=None, activity_type_ids=None):
+    def add_webhook(
+            self,
+            project_id_or_key,
+            name=None,
+            description=None,
+            hook_url=None,
+            all_event=None,
+            activity_type_ids=None):
         """
         Adds new webhook.
 
@@ -430,8 +608,10 @@ class Projects(BacklogBase):
             'activityTypeIds[]': activity_type_ids
         }
 
-        return self._request('/projects/{}/webhooks'.format(project_id_or_key),
-                             method='POST', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/webhooks'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
 
     def delete_category(self, project_id_or_key, _id):
         """
@@ -473,11 +653,18 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/issueTypes/{}'.format(
-            project_id_or_key, _id), method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/issueTypes/{}'.format(
+                project_id_or_key,
+                _id),
+            method='DELETE',
+            form_parameters=form_parameters)
 
-    def delete_issue_type(self, project_id_or_key, _id,
-                          substitute_issue_type_id):
+    def delete_issue_type(
+            self,
+            project_id_or_key,
+            _id,
+            substitute_issue_type_id):
         """
         Deletes Issue Type.
 
@@ -493,8 +680,12 @@ class Projects(BacklogBase):
             'substituteIssueTypeId': substitute_issue_type_id
         }
 
-        return self._request('/projects/{}/issueTypes/{}'.format(
-            project_id_or_key, _id), method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/issueTypes/{}'.format(
+                project_id_or_key,
+                _id),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_list_item_for_list_type_custom_field(
             self, project_id_or_key, _id, item_id):
@@ -509,8 +700,9 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/customFields/{}/items/{}'.format(
-            project_id_or_key, _id, item_id), method='DELETE')
+        return self._request(
+            '/projects/{}/customFields/{}/items/{}'.format(
+                project_id_or_key, _id, item_id), method='DELETE')
 
     def delete_project(self, project_id_or_key):
         """
@@ -523,7 +715,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}'.format(project_id_or_key), method='DELETE')
+            '/projects/{}'.format(project_id_or_key),
+            method='DELETE')
 
     def delete_project_administrator_raw(
             self, project_id_or_key, form_parameters):
@@ -537,8 +730,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/administrators'.format(
-            project_id_or_key), method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/administrators'.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_project_administrator(self, project_id_or_key, user_id=None):
         """
@@ -555,8 +750,86 @@ class Projects(BacklogBase):
             'userId': user_id
         }
 
-        return self._request('/projects/{}/administrators'.format(
-            project_id_or_key), method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/administrators'.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
+
+    @deprecated(
+        reason="Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
+    def delete_project_group_raw(self, project_id_or_key, form_parameters):
+        """
+        Removes a group from the project. ※ Deprecated API. Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/ projects / {} / groups '.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
+
+    @deprecated(
+        reason="Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
+    def delete_project_group(self, project_id_or_key, group_id=None):
+        """
+        Removes a group from the project. ※ Deprecated API. Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int group_id: Group ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'groupId': group_id
+        }
+
+        return self._request(
+            '/ projects / {} / groups '.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
+
+    def delete_project_team_raw(self, project_id_or_key, form_parameters):
+        """
+        Removes a team from the project.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/ projects / {} / teams '.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
+
+    def delete_project_team(self, project_id_or_key, team_id=None):
+        """
+        Removes a team from the project.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int team_id: Team ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'teamId': team_id
+        }
+
+        return self._request(
+            '/ projects / {} / teams '.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_project_user_raw(self, project_id_or_key, form_parameters):
         """
@@ -569,8 +842,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/users'.format(project_id_or_key),
-                             method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/users'.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_project_user(self, project_id_or_key, user_id=None):
         """
@@ -587,11 +862,17 @@ class Projects(BacklogBase):
             'userId': user_id
         }
 
-        return self._request('/projects/{}/users'.format(project_id_or_key),
-                             method='DELETE', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/users'.format(project_id_or_key),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_pull_request_attachments(
-            self, project_id_or_key, repo_id_or_name, number, attachment_id):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            attachment_id):
         """
         Deletes attached files on pull requests.
 
@@ -604,8 +885,13 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/attachments/{}'.format(
-            project_id_or_key, repo_id_or_name, number, attachment_id), method='DELETE')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/attachments/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number,
+                attachment_id),
+            method='DELETE')
 
     def delete_version(self, project_id_or_key, _id):
         """
@@ -636,7 +922,11 @@ class Projects(BacklogBase):
             '/projects/{}/webhooks/{}'.format(project_id_or_key, webhook_id), method='DELETE')
 
     def download_pull_request_attachment(
-            self, project_id_or_key, repo_id_or_name, number, attachment_id):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            attachment_id):
         """
         Downloads attached files on pull requests.
 
@@ -649,8 +939,13 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/attachments/{}'.format(
-            project_id_or_key, repo_id_or_name, number, attachment_id), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/attachments/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number,
+                attachment_id),
+            method='GET')
 
     def get_category_list(self, project_id_or_key):
         """
@@ -663,7 +958,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/categories'.format(project_id_or_key), method='GET')
+            '/projects/{}/categories'.format(project_id_or_key),
+            method='GET')
 
     def get_custom_field_list(self, project_id_or_key):
         """
@@ -676,7 +972,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/customFields'.format(project_id_or_key), method='GET')
+            '/projects/{}/customFields'.format(project_id_or_key),
+            method='GET')
 
     def get_file(self, project_id_or_key, _id):
         """
@@ -704,7 +1001,10 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/git/repositories/{}'.format(project_id_or_key, repo_id_or_name), method='GET')
+            '/projects/{}/git/repositories/{}'.format(
+                project_id_or_key,
+                repo_id_or_name),
+            method='GET')
 
     def get_issue_type_list(self, project_id_or_key):
         """
@@ -717,7 +1017,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/issueTypes'.format(project_id_or_key), method='GET')
+            '/projects/{}/issueTypes'.format(project_id_or_key),
+            method='GET')
 
     def get_list_of_git_repositories(self, project_id_or_key):
         """
@@ -730,7 +1031,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/git/repositories'.format(project_id_or_key), method='GET')
+            '/projects/{}/git/repositories'.format(project_id_or_key),
+            method='GET')
 
     def get_list_of_project_administrators(self, project_id_or_key):
         """
@@ -743,7 +1045,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/administrators'.format(project_id_or_key), method='GET')
+            '/projects/{}/administrators'.format(project_id_or_key),
+            method='GET')
 
     def get_list_of_pull_request_attachment(
             self, project_id_or_key, repo_id_or_name, number):
@@ -758,11 +1061,15 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/attachments'.format(
-            project_id_or_key, repo_id_or_name, number), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/attachments'.format(
+                project_id_or_key, repo_id_or_name, number), method='GET')
 
     def get_list_of_shared_files_raw(
-            self, project_id_or_key, path, query_parameters):
+            self,
+            project_id_or_key,
+            path,
+            query_parameters):
         """
         Gets list of Shared Files.
 
@@ -774,11 +1081,20 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/files/metadata/{}'.format(
-            project_id_or_key, path), method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/projects/{}/files/metadata/{}'.format(
+                project_id_or_key,
+                path),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_shared_files(
-            self, project_id_or_key, path, order=None, offset=None, count=None):
+            self,
+            project_id_or_key,
+            path,
+            order=None,
+            offset=None,
+            count=None):
         """
         Gets list of Shared Files.
 
@@ -798,8 +1114,12 @@ class Projects(BacklogBase):
             'count': count
         }
 
-        return self._request('/projects/{}/files/metadata/{}'.format(
-            project_id_or_key, path), method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/projects/{}/files/metadata/{}'.format(
+                project_id_or_key,
+                path),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_list_of_webhooks(self, project_id_or_key):
         """
@@ -812,7 +1132,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/webhooks'.format(project_id_or_key), method='GET')
+            '/projects/{}/webhooks'.format(project_id_or_key),
+            method='GET')
 
     def get_number_of_pull_request_comments(
             self, project_id_or_key, repo_id_or_name, number):
@@ -827,8 +1148,9 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/comments/count'.format(
-            project_id_or_key, repo_id_or_name, number), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments/count'.format(
+                project_id_or_key, repo_id_or_name, number), method='GET')
 
     def get_number_of_pull_requests(self, project_id_or_key, repo_id_or_name):
         """
@@ -841,8 +1163,9 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/count'.format(
-            project_id_or_key, repo_id_or_name), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/count'.format(
+                project_id_or_key, repo_id_or_name), method='GET')
 
     def get_project(self, project_id_or_key):
         """
@@ -855,7 +1178,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}'.format(project_id_or_key), method='GET')
+            '/projects/{}'.format(project_id_or_key),
+            method='GET')
 
     def get_project_disk_usage(self, project_id_or_key):
         """
@@ -868,7 +1192,23 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/diskUsage'.format(project_id_or_key), method='GET')
+            '/projects/{}/diskUsage'.format(project_id_or_key),
+            method='GET')
+
+    @deprecated(reason="Please replace it with Get Project Team List .https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/")
+    def get_project_group_list(self, project_id_or_key):
+        """
+        Returns list of project groups. ※ Deprecated API. Please replace it with Get Project Team List .https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/
+
+        :param str project_id_or_key: Project ID or Project Key
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/groups'.format(project_id_or_key),
+            method='GET')
 
     def get_project_icon(self, project_id_or_key):
         """
@@ -881,7 +1221,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/image'.format(project_id_or_key), method='GET')
+            '/projects/{}/image'.format(project_id_or_key),
+            method='GET')
 
     def get_project_list_raw(self, query_parameters):
         """
@@ -893,8 +1234,10 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/projects',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_project_list(self, archived=None, all=None):
         """
@@ -912,8 +1255,10 @@ class Projects(BacklogBase):
             'all': self._bool_to_str(all)
         }
 
-        return self._request('/projects', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/projects',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_project_recent_updates_raw(
             self, project_id_or_key, query_parameters):
@@ -927,16 +1272,24 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/activities'.format(project_id_or_key),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/projects/{}/activities'.format(project_id_or_key),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_project_recent_updates(
-            self, project_id_or_key, activity_type_id=None, min_id=None, max_id=None, count=None, order=None):
+            self,
+            project_id_or_key,
+            activity_type_id=None,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
         """
         Returns recent update in the project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param list[int] or int activity_type_id: type(1-17)
+        :param list[int] or int activity_type_id: type(1-26)
         :param int min_id: minimum ID
         :param int max_id: maximum ID
         :param int count: number of records to retrieve(1-100) default=20
@@ -954,12 +1307,14 @@ class Projects(BacklogBase):
             'order': order
         }
 
-        return self._request('/projects/{}/activities'.format(project_id_or_key),
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/projects/{}/activities'.format(project_id_or_key),
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_project_user_list(self, project_id_or_key):
+    def get_project_team_list(self, project_id_or_key):
         """
-        Returns list of project members.
+        Returns list of project teams.
 
         :param str project_id_or_key: Project ID or Project Key
 
@@ -968,7 +1323,47 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/users'.format(project_id_or_key), method='GET')
+            '/projects/{}/teams'.format(project_id_or_key),
+            method='GET')
+
+    def get_project_user_list_raw(self, project_id_or_key, query_parameters):
+        """
+        Returns list of project members.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict query_parameters: query_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/users'.format(project_id_or_key),
+            method='GET',
+            query_parameters=query_parameters)
+
+    def get_project_user_list(
+            self,
+            project_id_or_key,
+            exclude_group_members=None):
+        """
+        Returns list of project members.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param bool exclude_group_members: Set to true to exclude members that part of project groups and false to get all members. Default is false.
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        query_parameters = {
+            'excludeGroupMembers': self._bool_to_str(exclude_group_members)
+        }
+
+        return self._request(
+            '/projects/{}/users'.format(project_id_or_key),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_pull_request(self, project_id_or_key, repo_id_or_name, number):
         """
@@ -982,11 +1377,18 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}'.format(
-            project_id_or_key, repo_id_or_name, number), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='GET')
 
     def get_pull_request_comment(
-            self, project_id_or_key, repo_id_or_name, number):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number):
         """
         Returns list of pull request comments.
 
@@ -998,22 +1400,74 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
-            project_id_or_key, repo_id_or_name, number), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
+                project_id_or_key, repo_id_or_name, number), method='GET')
 
-    def get_pull_request_list(self, project_id_or_key, repo_id_or_name):
+    def get_pull_request_list_raw(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            query_parameters):
         """
         Returns list of pull requests.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
+        :param dict query_parameters: query_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests'.format(
-            project_id_or_key, repo_id_or_name), method='GET')
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests'.format(
+                project_id_or_key,
+                repo_id_or_name),
+            method='GET',
+            query_parameters=query_parameters)
+
+    def get_pull_request_list(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            status_id=None,
+            assignee_id=None,
+            issue_id=None,
+            created_user_id=None,
+            offset=None,
+            count=None):
+        """
+        Returns list of pull requests.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param str repo_id_or_name: Repository ID or Repository name
+        :param list[int] or int status_id: Status ID
+        :param list[int] or int assignee_id: Assignee ID
+        :param list[int] or int issue_id: Issue ID
+        :param list[int] or int created_user_id: Created User ID
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        query_parameters = {
+            'statusId[]': status_id,
+            'assigneeId[]': assignee_id,
+            'issueId[]': issue_id,
+            'createdUserId[]': created_user_id,
+            'offset': offset,
+            'count': count
+        }
+
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests'.format(
+                project_id_or_key,
+                repo_id_or_name),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_version_milestone_list(self, project_id_or_key):
         """
@@ -1026,7 +1480,8 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/projects/{}/versions'.format(project_id_or_key), method='GET')
+            '/projects/{}/versions'.format(project_id_or_key),
+            method='GET')
 
     def get_webhook(self, project_id_or_key, webhook_id):
         """
@@ -1054,8 +1509,12 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/categories/{}'.format(
-            project_id_or_key, _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/categories/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_category(self, project_id_or_key, _id, name=None):
         """
@@ -1073,8 +1532,12 @@ class Projects(BacklogBase):
             'name': name
         }
 
-        return self._request('/projects/{}/categories/{}'.format(
-            project_id_or_key, _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/categories/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_custom_field_raw(self, project_id_or_key, _id, form_parameters):
         """
@@ -1088,11 +1551,21 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/customFields/{}'.format(
-            project_id_or_key, _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/customFields/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_custom_field(self, project_id_or_key, _id, name,
-                            applicable_issue_types=None, description=None, required=None):
+    def update_custom_field(
+            self,
+            project_id_or_key,
+            _id,
+            name,
+            applicable_issue_types=None,
+            description=None,
+            required=None):
         """
         Updates Custom Field.
 
@@ -1114,8 +1587,12 @@ class Projects(BacklogBase):
             'required': self._bool_to_str(required)
         }
 
-        return self._request('/projects/{}/customFields/{}'.format(
-            project_id_or_key, _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/customFields/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_issue_type_raw(self, project_id_or_key, _id, form_parameters):
         """
@@ -1129,8 +1606,12 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/issueTypes/{}'.format(
-            project_id_or_key, _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/issueTypes/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_issue_type(self, project_id_or_key, _id, name=None, color=None):
         """
@@ -1150,8 +1631,12 @@ class Projects(BacklogBase):
             'color': color
         }
 
-        return self._request('/projects/{}/issueTypes/{}'.format(
-            project_id_or_key, _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/issueTypes/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_list_item_for_list_type_custom_field(
             self, project_id_or_key, _id, item_id):
@@ -1166,8 +1651,9 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/customFields/{}/items/{}'.format(
-            project_id_or_key, _id, item_id), method='PATCH')
+        return self._request(
+            '/projects/{}/customFields/{}/items/{}'.format(
+                project_id_or_key, _id, item_id), method='PATCH')
 
     def update_project_raw(self, project_id_or_key, form_parameters):
         """
@@ -1180,11 +1666,21 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}'.format(project_id_or_key),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}'.format(project_id_or_key),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_project(self, project_id_or_key, name=None, key=None, chart_enabled=None, subtasking_enabled=None,
-                       project_leader_can_edit_project_leader=None, text_formatting_rule=None, archived=None):
+    def update_project(
+            self,
+            project_id_or_key,
+            name=None,
+            key=None,
+            chart_enabled=None,
+            subtasking_enabled=None,
+            project_leader_can_edit_project_leader=None,
+            text_formatting_rule=None,
+            archived=None):
         """
         Updates information about project.
 
@@ -1208,14 +1704,19 @@ class Projects(BacklogBase):
             'subtaskingEnabled': self._bool_to_str(subtasking_enabled),
             'projectLeaderCanEditProjectLeader': self._bool_to_str(project_leader_can_edit_project_leader),
             'textFormattingRule': text_formatting_rule,
-            'archived': self._bool_to_str(archived)
-        }
+            'archived': self._bool_to_str(archived)}
 
-        return self._request('/projects/{}'.format(project_id_or_key),
-                             method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}'.format(project_id_or_key),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_pull_request_raw(
-            self, project_id_or_key, repo_id_or_name, number, form_parameters):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            form_parameters):
         """
         Updates pull requests.
 
@@ -1228,11 +1729,25 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}'.format(
-            project_id_or_key, repo_id_or_name, number), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_pull_request(self, project_id_or_key, repo_id_or_name, number, summary=None,
-                            description=None, issue_id=None, assignee_id=None, notified_user_id=None, comment=None):
+    def update_pull_request(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            summary=None,
+            description=None,
+            issue_id=None,
+            assignee_id=None,
+            notified_user_id=None,
+            comment=None):
         """
         Updates pull requests.
 
@@ -1259,11 +1774,21 @@ class Projects(BacklogBase):
             'comment': comment
         }
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}'.format(
-            project_id_or_key, repo_id_or_name, number), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_pull_request_comment_information_raw(
-            self, project_id_or_key, repo_id_or_name, number, comment_id, form_parameters):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            comment_id,
+            form_parameters):
         """
         Updates pull request comment information.
 
@@ -1277,11 +1802,22 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/comments/{}'.format(
-            project_id_or_key, repo_id_or_name, number, comment_id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number,
+                comment_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_pull_request_comment_information(
-            self, project_id_or_key, repo_id_or_name, number, comment_id, content=None):
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            comment_id,
+            content=None):
         """
         Updates pull request comment information.
 
@@ -1299,8 +1835,14 @@ class Projects(BacklogBase):
             'content': content
         }
 
-        return self._request('/projects/{}/git/repositories/{}/pullRequests/{}/comments/{}'.format(
-            project_id_or_key, repo_id_or_name, number, comment_id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments/{}'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number,
+                comment_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_version_milestone_raw(
             self, project_id_or_key, _id, form_parameters):
@@ -1315,11 +1857,22 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/versions/{}'.format(project_id_or_key,
-                                                               _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/versions/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_version_milestone(self, project_id_or_key, _id, name,
-                                 description=None, start_date=None, release_due_date=None, archived=None):
+    def update_version_milestone(
+            self,
+            project_id_or_key,
+            _id,
+            name,
+            description=None,
+            start_date=None,
+            release_due_date=None,
+            archived=None):
         """
         Updates information about Version/Milestone.
 
@@ -1327,8 +1880,8 @@ class Projects(BacklogBase):
         :param int _id: Version ID
         :param str name: Version Name
         :param str description: Version Description
-        :param str start_date: Start Date
-        :param str release_due_date: Release Due Date
+        :param str start_date: Start Date (yyyy-MM-dd)
+        :param str release_due_date: End Date (yyyy-MM-dd)
         :param bool archived: archived
 
         :return:  requests Response object
@@ -1343,11 +1896,18 @@ class Projects(BacklogBase):
             'archived': self._bool_to_str(archived)
         }
 
-        return self._request('/projects/{}/versions/{}'.format(project_id_or_key,
-                                                               _id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/versions/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_webhook_raw(self, project_id_or_key,
-                           webhook_id, form_parameters):
+    def update_webhook_raw(
+            self,
+            project_id_or_key,
+            webhook_id,
+            form_parameters):
         """
         Updates information about webhook.
 
@@ -1359,11 +1919,22 @@ class Projects(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/projects/{}/webhooks/{}'.format(project_id_or_key,
-                                                               webhook_id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/webhooks/{}'.format(
+                project_id_or_key,
+                webhook_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
-    def update_webhook(self, project_id_or_key, webhook_id, name=None,
-                       description=None, hook_url=None, all_event=None, activity_type_ids=None):
+    def update_webhook(
+            self,
+            project_id_or_key,
+            webhook_id,
+            name=None,
+            description=None,
+            hook_url=None,
+            all_event=None,
+            activity_type_ids=None):
         """
         Updates information about webhook.
 
@@ -1387,5 +1958,9 @@ class Projects(BacklogBase):
             'activityTypeIds[]': activity_type_ids
         }
 
-        return self._request('/projects/{}/webhooks/{}'.format(project_id_or_key,
-                                                               webhook_id), method='PATCH', form_parameters=form_parameters)
+        return self._request(
+            '/projects/{}/webhooks/{}'.format(
+                project_id_or_key,
+                webhook_id),
+            method='PATCH',
+            form_parameters=form_parameters)

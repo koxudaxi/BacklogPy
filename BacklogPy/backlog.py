@@ -10,6 +10,18 @@ from __future__ import unicode_literals, absolute_import
 from BacklogPy.api import *
 
 
-class Backlog(Groups, Issues, Notifications, Priorities, Projects,
-              Resolutions, Space, Stars, Statuses, Users, Watchings, Wikis):
+class Backlog(
+        Groups,
+        Issues,
+        Notifications,
+        Priorities,
+        Projects,
+        Resolutions,
+        Space,
+        Stars,
+        Statuses,
+        Teams,
+        Users,
+        Watchings,
+        Wikis):
     pass

@@ -14,6 +14,16 @@ class Space(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Space, self).__init__(space_id, api_key)
 
+    def get_licence(self):
+        """
+        Returns licence.
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/space/licence', method='GET')
+
     def get_recent_updates_raw(self, query_parameters):
         """
         Returns recent updates in your space.
@@ -24,15 +34,22 @@ class Space(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/space/activities', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/space/activities',
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_recent_updates(self, activity_type_id=None,
-                           min_id=None, max_id=None, count=None, order=None):
+    def get_recent_updates(
+            self,
+            activity_type_id=None,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
         """
         Returns recent updates in your space.
 
-        :param list[int] or int activity_type_id: type(1-17)
+        :param list[int] or int activity_type_id: type(1-26)
         :param int min_id: minimum ID
         :param int max_id: maximum ID
         :param int count: number of records to retrieve(1-100) default=20
@@ -50,8 +67,10 @@ class Space(BacklogBase):
             'order': order
         }
 
-        return self._request('/space/activities', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/space/activities',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_space(self):
         """
