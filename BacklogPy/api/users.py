@@ -16,7 +16,7 @@ class Users(BacklogBase):
 
     def add_user_raw(self, form_parameters):
         """
-        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at
+        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at backlog.com space.
 
         :param dict form_parameters: form_parameters
 
@@ -31,7 +31,7 @@ class Users(BacklogBase):
 
     def add_user(self, user_id, password, name, mail_address, role_type):
         """
-        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at
+        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at backlog.com space.
 
         :param str user_id: user ID
         :param str password: password
@@ -136,7 +136,7 @@ class Users(BacklogBase):
 
     def delete_user(self, user_id):
         """
-        Deletes user from the space. You can’t use this API at
+        Deletes user from the space. You can’t use this API at backlog.com space.
 
         :param int user_id: user ID
 
@@ -462,7 +462,7 @@ class Users(BacklogBase):
 
     def update_user_raw(self, user_id, form_parameters):
         """
-        Updates information about user. You can’t use this API at
+        Updates information about user. You can’t use this API at backlog.com space.
 
         :param int user_id: user ID
         :param dict form_parameters: form_parameters
@@ -484,7 +484,7 @@ class Users(BacklogBase):
             mail_address=None,
             role_type=None):
         """
-        Updates information about user. You can’t use this API at
+        Updates information about user. You can’t use this API at backlog.com space.
 
         :param int user_id: user ID
         :param str password: password

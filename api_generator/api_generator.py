@@ -9,7 +9,7 @@ import re
 import time
 from enum import Enum
 from logging import INFO, getLogger, Logger
-from typing import Any, Dict, Generator, List, Optional, Pattern, Type, Union, Tuple
+from typing import Any, Dict, Generator, List, Optional, Pattern, Type, Union, Tuple, Set
 
 import requests
 from autopep8 import fix_code, parse_args
@@ -36,6 +36,8 @@ AUTO_GENERATE_MESSAGE: str = \
 
 FUTURE_IMPORT: str = 'from __future__ import unicode_literals, absolute_import'
 
+DEPRECATED_MODULE_IMPORT: str = 'from deprecated import deprecated'
+
 BACKLOG_TEMPLATE: str = \
     f'''{CODING}
     
@@ -56,7 +58,7 @@ API_CLASS_TEMPLATE: str = \
 {AUTO_GENERATE_MESSAGE}
 
 {FUTURE_IMPORT}
-
+{{{{module_import}}}}
 from {PACKAGE_NAME}.base import BacklogBase
 
 
@@ -91,6 +93,10 @@ __all__ = [{{all_block}}]
 
 DEVELOPER_URL: str = 'https://developer.nulab-inc.com'
 OVERVIEW_URL: str = 'https://developer.nulab-inc.com/docs/backlog/'
+
+DEPRECATED_WORD: str = '※ Deprecated API. '
+DEPRECATED_TEMPLATE: str = '''
+    @deprecated(reason="{reason}")'''
 
 
 class Parameter:
@@ -252,15 +258,22 @@ def _create_api_from_bs_generator(
             stock[api.space_name] = {}
             stock[api.space_name]['class'] = api.create_api_class()
             stock[api.space_name]['method'] = []
+            stock[api.space_name]['module']: Set[str] = set()
         stock[api.space_name]['method'].append(api.create_api_method())
         if api.has_strict_method:
             stock[api.space_name]['method'].append(
                 api.create_api_method(strict=True))
+        stock[api.space_name]['module'].update(api.modules)
 
     _create_dir(api_path)
 
     for space, api_dict in stock.items():
-        method_code = api_dict['class'] + ''.join(api_dict['method'])
+        if api_dict['module']:
+            modules: str = '\n' + '\n'.join(module for module in api_dict['module']) + '\n'
+        else:
+            modules = ''
+        class_code: str = api_dict['class'].format(module_import=modules)
+        method_code = class_code + ''.join(api_dict['method'])
         _write_code(method_code, api_path, f'{space}.py')
 
     sorted_stock_keys: List[str] = sorted(stock.keys())
@@ -308,6 +321,8 @@ class APIGenerator:
         self._space_name: str = ''
         self._api_name: str = ''
         self._api_description: str = ''
+        self._deprecated_message: str = ''
+        self._modules: Set[str] = set()
 
     def __lt__(self, other: 'APIGenerator') -> bool:
         return self.api_name < other.api_name
@@ -332,9 +347,16 @@ class APIGenerator:
         if self._api_description:
             return self._api_description
         api_name_element: Tag = self.bs.find('h2')
+        link: str = ''
         for element in api_name_element.next_elements:
             if element.name == 'p':
-                self._api_description: str = element.contents[0].replace('\n', ' ')
+                self._api_description: str = element.text.replace('\n', ' ')
+                if element.a:
+                    link = element.a['href']
+                    self._api_description += link
+                if DEPRECATED_WORD in element.text:
+                    self._deprecated_message = element.text.split(DEPRECATED_WORD)[1].replace('\n', ' ') + link
+                    self._modules.add(DEPRECATED_MODULE_IMPORT)
                 return self._api_description
         raise Exception('Not Found Description')
 
@@ -547,6 +569,16 @@ class APIGenerator:
             space_name=self.space_name.title()
         )
 
+    @property
+    def deprecated(self) -> bool:
+        if self._deprecated_message:
+            return True
+        return False
+
+    @property
+    def modules(self) -> Set[str]:
+        return self._modules
+
     def create_api_method(self, strict: bool = False) -> str:
         if strict or not self.has_strict_method:
             parameter_assignment = self._create_parameter_assignment()
@@ -555,13 +587,19 @@ class APIGenerator:
             parameter_assignment = ''
             api_name = f'{self.api_name}_raw'
 
-        return API_METHOD_TEMPLATE.format(
+        api_method: str = API_METHOD_TEMPLATE.format(
             method_args=self._create_method_args(strict),
             args_doc=self._create_args_doc(strict),
             method_doc=self._create_method_doc(),
             api_name=api_name,
             parameter_assignment=parameter_assignment,
             api_call_args=self._create_api_call_args())
+
+        if self.deprecated:
+            deprecated_decorator: str = DEPRECATED_TEMPLATE.format(reason=self._deprecated_message)
+            return deprecated_decorator + api_method
+
+        return api_method
 
 
 if __name__ == '__main__':

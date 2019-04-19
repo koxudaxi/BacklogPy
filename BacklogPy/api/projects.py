@@ -7,6 +7,8 @@
 
 from __future__ import unicode_literals, absolute_import
 
+from deprecated import deprecated
+
 from BacklogPy.base import BacklogBase
 
 
@@ -270,9 +272,11 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
+    @deprecated(
+        reason="Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
     def add_project_group_raw(self, project_id_or_key, form_parameters):
         """
-        Add group to project.
+        Add group to project. ※ Deprecated API. Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -286,9 +290,11 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
+    @deprecated(
+        reason="Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
     def add_project_group(self, project_id_or_key, group_id=None):
         """
-        Add group to project.
+        Add group to project. ※ Deprecated API. Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param int group_id: Group ID
@@ -749,9 +755,11 @@ class Projects(BacklogBase):
             method='DELETE',
             form_parameters=form_parameters)
 
+    @deprecated(
+        reason="Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
     def delete_project_group_raw(self, project_id_or_key, form_parameters):
         """
-        Removes a group from the project.
+        Removes a group from the project. ※ Deprecated API. Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -765,9 +773,11 @@ class Projects(BacklogBase):
             method='DELETE',
             form_parameters=form_parameters)
 
+    @deprecated(
+        reason="Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
     def delete_project_group(self, project_id_or_key, group_id=None):
         """
-        Removes a group from the project.
+        Removes a group from the project. ※ Deprecated API. Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param int group_id: Group ID
@@ -1185,9 +1195,10 @@ class Projects(BacklogBase):
             '/projects/{}/diskUsage'.format(project_id_or_key),
             method='GET')
 
+    @deprecated(reason="Please replace it with Get Project Team List .https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/")
     def get_project_group_list(self, project_id_or_key):
         """
-        Returns list of project groups.
+        Returns list of project groups. ※ Deprecated API. Please replace it with Get Project Team List .https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/
 
         :param str project_id_or_key: Project ID or Project Key
 
