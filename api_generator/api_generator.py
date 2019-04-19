@@ -227,7 +227,7 @@ def _write_code(code: str, base_path: str, file_name: str) -> None:
     file_path: str = os.path.join(base_path, file_name)
     logger.info(f'write {file_path}')
     fixed_init_py: str = fix_code(code,
-                                  options=parse_args(['--aggressive', '']))
+                                  options=parse_args(['--aggressive', '--aggressive', '']))
 
     with open(file_path, 'w') as f:
         f.write(fixed_init_py)
