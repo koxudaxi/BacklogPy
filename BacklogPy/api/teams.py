@@ -10,13 +10,13 @@ from __future__ import unicode_literals, absolute_import
 from BacklogPy.base import BacklogBase
 
 
-class Groups(BacklogBase):
+class Teams(BacklogBase):
     def __init__(self, space_id, api_key):
-        super(Groups, self).__init__(space_id, api_key)
+        super(Teams, self).__init__(space_id, api_key)
 
     def add_group_raw(self, form_parameters):
         """
-        Adds new group. You can’t use this API at
+        Adds new team. You can’t use this API at
 
         :param dict form_parameters: form_parameters
 
@@ -25,13 +25,13 @@ class Groups(BacklogBase):
         """
 
         return self._request(
-            '/groups',
+            '/teams',
             method='POST',
             form_parameters=form_parameters)
 
     def add_group(self, name, members=None):
         """
-        Adds new group. You can’t use this API at
+        Adds new team. You can’t use this API at
 
         :param str name: Group Name
         :param list[int] or int members: User ID added to the group
@@ -46,49 +46,25 @@ class Groups(BacklogBase):
         }
 
         return self._request(
-            '/groups',
+            '/teams',
             method='POST',
             form_parameters=form_parameters)
 
-    def delete_group(self, group_id):
+    def delete_team(self, team_id):
         """
-        Deletes group. You can’t use this API at
+        Deletes team. You can’t use this API at
 
-        :param int group_id: Group ID
+        :param int team_id: Team ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request('/groups/{}'.format(group_id), method='DELETE')
+        return self._request('/teams/{}'.format(team_id), method='DELETE')
 
-    def get_group(self, group_id):
+    def get_list_of_teams_raw(self, query_parameters):
         """
-        Returns information about group.
-
-        :param int group_id: Group ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/groups/{}'.format(group_id), method='GET')
-
-    def get_group_icon(self, group_id):
-        """
-        Downloads group icon.
-
-        :param int group_id: group ID
-
-        :return:  requests Response object
-        :rtype: requests.Response
-        """
-
-        return self._request('/groups/{}/icon'.format(group_id), method='GET')
-
-    def get_list_of_groups_raw(self, query_parameters):
-        """
-        Returns list of groups.
+        Returns list of teams.
 
         :param dict query_parameters: query_parameters
 
@@ -97,13 +73,13 @@ class Groups(BacklogBase):
         """
 
         return self._request(
-            '/groups',
+            '/teams',
             method='GET',
             query_parameters=query_parameters)
 
-    def get_list_of_groups(self, order=None, offset=None, count=None):
+    def get_list_of_teams(self, order=None, offset=None, count=None):
         """
-        Returns list of groups.
+        Returns list of teams.
 
         :param str order: “asc” or “desc” default=“desc”
         :param int offset: offset
@@ -120,15 +96,39 @@ class Groups(BacklogBase):
         }
 
         return self._request(
-            '/groups',
+            '/teams',
             method='GET',
             query_parameters=query_parameters)
 
-    def update_group_raw(self, group_id, form_parameters):
+    def get_team(self, team_id):
         """
-        Updates information about group. You can’t use this API at
+        Returns information about team.
 
-        :param int group_id: Group ID
+        :param int team_id: Team ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/teams/{}'.format(team_id), method='GET')
+
+    def get_team_icon(self, team_id):
+        """
+        Downloads team icon.
+
+        :param int team_id: team ID
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request('/teams/{}/icon'.format(team_id), method='GET')
+
+    def update_team_raw(self, team_id, form_parameters):
+        """
+        Updates information about team. You can’t use this API at
+
+        :param int team_id: Team ID
         :param dict form_parameters: form_parameters
 
         :return:  requests Response object
@@ -136,17 +136,17 @@ class Groups(BacklogBase):
         """
 
         return self._request(
-            '/groups/{}'.format(group_id),
+            '/teams/{}'.format(team_id),
             method='PATCH',
             form_parameters=form_parameters)
 
-    def update_group(self, group_id, name=None, members=None):
+    def update_team(self, team_id, name=None, members=None):
         """
-        Updates information about group. You can’t use this API at
+        Updates information about team. You can’t use this API at
 
-        :param int group_id: Group ID
-        :param str name: Group Name
-        :param list[int] or int members: User ID added to the group
+        :param int team_id: Team ID
+        :param str name: Team Name
+        :param list[int] or int members: User ID added to the team
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -158,6 +158,6 @@ class Groups(BacklogBase):
         }
 
         return self._request(
-            '/groups/{}'.format(group_id),
+            '/teams/{}'.format(team_id),
             method='PATCH',
             form_parameters=form_parameters)

@@ -24,11 +24,15 @@ class Notifications(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/notifications/count',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/notifications/count',
+            method='GET',
+            query_parameters=query_parameters)
 
     def count_notification(
-            self, resource_already_read=None, already_read=None):
+            self,
+            resource_already_read=None,
+            already_read=None):
         """
         Returns number of Notifications.
 
@@ -44,8 +48,10 @@ class Notifications(BacklogBase):
             'alreadyRead': self._bool_to_str(already_read)
         }
 
-        return self._request('/notifications/count',
-                             method='GET', query_parameters=query_parameters)
+        return self._request(
+            '/notifications/count',
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_notification_raw(self, query_parameters):
         """
@@ -57,11 +63,18 @@ class Notifications(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/notifications', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/notifications',
+            method='GET',
+            query_parameters=query_parameters)
 
-    def get_notification(self, min_id=None, max_id=None,
-                         count=None, order=None):
+    def get_notification(
+            self,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None,
+            sender_id=None):
         """
         Returns own notifications.
 
@@ -69,6 +82,7 @@ class Notifications(BacklogBase):
         :param int max_id: maximum ID
         :param int count: number of records to retrieve(1-100) default=20
         :param str order: “asc” or “desc”
+        :param int sender_id: sender ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -78,11 +92,14 @@ class Notifications(BacklogBase):
             'minId': min_id,
             'maxId': max_id,
             'count': count,
-            'order': order
+            'order': order,
+            'senderId': sender_id
         }
 
-        return self._request('/notifications', method='GET',
-                             query_parameters=query_parameters)
+        return self._request(
+            '/notifications',
+            method='GET',
+            query_parameters=query_parameters)
 
     def read_notification(self, _id):
         """
@@ -95,7 +112,8 @@ class Notifications(BacklogBase):
         """
 
         return self._request(
-            '/notifications/{}/markAsRead'.format(_id), method='POST')
+            '/notifications/{}/markAsRead'.format(_id),
+            method='POST')
 
     def reset_unread_notification_count(self):
         """

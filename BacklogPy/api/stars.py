@@ -24,11 +24,18 @@ class Stars(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/stars', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/stars',
+            method='POST',
+            form_parameters=form_parameters)
 
-    def add_star(self, issue_id=None, comment_id=None, wiki_id=None,
-                 pull_request_id=None, pull_request_comment_id=None):
+    def add_star(
+            self,
+            issue_id=None,
+            comment_id=None,
+            wiki_id=None,
+            pull_request_id=None,
+            pull_request_comment_id=None):
         """
         Adds star.
 
@@ -50,5 +57,7 @@ class Stars(BacklogBase):
             'pullRequestCommentId': pull_request_comment_id
         }
 
-        return self._request('/stars', method='POST',
-                             form_parameters=form_parameters)
+        return self._request(
+            '/stars',
+            method='POST',
+            form_parameters=form_parameters)
