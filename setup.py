@@ -6,8 +6,6 @@ from setuptools import setup
 
 packages = ['BacklogPy', 'BacklogPy.api']
 
-__version__ = '1.0.6'
-
 requires = [
     'requests',
     'Deprecated'
@@ -23,9 +21,13 @@ with open('LICENSE', 'r') as f:
 with open('README.rst', 'r') as f:
     readme = f.read()
 
+use_scm_version = {'write_to': 'BacklogPy/version.py'}
+
+
 setup(
     name='BacklogPy',
-    version=__version__,
+    use_scm_version=use_scm_version,
+    extras_require=['wheel', 'twine'],
     description='Backlog API v2 Client Library',
     long_description=readme,
     author='Koudai Aono',
