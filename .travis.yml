@@ -1,30 +1,24 @@
 dist: xenial
 language: python
 python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-
+- '2.7'
+- '3.5'
+- '3.6'
+- '3.7'
 install:
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then
-      pip install -r requirements-api-generator.txt;
-      pip install -r deploy-requirements.txt;
-    fi
-
+- pip install -r requirements.txt
+- pip install -r test-requirements.txt
+- if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then pip install -r requirements-api-generator.txt;
+  pip install -r deploy-requirements.txt; fi
 script:
-  - nosetests -v tests/backlog
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then
-      nosetests -v tests/api_generator;
-    fi
+- nosetests -v tests/backlog
+- if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then nosetests -v tests/api_generator; fi
 deploy:
   - provider: pypi
     user: koxudaxi
     skip_existing: true
     password:
-      secure: Djmf29FcrmJvL5cIqZMGwEwoCua1k8bI/dKoNTLG1UXVSAeh5EKQU8g7LztXAnEszWtzzHgXtQ7p6uYnylltuZToagViuFjQZyTwCr0B1jEP7b2Z86vR29suZh8Sffmqh18SinOchRF+Ey7mnZv5/YADOWpCjCKw+vXKElrkXo+/vVh5sGQzPbzZ2m2fdcbmnF53NDzDMXW4HI8WngIQcH/d8HST6yFMK0+deoYZgyYjXxRQ+eha4K4I5OWOvUg8hDmcPyOsQhaMAHi6UxQqV42I7Sl7sKxpW7PK8kX+Smkq/CilK8VYZWavoGs1lzuuE0JKTsm0Scz2b2EnmvR2tOJesn/hgPdq4+/XMY/lPTVK1Npw5YYk5hm/lpniS1ZB9hhRoeIlQwSuR9qtSbNPIJHT9zFBRE4yQEygx7MAKaoO9uPsFrBmrHMrElL4d0jgLSbWs6MXH05TT3ng56DUiWUsl5+3LclrXdRc2OUMnX+wkCxCh2nBxagLU0DmZBT/17SN57KPia1NxnZjGZCHPXqinVBykPe+72F3asv9vmz0OhM5Y6t54UosPudmPVY+9KaPovHxOJAEpGkXM5/jDLVWB/GMap19dyiyG/Ytk4Pt8AmgthWMnabZqZQq3Ko0/aFvDLmPUt9DR7F4H50gkMP/VjAGGsgWFjXTX262Suc=
+      secure: Qbb2FXEembIQ6MejZ2prOSZhXLvGB2ZhAKXTjwYQo8zdayqSTrukSiAgPb6KESFFXlBxVWygn1UntCzLbQoqDD4mw4wXziRwh3RktKpvpm8gPvRBpgS5185WdUkWXsxdkaj0PuxiS++iSXYJNckw0Vq2juO9DZdOZUesYF5EMk5LWDDdaV8S7KS308tjjCHbanAM1PGeDpTsR4C4wZYWO77dSF7wJtyMHnCOdkIoaoyRlpIon3YHz2AMxgvvYY9FrRJphFLLa05jjsqJf/wuD+mzEiQ6Fpv2IKYkvsQwaTJ3ogbTlS+75XNG57X1YHsH+m6dSl12O0swYi8lSzw++JjESfghdf4ZfqX0KKnPiC17gq1IYE1G00IeVsH0w1QDaj3lbrNLJ9NUaqM6Ov/gu5tHZP0ME0NnQ3PRwpKRWIu+uGgZ02cN6b4ecLbiih5bwavIG+cBmhx30QiX/8D52bjUTU/SmmjLiepDv1V1fWckLSR90jsXfUa4C0QjAgJHs/H/SL/4LwEkCVP2rH6SLMpa6wzRXXIAxUo8a8EpprXdEZAF2W0M+NJDPQENhbCMRgk1SvqvacsVAhAd8pphSVjmEcFYC40NqSnyAcBD3yCfc5s/8HNOcLnCZvuvCYZhUoEtpLiwyqYnPKuWgXlVPXqAmdLD4rP8V8g1m1Hry8g=
     on:
       tags: true
       python: '3.7'
