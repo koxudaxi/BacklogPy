@@ -27,7 +27,7 @@ use_scm_version = {'write_to': 'BacklogPy/version.py'}
 setup(
     name='BacklogPy',
     use_scm_version=use_scm_version,
-    extras_require=['wheel', 'twine'],
+    extras_require={'deploy': ['wheel', 'twine']},
     description='Backlog API v2 Client Library',
     long_description=readme,
     author='Koudai Aono',
