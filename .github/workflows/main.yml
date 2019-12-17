@@ -32,7 +32,7 @@ jobs:
       run: |
         nosetests -v tests/backlog
     - name: Test a generator
-      if: matrix.python-version == 3.7 && matrix.os == ubuntu-latest
+      if: matrix.python-version == 3.7 && matrix.os == 'ubuntu-latest'
       run: |
         pip install -r requirements-api-generator.txt
         nosetests -v tests/api_generator
