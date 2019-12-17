@@ -14,7 +14,7 @@ class Teams(BacklogBase):
     def __init__(self, space_id, api_key):
         super(Teams, self).__init__(space_id, api_key)
 
-    def add_group_raw(self, form_parameters):
+    def add_team_raw(self, form_parameters):
         """
         Adds new team. You can’t use this API at backlog.com space.
 
@@ -29,7 +29,7 @@ class Teams(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    def add_group(self, name, members=None):
+    def add_team(self, name, members=None):
         """
         Adds new team. You can’t use this API at backlog.com space.
 

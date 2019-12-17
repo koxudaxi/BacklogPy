@@ -186,9 +186,9 @@ def _get_api_urls(developer_url: str = DEVELOPER_URL,
                   overview_url: str = OVERVIEW_URL) -> Generator[str,
                                                                  None, None]:
     bs: BeautifulSoup = _get_bs_from_url(overview_url)
-    api_list: Tag = bs.find('optgroup', label='Backlog API')
-    for api in api_list.find_all('option'):
-        yield developer_url + api['value']
+    api_list: Tag = bs.find('ul', class_='sidebar__api-list')
+    for api in api_list.find_all('a'):
+        yield developer_url + api['href']
 
 
 def _get_bs_from_file(base_dir: str = DATA_DIR) -> Generator[BeautifulSoup,
@@ -301,7 +301,7 @@ def download_doc_file(data_dir: str,
     for api_url in _get_api_urls():
         r: Response = requests.get(api_url)
         time.sleep(download_wait_time)
-        file_name: str = api_url.split('/')[-1]
+        file_name: str = api_url.split('/')[-2]
         logger.info('write file: {sleep}')
         with open(os.path.join(data_dir, file_name + '.html'), 'wb') as f:
             f.write(r.content)
@@ -338,7 +338,11 @@ class APIGenerator:
     def api_name(self) -> str:
         if self._api_name:
             return self._api_name
-        raw_api_name: Tag = self.bs.find('h2')['id']
+        raw_api: Optional[Tag] = self.bs.find('h1')
+        if not raw_api:
+            raw_api = self.bs.find('div', class_='content').find('h2')
+        raw_api_name = raw_api['id']
+
         self._api_name: str = raw_api_name.replace('-', '_')
         return self._api_name
 
@@ -346,40 +350,50 @@ class APIGenerator:
     def api_description(self) -> str:
         if self._api_description:
             return self._api_description
-        api_name_element: Tag = self.bs.find('h2')
-        link: str = ''
-        for element in api_name_element.next_elements:
-            if element.name == 'p':
-                self._api_description: str = element.text.replace('\n', ' ')
-                if element.a:
-                    link = element.a['href']
-                    self._api_description += link
-                if DEPRECATED_WORD in element.text:
-                    self._deprecated_message = element.text.split(DEPRECATED_WORD)[1].replace('\n', ' ') + link
-                    self._modules.add(DEPRECATED_MODULE_IMPORT)
-                return self._api_description
-        raise Exception('Not Found Description')
+        self._api_description: str = self.bs.find('p').text.replace('\n', ' ')
+        strong: Optional[Tag] = self.bs.find('strong')
+        if strong and strong.text == 'Deprecated API':
+            span: Tag = strong.parent.parent.find('span')
+            self._deprecated_message = span.text + span.find('a')['href']
+            self._api_description += f' {DEPRECATED_WORD}'
+            self._api_description += span.find('a')['href']
+            self._modules.add(DEPRECATED_MODULE_IMPORT)
+        return self._api_description
 
     @property
     def method_type(self) -> str:
         if self._method_type:
             return self._method_type
-        for api_path in self.bs.find_all('h3', id='method'):
-            for element in api_path.next_elements:
-                if element.name == 'code':
-                    self._method_type: str = element.contents[0].replace(' \n', '')
-                    return self._method_type
+
+        def get_method_type(tag: str) -> str:
+            for api_path in self.bs.find_all(tag, id='method'):
+                for element in api_path.next_elements:
+                    if element.name == 'code':
+                        return element.contents[0].replace(' \n', '')
+        method_type: Optional[str] = get_method_type('h2')
+        if not method_type:
+            method_type = get_method_type('h3')
+        if method_type:
+            self._method_type = method_type
+            return self._method_type
         raise Exception('Not Found Method')
 
     @property
     def api_path(self) -> str:
         if self._api_path:
             return self._api_path
-        for api_path in self.bs.find_all('h3', id='url'):
-            for element in api_path.next_elements:
-                if element.name == 'code':
-                    self._api_path: str = element.contents[0].replace(' \n', '')
-                    return self._api_path
+
+        def get_api_path(tag: str) -> str:
+            for api_path in self.bs.find_all(tag, id='url'):
+                for element in api_path.next_elements:
+                    if element.name == 'code':
+                        return element.contents[0].replace(' \n', '')
+        api_path_: Optional[str] = get_api_path('h2')
+        if not api_path_:
+            api_path_ = get_api_path('h3')
+        if api_path_:
+            self._api_path = api_path_
+            return self._api_path
         raise Exception('Not Found API Path')
 
     @property
@@ -406,9 +420,11 @@ class APIGenerator:
     def _get_parameters(self, html_id: str,
                         force_required: bool = False) -> Parameters:
         parameters: Parameters = []
-
-        for h3 in self.bs.find_all('h3', id=html_id):
-            for element in h3.next_elements:
+        tags: Optional[List[Tag]] = self.bs.find_all('h3', id=html_id)
+        if not tags:
+            tags = self.bs.find_all('h2', id=html_id)
+        for tag in tags:
+            for element in tag.next_elements:
                 if element.name == 'thead':
                     th = element.find('th')
                     if len(th.contents[0]) and th.contents[
@@ -455,7 +471,8 @@ class APIGenerator:
                                url_parameter in
                                self.url_parameters]
             parameter_args: str = ', '.join(parameter_names)
-            api_call_args.append(f'\'{path}\'.format({parameter_args})')
+
+            api_call_args.append(f'\'{path.rstrip()}\'.format({parameter_args})')
         else:
             api_call_args.append(f'\'{self.short_path}\'')
 
