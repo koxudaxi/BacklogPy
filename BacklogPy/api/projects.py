@@ -212,7 +212,7 @@ class Projects(BacklogBase):
         Adds new project.
 
         :param str name: Project Name
-        :param str key: Project Key
+        :param str key: Project Key (Uppercase letters (A-Z), numbers (0-9) and underscore (_) can be used.)
         :param bool chart_enabled: Enable chart
         :param bool project_leader_can_edit_project_leader: Allow project administrators to manage each other
         :param bool subtasking_enabled: Enable subtasking
@@ -272,11 +272,10 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    @deprecated(
-        reason="Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
+    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Add Project Team.https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
     def add_project_group_raw(self, project_id_or_key, form_parameters):
         """
-        Add group to project. ※ Deprecated API. Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/
+        Add group to project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/add-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -290,11 +289,10 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    @deprecated(
-        reason="Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
+    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Add Project Team.https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
     def add_project_group(self, project_id_or_key, group_id=None):
         """
-        Add group to project. ※ Deprecated API. Please replace it with Add Project Team .https://developer.nulab.com/docs/backlog/api/2/add-project-team/
+        Add group to project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/add-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param int group_id: Group ID
@@ -412,9 +410,9 @@ class Projects(BacklogBase):
             project_id_or_key,
             repo_id_or_name,
             summary,
-            description=None,
-            base=None,
-            branch=None,
+            description,
+            base,
+            branch,
             issue_id=None,
             assignee_id=None,
             notified_user_id=None,
@@ -511,6 +509,44 @@ class Projects(BacklogBase):
                 project_id_or_key,
                 repo_id_or_name,
                 number),
+            method='POST',
+            form_parameters=form_parameters)
+
+    def add_status_raw(self, project_id_or_key, form_parameters):
+        """
+        Adds new Status to the project.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/statuses'.format(project_id_or_key),
+            method='POST',
+            form_parameters=form_parameters)
+
+    def add_status(self, project_id_or_key, name, color):
+        """
+        Adds new Status to the project.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param str name: Status name
+        :param str color: Background color: You can use the below colors
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'name': name,
+            'color': color
+        }
+
+        return self._request(
+            '/projects/{}/statuses'.format(project_id_or_key),
             method='POST',
             form_parameters=form_parameters)
 
@@ -755,11 +791,10 @@ class Projects(BacklogBase):
             method='DELETE',
             form_parameters=form_parameters)
 
-    @deprecated(
-        reason="Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
+    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Delete Project Team.https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
     def delete_project_group_raw(self, project_id_or_key, form_parameters):
         """
-        Removes a group from the project. ※ Deprecated API. Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
+        Removes a group from the project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -769,15 +804,14 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/ projects / {} / groups '.format(project_id_or_key),
+            '/projects/{}/groups'.format(project_id_or_key),
             method='DELETE',
             form_parameters=form_parameters)
 
-    @deprecated(
-        reason="Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
+    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Delete Project Team.https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
     def delete_project_group(self, project_id_or_key, group_id=None):
         """
-        Removes a group from the project. ※ Deprecated API. Please replace it with Delete Project Team .https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
+        Removes a group from the project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
 
         :param str project_id_or_key: Project ID or Project Key
         :param int group_id: Group ID
@@ -791,7 +825,7 @@ class Projects(BacklogBase):
         }
 
         return self._request(
-            '/ projects / {} / groups '.format(project_id_or_key),
+            '/projects/{}/groups'.format(project_id_or_key),
             method='DELETE',
             form_parameters=form_parameters)
 
@@ -807,7 +841,7 @@ class Projects(BacklogBase):
         """
 
         return self._request(
-            '/ projects / {} / teams '.format(project_id_or_key),
+            '/projects/{}/teams'.format(project_id_or_key),
             method='DELETE',
             form_parameters=form_parameters)
 
@@ -827,7 +861,7 @@ class Projects(BacklogBase):
         }
 
         return self._request(
-            '/ projects / {} / teams '.format(project_id_or_key),
+            '/projects/{}/teams'.format(project_id_or_key),
             method='DELETE',
             form_parameters=form_parameters)
 
@@ -892,6 +926,48 @@ class Projects(BacklogBase):
                 number,
                 attachment_id),
             method='DELETE')
+
+    def delete_status_raw(self, project_id_or_key, _id, form_parameters):
+        """
+        Deletes Status.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int _id: Status ID
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/statuses/{}'.format(
+                project_id_or_key,
+                _id),
+            method='DELETE',
+            form_parameters=form_parameters)
+
+    def delete_status(self, project_id_or_key, _id, substitute_status_id):
+        """
+        Deletes Status.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int _id: Status ID
+        :param int substitute_status_id: Status ID to replace linked issues statuses.
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'substituteStatusId': substitute_status_id
+        }
+
+        return self._request(
+            '/projects/{}/statuses/{}'.format(
+                project_id_or_key,
+                _id),
+            method='DELETE',
+            form_parameters=form_parameters)
 
     def delete_version(self, project_id_or_key, _id):
         """
@@ -1195,10 +1271,10 @@ class Projects(BacklogBase):
             '/projects/{}/diskUsage'.format(project_id_or_key),
             method='GET')
 
-    @deprecated(reason="Please replace it with Get Project Team List .https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/")
+    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Get Project Team List.https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/")
     def get_project_group_list(self, project_id_or_key):
         """
-        Returns list of project groups. ※ Deprecated API. Please replace it with Get Project Team List .https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/
+        Returns list of project groups. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/
 
         :param str project_id_or_key: Project ID or Project Key
 
@@ -1469,6 +1545,20 @@ class Projects(BacklogBase):
             method='GET',
             query_parameters=query_parameters)
 
+    def get_status_list_of_project(self, project_id_or_key):
+        """
+        Returns list of status in the project.
+
+        :param str project_id_or_key: Project ID or Project Key
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/statuses'.format(project_id_or_key),
+            method='GET')
+
     def get_version_milestone_list(self, project_id_or_key):
         """
         Returns list of Versions/Milestones in the project.
@@ -1562,7 +1652,7 @@ class Projects(BacklogBase):
             self,
             project_id_or_key,
             _id,
-            name,
+            name=None,
             applicable_issue_types=None,
             description=None,
             required=None):
@@ -1654,6 +1744,42 @@ class Projects(BacklogBase):
         return self._request(
             '/projects/{}/customFields/{}/items/{}'.format(
                 project_id_or_key, _id, item_id), method='PATCH')
+
+    def update_order_of_status_raw(self, project_id_or_key, form_parameters):
+        """
+        Updates order about Status.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/statuses/updateDisplayOrder'.format(project_id_or_key),
+            method='PATCH',
+            form_parameters=form_parameters)
+
+    def update_order_of_status(self, project_id_or_key, status_id=None):
+        """
+        Updates order about Status.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param list[int] or int status_id: Status ID List to order them. You have to send all status of project. It has following restrictions as below.
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'statusId[]': status_id
+        }
+
+        return self._request(
+            '/projects/{}/statuses/updateDisplayOrder'.format(project_id_or_key),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_project_raw(self, project_id_or_key, form_parameters):
         """
@@ -1841,6 +1967,50 @@ class Projects(BacklogBase):
                 repo_id_or_name,
                 number,
                 comment_id),
+            method='PATCH',
+            form_parameters=form_parameters)
+
+    def update_status_raw(self, project_id_or_key, _id, form_parameters):
+        """
+        Updates information about Status.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int _id: Status ID
+        :param dict form_parameters: form_parameters
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/projects/{}/statuses/{}'.format(
+                project_id_or_key,
+                _id),
+            method='PATCH',
+            form_parameters=form_parameters)
+
+    def update_status(self, project_id_or_key, _id, name=None, color=None):
+        """
+        Updates information about Status.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int _id: Status ID
+        :param str name: Status Name
+        :param str color: Background color : available
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'name': name,
+            'color': color
+        }
+
+        return self._request(
+            '/projects/{}/statuses/{}'.format(
+                project_id_or_key,
+                _id),
             method='PATCH',
             form_parameters=form_parameters)
 

@@ -570,6 +570,20 @@ class Issues(BacklogBase):
             method='GET',
             query_parameters=query_parameters)
 
+    def get_issue_participant_list(self, issue_id_or_key):
+        """
+        Returns list of participants of an issue.
+
+        :param str issue_id_or_key: Issue ID or Issue Key
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        return self._request(
+            '/issues/{}/participants'.format(issue_id_or_key),
+            method='GET')
+
     def get_list_of_comment_notifications(self, issue_id_or_key, comment_id):
         """
         Returns the list of comment notifications.
@@ -723,8 +737,6 @@ class Issues(BacklogBase):
     def update_issue(
             self,
             issue_id_or_key,
-            issue_type_id,
-            priority_id,
             summary=None,
             parent_issue_id=None,
             description=None,
@@ -734,9 +746,11 @@ class Issues(BacklogBase):
             due_date=None,
             estimated_hours=None,
             actual_hours=None,
+            issue_type_id=None,
             category_id=None,
             version_id=None,
             milestone_id=None,
+            priority_id=None,
             assignee_id=None,
             notified_user_id=None,
             attachment_id=None,

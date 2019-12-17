@@ -32,11 +32,11 @@ class TestHTMLDownload(TestCase):
 
     @mock.patch('requests.get')
     def test_get_api_urls(self, requests_mock):
-        html = '<html><body><optgroup label="Backlog API">' \
-               '<option value="/path1"></option>' \
-               '<option value="/path2"></option>' \
-               '<option value="/path3"></option>' \
-               '</optgroup></body></html>'
+        html = '<html><body><ul class=sidebar__api-list>' \
+               '<li><a href="/path1"></a></li>' \
+               '<li><a href="/path2"></a></li>' \
+               '<li><a href="/path3"></a></li>' \
+               '</ul></body></html>'
 
         developer_url = 'http://localhost/developer'
         requests_mock.return_value = MockResponse(html)
@@ -96,13 +96,13 @@ class TestHTMLDownload(TestCase):
             def content(self) -> bytes:
                 return next(self._gen)
 
-        html_list = [b'<html><body>1</body></html>',
-                     b'<html><body>1</body></html>',
-                     b'<html><body>1</body></html>']
+        html_list = [b'<html><body><ul class="sidebar__api-list">1</ul></body></html>',
+                     b'<html><body><ul class="sidebar__api-list">1</ul></body></html>',
+                     b'<html><body><ul class="sidebar__api-list">1</ul></body></html>']
 
         requests_mock.return_value = MockMultiResponse(html_list)
-        get_api_urls_mock.return_value = ['/api/path/1', '/api/path/2',
-                                          '/api/path/3']
+        get_api_urls_mock.return_value = ['/api/path/1/', '/api/path/2/',
+                                          '/api/path/3/']
         with TemporaryDirectory() as target_directory:
             api_generator.download_doc_file(target_directory, 0)
 
@@ -186,7 +186,7 @@ class Backlog(Space1, Space2, Space3):
 
     def test_create_api_from_bs_generator(self):
         html_template = '<html><body>' \
-                        '<h2 id="test_api_name"><p>hello{num}</p></h2></body>' \
+                        '<h1 id="test_api_name"><p>hello{num}</p></h1></body>' \
                         '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                         '<h3 id="method"><code>hello</code></h3>' \
                         '<h3 id="url-parameters">' \
@@ -334,7 +334,8 @@ class Backlog(Hello):
                 self.assertEqual(f.read(), expect_backlog_py)
 
         html_template = '<html><body>' \
-                        '<h2 id="test_api_name"><p>hello{num} ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h2></body>' \
+                        '<h1 id="test_api_name"><p>hello{num} ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h1></body>' \
+                        '<strong>Deprecated API</strong><span>xxx <a href="https://backlogpy.org"></a></span>' \
                         '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                         '<h3 id="method"><code>hello</code></h3>' \
                         '<h3 id="url-parameters">' \
@@ -370,7 +371,7 @@ class Hello(BacklogBase):
     @deprecated(reason="xxx https://backlogpy.org")
     def test_api_name_raw(self, hello, bye, num, form_parameters):
         """
-        hello0 ※ Deprecated API. xxx https://backlogpy.org
+        hello0 ※ Deprecated API. xxx  ※ Deprecated API. https://backlogpy.org
 
         :param str hello: hello
         :param str bye: bye
@@ -387,7 +388,7 @@ class Hello(BacklogBase):
     @deprecated(reason="xxx https://backlogpy.org")
     def test_api_name(self, hello, bye, num, hello=None, bye=None):
         """
-        hello0 ※ Deprecated API. xxx https://backlogpy.org
+        hello0 ※ Deprecated API. xxx  ※ Deprecated API. https://backlogpy.org
 
         :param str hello: hello
         :param str bye: bye
@@ -410,7 +411,7 @@ class Hello(BacklogBase):
     @deprecated(reason="xxx https://backlogpy.org")
     def test_api_name_raw(self, hello, bye, num, form_parameters):
         """
-        hello1 ※ Deprecated API. xxx https://backlogpy.org
+        hello1 ※ Deprecated API. xxx  ※ Deprecated API. https://backlogpy.org
 
         :param str hello: hello
         :param str bye: bye
@@ -427,7 +428,7 @@ class Hello(BacklogBase):
     @deprecated(reason="xxx https://backlogpy.org")
     def test_api_name(self, hello, bye, num, hello=None, bye=None):
         """
-        hello1 ※ Deprecated API. xxx https://backlogpy.org
+        hello1 ※ Deprecated API. xxx  ※ Deprecated API. https://backlogpy.org
 
         :param str hello: hello
         :param str bye: bye
@@ -510,7 +511,7 @@ class TestParameter(TestCase):
 
 class TestAPIGenerator(TestCase):
     def test_api_name(self):
-        html = '<html><body><h2 id="test_api_name" >hello</h2></body></html>'
+        html = '<html><body><h1 id="test_api_name" >hello</h1></body></html>'
 
         api = api_generator.APIGenerator(get_bs(html))
         self.assertEqual(api.api_name, 'test_api_name')
@@ -529,9 +530,9 @@ class TestAPIGenerator(TestCase):
         with self.assertRaises(Exception):
             _ = api.api_description
 
-        html = '<html><body><h2><p>hello ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h2></body></html>'
+        html = '<html><body><h2><p>hello ※ Deprecated API. xxx <strong>Deprecated API<strong><span><a href="https://backlogpy.org"></a></span></p></h2></body></html>'
         api = api_generator.APIGenerator(get_bs(html))
-        self.assertEqual(api.api_description, 'hello ※ Deprecated API. xxx https://backlogpy.org')
+        self.assertEqual(api.api_description, 'hello ※ Deprecated API. xxx Deprecated API ※ Deprecated API. https://backlogpy.org')
         self.assertTrue(api.deprecated)
         self.assertEqual(api.modules, {'from deprecated import deprecated'})
 
@@ -890,7 +891,7 @@ class Hello(BacklogBase):
 
     def test_create_api_method(self):
         html = '<html><body>' \
-               '<h2 id="test_api_name" >hello</h2>' \
+               '<h1 id="test_api_name" >hello</h1>' \
                '<html><body><h2><p>hello</p></h2></body></html>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
@@ -950,8 +951,9 @@ class Hello(BacklogBase):
                          expect_api_method)
 
         html = '<html><body>' \
-               '<h2 id="test_api_name" >hello</h2>' \
-               '<html><body><h2><p>hello ※ Deprecated API. xxx <a href="https://backlogpy.org"></a></p></h2></html>' \
+               '<h1 id="test_api_name" >hello</h1>' \
+               '<strong>Deprecated API</strong><span>xxx <a href="https://backlogpy.org"></a></span>'\
+               '<html><body><h2><p>hello xxx. <a href="https://backlogpy.org"></a></p></h2></html>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
                '<h3 id="query-parameters">' \
@@ -965,7 +967,7 @@ class Hello(BacklogBase):
     @deprecated(reason="xxx https://backlogpy.org")
     def test_api_name_raw(self, query_parameters):
         """
-        hello ※ Deprecated API. xxx https://backlogpy.org
+        hello xxx.  ※ Deprecated API. https://backlogpy.org
         
         :param dict query_parameters: query_parameters
         
@@ -984,7 +986,7 @@ class Hello(BacklogBase):
 
     def test_create_api_method_with_broken_header(self):
         html = '<html><body>' \
-               '<h2 id="test_api_name" >hello</h2>' \
+               '<h1 id="test_api_name" >hello</h1>' \
                '<html><body><h2><p>hello</p></h2></body></html>' \
                '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                '<h3 id="method"><code>hello</code></h3>' \
@@ -1048,7 +1050,7 @@ class Hello(BacklogBase):
 
     def test___lt__(self):
         html_1 = '<html><body>' \
-                 '<h2 id="test_api_name_abc" >hello</h2>' \
+                 '<h1 id="test_api_name_abc" >hello</h1>' \
                  '<html><body><h2><p>hello</p></h2></body></html>' \
                  '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                  '<h3 id="method"><code>hello</code></h3>' \
@@ -1060,7 +1062,7 @@ class Hello(BacklogBase):
                  '</tbody></h3></body></html>'
 
         html_2 = '<html><body>' \
-                 '<h2 id="test_api_name_bcd" >hello</h2>' \
+                 '<h1 id="test_api_name_bcd" >hello</h1>' \
                  '<html><body><h2><p>hello</p></h2></body></html>' \
                  '<h3 id="url"><code>/api/v2/hello</code></h3>' \
                  '<h3 id="method"><code>hello</code></h3>' \
