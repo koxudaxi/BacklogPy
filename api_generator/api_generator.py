@@ -358,23 +358,6 @@ class APIGenerator:
             self._api_description += f' {DEPRECATED_WORD}'
             self._api_description += span.find('a')['href']
             self._modules.add(DEPRECATED_MODULE_IMPORT)
-            # print(strong.parent.parent['span'].text)
-            # exit(1)
-            # self._deprecated_message = element.text.split(DEPRECATED_WORD)[1].replace('\n', ' ') + link
-            #             self._modules.add(DEPRECATED_MODULE_IMPORT)
-        # api_name_element: Tag = self.bs.find('h2')
-        # link: str = ''
-        # for element in api_name_element.next_elements:
-        #     if element.name == 'p':
-        #         self._api_description: str = element.text.replace('\n', ' ')
-        #         if element.a:
-        #             link = element.a['href']
-        #             self._api_description += link
-        #         if DEPRECATED_WORD in element.text:
-        #             self._deprecated_message = element.text.split(DEPRECATED_WORD)[1].replace('\n', ' ') + link
-        #             self._modules.add(DEPRECATED_MODULE_IMPORT)
-        #         return self._api_description
-        # raise Exception('Not Found Description')
         return self._api_description
 
     @property
