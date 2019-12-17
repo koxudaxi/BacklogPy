@@ -37,7 +37,7 @@ jobs:
         pip install -r requirements-api-generator.txt
         nosetests -v tests/api_generator
     - name: Publish package
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7 && matrix.os == 'ubuntu-latest'
       uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__
