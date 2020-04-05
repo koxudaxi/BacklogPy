@@ -2,4 +2,4 @@ requests==2.23.0
 beautifulsoup4==4.8.2
 lxml==4.5.0
 autopep8==1.5
-Deprecated==1.2.7
+Deprecated==1.2.8

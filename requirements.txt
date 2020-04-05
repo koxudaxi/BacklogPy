@@ -1,2 +1,2 @@
 requests==2.23.0
-Deprecated==1.2.7
+Deprecated==1.2.8
