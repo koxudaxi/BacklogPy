@@ -3,7 +3,7 @@ BacklogPy - Backlog API v2 Client Library for Python
 ====================================================
 
 
-|Build Status| |Version|
+|Build Status| |Version| |Downloads|
 
 
 BacklogPy is `Backlog API v2 <https://developer.nulab-inc.com/docs/backlog/>`_ Client Library for Python 2/3
@@ -15,7 +15,9 @@ BacklogPy is `Backlog API v2 <https://developer.nulab-inc.com/docs/backlog/>`_ C
 .. |Version| image:: http://img.shields.io/pypi/v/BacklogPy.svg?style=flat
     :target: https://pypi.python.org/pypi/BacklogPy/
     :alt: Version
-
+.. |Downloads| image:: https://pepy.tech/badge/backlogpy/month
+    :target: https://pepy.tech/project/backlogpy/month
+    :alt: Downloads
 
 Install
 -------
