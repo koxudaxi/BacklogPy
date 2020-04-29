@@ -119,13 +119,21 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    def add_issue_type(self, project_id_or_key, name, color):
+    def add_issue_type(
+            self,
+            project_id_or_key,
+            name,
+            color,
+            template_summary=None,
+            template_description=None):
         """
         Adds new Issue Type to the project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str name: Issue Type name
         :param str color: Background color
+        :param str template_summary: Subject
+        :param str template_description: Description
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -133,7 +141,9 @@ class Projects(BacklogBase):
 
         form_parameters = {
             'name': name,
-            'color': color
+            'color': color,
+            'templateSummary': template_summary,
+            'templateDescription': template_description
         }
 
         return self._request(
@@ -1703,7 +1713,14 @@ class Projects(BacklogBase):
             method='PATCH',
             form_parameters=form_parameters)
 
-    def update_issue_type(self, project_id_or_key, _id, name=None, color=None):
+    def update_issue_type(
+            self,
+            project_id_or_key,
+            _id,
+            name=None,
+            color=None,
+            template_summary=None,
+            template_description=None):
         """
         Updates information about Issue Type.
 
@@ -1711,6 +1728,8 @@ class Projects(BacklogBase):
         :param int _id: Issue Type ID
         :param str name: Issue Type Name
         :param str color: Background color : available
+        :param str template_summary: Subject
+        :param str template_description: Description
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1718,7 +1737,9 @@ class Projects(BacklogBase):
 
         form_parameters = {
             'name': name,
-            'color': color
+            'color': color,
+            'templateSummary': template_summary,
+            'templateDescription': template_description
         }
 
         return self._request(
