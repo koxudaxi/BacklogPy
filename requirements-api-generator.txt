@@ -1,4 +1,4 @@
-requests==2.24.0
+requests==2.25.0
 beautifulsoup4==4.9.3
 lxml==4.6.1
 autopep8==1.5.4
