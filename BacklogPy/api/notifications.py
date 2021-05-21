@@ -7,12 +7,12 @@
 
 from __future__ import unicode_literals, absolute_import
 
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Notifications(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Notifications, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Notifications, self).__init__(space_id, api_key, SUFFIX_JP)
 
     def count_notification_raw(self, query_parameters):
         """

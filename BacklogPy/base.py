@@ -14,7 +14,9 @@ X_WWW_FROM_URLENCODED_HEADERS = {
     'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8"
 }
 
-BACKLOG_URL = 'backlog.jp'
+BACKLOG_URL = 'backlog'
+
+SUFFIX_JP = 'jp'
 
 API_ROOT = 'api/v2'
 
@@ -23,7 +25,7 @@ FALSE = 'false'
 
 
 class BacklogBase(object):
-    def __init__(self, space_id, api_key):
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
         """"
         :param space_id:  
         :param api_key:
@@ -33,8 +35,9 @@ class BacklogBase(object):
         """
 
         self._api_key = api_key
-        self._api_url = 'https://{space_id}.{backlog_server}/{api_root}' \
+        self._api_url = 'https://{space_id}.{backlog_server}.{suffix}/{api_root}' \
             .format(space_id=space_id, backlog_server=BACKLOG_URL,
+                    suffix=suffix,
                     api_root=API_ROOT)
 
     @staticmethod
