@@ -12,7 +12,7 @@ from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 class Notifications(BacklogBase):
     def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
-        super(Notifications, self).__init__(space_id, api_key, SUFFIX_JP)
+        super(Notifications, self).__init__(space_id, api_key, suffix=suffix)
 
     def count_notification_raw(self, query_parameters):
         """

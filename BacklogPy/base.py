@@ -29,9 +29,11 @@ class BacklogBase(object):
         """"
         :param space_id:  
         :param api_key:
+        :param suffix:
         
         :type space_id: str
         :type api_key: str
+        :type suffix: str
         """
 
         self._api_key = api_key
