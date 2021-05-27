@@ -210,12 +210,12 @@ class Backlog(Space1, Space2, Space3):
 
 from __future__ import unicode_literals, absolute_import
 
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Hello(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Hello, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Hello, self).__init__(space_id, api_key, suffix=suffix)
 
     def test_api_name_raw(self, hello, bye, num, form_parameters):
         """
@@ -361,12 +361,12 @@ from __future__ import unicode_literals, absolute_import
 
 from deprecated import deprecated
 
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Hello(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Hello, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Hello, self).__init__(space_id, api_key, suffix=suffix)
 
     @deprecated(reason="xxx https://backlogpy.org")
     def test_api_name_raw(self, hello, bye, num, form_parameters):
@@ -877,12 +877,12 @@ form_parameters = {
 
 from __future__ import unicode_literals, absolute_import
 {module_import}
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Hello(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Hello, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Hello, self).__init__(space_id, api_key, suffix=suffix)
 '''
         api = api_generator.APIGenerator(get_bs(html))
         print(f'"{api.create_api_class()}"')
