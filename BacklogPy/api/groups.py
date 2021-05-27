@@ -9,12 +9,12 @@ from __future__ import unicode_literals, absolute_import
 
 from deprecated import deprecated
 
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Groups(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Groups, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Groups, self).__init__(space_id, api_key, suffix=suffix)
 
     @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Add Team.https://developer.nulab.com/docs/backlog/api/2/add-team/")
     def add_group_raw(self, form_parameters):

@@ -21,6 +21,9 @@ class TestBacklogBase(TestCase):
         backlog_base = BacklogBase('space-id', 'api-key')
         self.assertEqual(backlog_base._api_url,
                          'https://space-id.backlog.jp/api/v2')
+        backlog_base = BacklogBase('space-id', 'api-key', suffix='com')
+        self.assertEqual(backlog_base._api_url,
+                         'https://space-id.backlog.com/api/v2')
 
     def test_request(self):
         with mock.patch('requests.request') as m:

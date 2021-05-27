@@ -7,12 +7,12 @@
 
 from __future__ import unicode_literals, absolute_import
 
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Teams(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Teams, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Teams, self).__init__(space_id, api_key, suffix=suffix)
 
     def add_team_raw(self, form_parameters):
         """

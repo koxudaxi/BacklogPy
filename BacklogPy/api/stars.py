@@ -7,12 +7,12 @@
 
 from __future__ import unicode_literals, absolute_import
 
-from BacklogPy.base import BacklogBase
+from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
 class Stars(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super(Stars, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super(Stars, self).__init__(space_id, api_key, suffix=suffix)
 
     def add_star_raw(self, form_parameters):
         """
