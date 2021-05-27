@@ -10,6 +10,7 @@ from BacklogPy.api.issues import Issues
 from BacklogPy.api.notifications import Notifications
 from BacklogPy.api.priorities import Priorities
 from BacklogPy.api.projects import Projects
+from BacklogPy.api.rateLimit import RateLimit
 from BacklogPy.api.resolutions import Resolutions
 from BacklogPy.api.space import Space
 from BacklogPy.api.stars import Stars
@@ -25,6 +26,7 @@ __all__ = [
     'Notifications',
     'Priorities',
     'Projects',
+    'RateLimit',
     'Resolutions',
     'Space',
     'Stars',

@@ -16,7 +16,7 @@ class Users(BacklogBase):
 
     def add_user_raw(self, form_parameters):
         """
-        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at backlog.com space.
+        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at new plan space.
 
         :param dict form_parameters: form_parameters
 
@@ -31,7 +31,7 @@ class Users(BacklogBase):
 
     def add_user(self, user_id, password, name, mail_address, role_type):
         """
-        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at backlog.com space.
+        Adds new user to the space. “Project Administrator” cannot add “Admin” user. You can’t use this API at new plan space.
 
         :param str user_id: user ID
         :param str password: password
@@ -56,10 +56,11 @@ class Users(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    def count_user_received_stars_raw(self, query_parameters):
+    def count_user_received_stars_raw(self, user_id, query_parameters):
         """
         Returns number of stars that user received.
 
+        :param int user_id: User ID
         :param dict query_parameters: query_parameters
 
         :return:  requests Response object
@@ -67,14 +68,15 @@ class Users(BacklogBase):
         """
 
         return self._request(
-            '/users/:userId/stars/count',
+            '/users/{}/stars/count'.format(user_id),
             method='GET',
             query_parameters=query_parameters)
 
-    def count_user_received_stars(self, since=None, until=None):
+    def count_user_received_stars(self, user_id, since=None, until=None):
         """
         Returns number of stars that user received.
 
+        :param int user_id: User ID
         :param str since: after the given date (yyyy-MM-dd)
         :param str until: before the given date (yyyy-MM-dd)
 
@@ -88,7 +90,7 @@ class Users(BacklogBase):
         }
 
         return self._request(
-            '/users/:userId/stars/count',
+            '/users/{}/stars/count'.format(user_id),
             method='GET',
             query_parameters=query_parameters)
 
@@ -136,7 +138,7 @@ class Users(BacklogBase):
 
     def delete_user(self, user_id):
         """
-        Deletes user from the space. You can’t use this API at backlog.com space.
+        Deletes user from the space. You can’t use this API at new plan space.
 
         :param int user_id: user ID
 
@@ -462,7 +464,7 @@ class Users(BacklogBase):
 
     def update_user_raw(self, user_id, form_parameters):
         """
-        Updates information about user. You can’t use this API at backlog.com space.
+        Updates information about user. You can’t use this API at new plan space.
 
         :param int user_id: user ID
         :param dict form_parameters: form_parameters
@@ -484,7 +486,7 @@ class Users(BacklogBase):
             mail_address=None,
             role_type=None):
         """
-        Updates information about user. You can’t use this API at backlog.com space.
+        Updates information about user. You can’t use this API at new plan space.
 
         :param int user_id: user ID
         :param str password: password

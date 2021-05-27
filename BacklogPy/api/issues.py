@@ -332,8 +332,8 @@ class Issues(BacklogBase):
         :rtype: requests.Response
         """
 
-        return self._request('/issues/{}/comments/{}'.format(issue_id_or_key,
-                                                             comment_id), method='DELETE                              ')
+        return self._request(
+            '/issues/{}/comments/{}'.format(issue_id_or_key, comment_id), method='DELETE')
 
     def delete_issue(self, issue_id_or_key):
         """

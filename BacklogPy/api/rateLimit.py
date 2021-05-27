@@ -10,16 +10,16 @@ from __future__ import unicode_literals, absolute_import
 from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
-class Statuses(BacklogBase):
+class RateLimit(BacklogBase):
     def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
-        super(Statuses, self).__init__(space_id, api_key, suffix=suffix)
+        super(RateLimit, self).__init__(space_id, api_key, suffix=suffix)
 
-    def get_status_list(self):
+    def get_rate_limit(self):
         """
-        Returns list of statuses.
+        Return information about the rate limit currently applied to you.
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
-        return self._request('/statuses', method='GET')
+        return self._request('/rateLimit', method='GET')

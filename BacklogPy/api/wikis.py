@@ -12,7 +12,7 @@ from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 class Wikis(BacklogBase):
     def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
-        super(Wikis, self).__init__(space_id, api_key,  suffix=suffix)
+        super(Wikis, self).__init__(space_id, api_key, suffix=suffix)
 
     def add_wiki_page_raw(self, form_parameters):
         """
@@ -109,7 +109,7 @@ class Wikis(BacklogBase):
         """
         Returns number of Wiki pages.
 
-        :param int project_id_or_key: Project ID or Project Key
+        :param str project_id_or_key: Project ID or Project Key
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -281,7 +281,7 @@ class Wikis(BacklogBase):
         """
         Returns list of Wiki pages.
 
-        :param int project_id_or_key: Project ID or Project Key
+        :param str project_id_or_key: Project ID or Project Key
         :param str keyword: Keyword
 
         :return:  requests Response object
@@ -329,7 +329,7 @@ class Wikis(BacklogBase):
         """
         Returns list of tags that are used in the project.
 
-        :param int project_id_or_key: Project ID or Project Key
+        :param str project_id_or_key: Project ID or Project Key
 
         :return:  requests Response object
         :rtype: requests.Response

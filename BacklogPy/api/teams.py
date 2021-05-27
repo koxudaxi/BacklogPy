@@ -16,7 +16,7 @@ class Teams(BacklogBase):
 
     def add_team_raw(self, form_parameters):
         """
-        Adds new team. You can’t use this API at backlog.com space.
+        Adds new team. You can’t use this API at new plan space.
 
         :param dict form_parameters: form_parameters
 
@@ -31,7 +31,7 @@ class Teams(BacklogBase):
 
     def add_team(self, name, members=None):
         """
-        Adds new team. You can’t use this API at backlog.com space.
+        Adds new team. You can’t use this API at new plan space.
 
         :param str name: Group Name
         :param list[int] or int members: User ID added to the group
@@ -52,7 +52,7 @@ class Teams(BacklogBase):
 
     def delete_team(self, team_id):
         """
-        Deletes team. You can’t use this API at backlog.com space.
+        Deletes team. You can’t use this API at new plan space.
 
         :param int team_id: Team ID
 
@@ -126,7 +126,7 @@ class Teams(BacklogBase):
 
     def update_team_raw(self, team_id, form_parameters):
         """
-        Updates information about team. You can’t use this API at backlog.com space.
+        Updates information about team. You can’t use this API at new plan space.
 
         :param int team_id: Team ID
         :param dict form_parameters: form_parameters
@@ -142,7 +142,7 @@ class Teams(BacklogBase):
 
     def update_team(self, team_id, name=None, members=None):
         """
-        Updates information about team. You can’t use this API at backlog.com space.
+        Updates information about team. You can’t use this API at new plan space.
 
         :param int team_id: Team ID
         :param str name: Team Name

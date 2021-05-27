@@ -7,8 +7,6 @@
 
 from __future__ import unicode_literals, absolute_import
 
-from deprecated import deprecated
-
 from BacklogPy.base import BacklogBase, SUFFIX_JP
 
 
@@ -214,10 +212,10 @@ class Projects(BacklogBase):
             self,
             name,
             key,
-            chart_enabled,
-            subtasking_enabled,
-            text_formatting_rule,
-            project_leader_can_edit_project_leader=None):
+            chart_enabled=None,
+            project_leader_can_edit_project_leader=None,
+            subtasking_enabled=None,
+            text_formatting_rule=None):
         """
         Adds new project.
 
@@ -282,10 +280,9 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Add Project Team.https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
     def add_project_group_raw(self, project_id_or_key, form_parameters):
         """
-        Add group to project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/add-project-team/
+        Add group to project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -299,10 +296,9 @@ class Projects(BacklogBase):
             method='POST',
             form_parameters=form_parameters)
 
-    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Add Project Team.https://developer.nulab.com/docs/backlog/api/2/add-project-team/")
     def add_project_group(self, project_id_or_key, group_id=None):
         """
-        Add group to project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/add-project-team/
+        Add group to project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param int group_id: Group ID
@@ -495,6 +491,7 @@ class Projects(BacklogBase):
             repo_id_or_name,
             number,
             content,
+            attachment_id=None,
             notified_user_id=None):
         """
         Adds comments on pull requests.
@@ -503,6 +500,7 @@ class Projects(BacklogBase):
         :param str repo_id_or_name: Repository ID or Repository name
         :param int number: Pull request number
         :param str content: Comment
+        :param list[int] or int attachment_id: Attachment file ID(Post Attachment File returns)
         :param list[int] or int notified_user_id: User ID to send notification when comment is added
 
         :return:  requests Response object
@@ -511,6 +509,7 @@ class Projects(BacklogBase):
 
         form_parameters = {
             'content': content,
+            'attachmentId[]': attachment_id,
             'notifiedUserId[]': notified_user_id
         }
 
@@ -524,7 +523,7 @@ class Projects(BacklogBase):
 
     def add_status_raw(self, project_id_or_key, form_parameters):
         """
-        Adds new Status to the project.
+        Adds new Status to the project. You can create up to 8 custom statuses within a Project aside from the 4 default.
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -540,7 +539,7 @@ class Projects(BacklogBase):
 
     def add_status(self, project_id_or_key, name, color):
         """
-        Adds new Status to the project.
+        Adds new Status to the project. You can create up to 8 custom statuses within a Project aside from the 4 default.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str name: Status name
@@ -801,10 +800,9 @@ class Projects(BacklogBase):
             method='DELETE',
             form_parameters=form_parameters)
 
-    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Delete Project Team.https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
     def delete_project_group_raw(self, project_id_or_key, form_parameters):
         """
-        Removes a group from the project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
+        Removes a group from the project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param dict form_parameters: form_parameters
@@ -818,10 +816,9 @@ class Projects(BacklogBase):
             method='DELETE',
             form_parameters=form_parameters)
 
-    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Delete Project Team.https://developer.nulab.com/docs/backlog/api/2/delete-project-team/")
     def delete_project_group(self, project_id_or_key, group_id=None):
         """
-        Removes a group from the project. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/delete-project-team/
+        Removes a group from the project.
 
         :param str project_id_or_key: Project ID or Project Key
         :param int group_id: Group ID
@@ -1061,19 +1058,19 @@ class Projects(BacklogBase):
             '/projects/{}/customFields'.format(project_id_or_key),
             method='GET')
 
-    def get_file(self, project_id_or_key, _id):
+    def get_file(self, project_id_or_key, shared_file_id):
         """
         Downloads the file.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int _id: File ID
+        :param int shared_file_id: File ID
 
         :return:  requests Response object
         :rtype: requests.Response
         """
 
         return self._request(
-            '/projects/{}/files/{}'.format(project_id_or_key, _id), method='GET')
+            '/projects/{}/files/{}'.format(project_id_or_key, shared_file_id), method='GET')
 
     def get_git_repository(self, project_id_or_key, repo_id_or_name):
         """
@@ -1238,12 +1235,17 @@ class Projects(BacklogBase):
             '/projects/{}/git/repositories/{}/pullRequests/{}/comments/count'.format(
                 project_id_or_key, repo_id_or_name, number), method='GET')
 
-    def get_number_of_pull_requests(self, project_id_or_key, repo_id_or_name):
+    def get_number_of_pull_requests_raw(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            query_parameters):
         """
         Returns number of pull requests.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
+        :param dict query_parameters: query_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1251,7 +1253,52 @@ class Projects(BacklogBase):
 
         return self._request(
             '/projects/{}/git/repositories/{}/pullRequests/count'.format(
-                project_id_or_key, repo_id_or_name), method='GET')
+                project_id_or_key,
+                repo_id_or_name),
+            method='GET',
+            query_parameters=query_parameters)
+
+    def get_number_of_pull_requests(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            status_id=None,
+            assignee_id=None,
+            issue_id=None,
+            created_user_id=None,
+            offset=None,
+            count=None):
+        """
+        Returns number of pull requests.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param str repo_id_or_name: Repository ID or Repository name
+        :param list[int] or int status_id: Status ID
+        :param list[int] or int assignee_id: Assignee ID
+        :param list[int] or int issue_id: Related issue ID
+        :param list[int] or int created_user_id: Created User ID
+        :param int offset: offset
+        :param int count: number of records to retrieve(1-100) default=20
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        query_parameters = {
+            'statusId[]': status_id,
+            'assigneeId[]': assignee_id,
+            'issueId[]': issue_id,
+            'createdUserId[]': created_user_id,
+            'offset': offset,
+            'count': count
+        }
+
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/count'.format(
+                project_id_or_key,
+                repo_id_or_name),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_project(self, project_id_or_key):
         """
@@ -1281,10 +1328,9 @@ class Projects(BacklogBase):
             '/projects/{}/diskUsage'.format(project_id_or_key),
             method='GET')
 
-    @deprecated(reason="This API has been deprecated and is no longer recommended for use. Please replace it with Get Project Team List.https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/")
     def get_project_group_list(self, project_id_or_key):
         """
-        Returns list of project groups. ※ Deprecated API. https://developer.nulab.com/docs/backlog/api/2/get-project-team-list/
+        Returns list of project groups.
 
         :param str project_id_or_key: Project ID or Project Key
 
@@ -1470,17 +1516,19 @@ class Projects(BacklogBase):
                 number),
             method='GET')
 
-    def get_pull_request_comment(
+    def get_pull_request_comment_raw(
             self,
             project_id_or_key,
             repo_id_or_name,
-            number):
+            number,
+            query_parameters):
         """
         Returns list of pull request comments.
 
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
         :param int number: Pull request number
+        :param dict query_parameters: query_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1488,7 +1536,50 @@ class Projects(BacklogBase):
 
         return self._request(
             '/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
-                project_id_or_key, repo_id_or_name, number), method='GET')
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='GET',
+            query_parameters=query_parameters)
+
+    def get_pull_request_comment(
+            self,
+            project_id_or_key,
+            repo_id_or_name,
+            number,
+            min_id=None,
+            max_id=None,
+            count=None,
+            order=None):
+        """
+        Returns list of pull request comments.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param str repo_id_or_name: Repository ID or Repository name
+        :param int number: Pull request number
+        :param int min_id: minimum ID
+        :param int max_id: maximum ID
+        :param int count: number of records to retrieve(1-100) default=20
+        :param str order: “asc” or “desc” default=“desc”
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        query_parameters = {
+            'minId': min_id,
+            'maxId': max_id,
+            'count': count,
+            'order': order
+        }
+
+        return self._request(
+            '/projects/{}/git/repositories/{}/pullRequests/{}/comments'.format(
+                project_id_or_key,
+                repo_id_or_name,
+                number),
+            method='GET',
+            query_parameters=query_parameters)
 
     def get_pull_request_list_raw(
             self,
@@ -1749,14 +1840,15 @@ class Projects(BacklogBase):
             method='PATCH',
             form_parameters=form_parameters)
 
-    def update_list_item_for_list_type_custom_field(
-            self, project_id_or_key, _id, item_id):
+    def update_list_item_for_list_type_custom_field_raw(
+            self, project_id_or_key, _id, item_id, form_parameters):
         """
         Updates list item for list type custom field. Calling API fails if specified custom field’s type is not a list.
 
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Custom field ID
         :param int item_id: List item ID
+        :param dict form_parameters: form_parameters
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1764,7 +1856,37 @@ class Projects(BacklogBase):
 
         return self._request(
             '/projects/{}/customFields/{}/items/{}'.format(
-                project_id_or_key, _id, item_id), method='PATCH')
+                project_id_or_key,
+                _id,
+                item_id),
+            method='PATCH',
+            form_parameters=form_parameters)
+
+    def update_list_item_for_list_type_custom_field(
+            self, project_id_or_key, _id, item_id, name=None):
+        """
+        Updates list item for list type custom field. Calling API fails if specified custom field’s type is not a list.
+
+        :param str project_id_or_key: Project ID or Project Key
+        :param int _id: Custom field ID
+        :param int item_id: List item ID
+        :param str name: Name of list item
+
+        :return:  requests Response object
+        :rtype: requests.Response
+        """
+
+        form_parameters = {
+            'name': name
+        }
+
+        return self._request(
+            '/projects/{}/customFields/{}/items/{}'.format(
+                project_id_or_key,
+                _id,
+                item_id),
+            method='PATCH',
+            form_parameters=form_parameters)
 
     def update_order_of_status_raw(self, project_id_or_key, form_parameters):
         """

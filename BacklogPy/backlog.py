@@ -16,6 +16,7 @@ class Backlog(
         Notifications,
         Priorities,
         Projects,
+        RateLimit,
         Resolutions,
         Space,
         Stars,

@@ -8,8 +8,9 @@ import os
 import re
 import time
 from enum import Enum
+from functools import wraps
 from logging import INFO, getLogger, Logger
-from typing import Any, Dict, Generator, List, Optional, Pattern, Type, Union, Tuple, Set
+from typing import Any, Callable, Dict, Generator, List, Optional, Pattern, Type, Union, Tuple, Set
 
 import requests
 from autopep8 import fix_code, parse_args
@@ -59,12 +60,12 @@ API_CLASS_TEMPLATE: str = \
 
 {FUTURE_IMPORT}
 {{{{module_import}}}}
-from {PACKAGE_NAME}.base import BacklogBase
+from {PACKAGE_NAME}.base import BacklogBase, SUFFIX_JP
 
 
 class {{space_name}}(BacklogBase):
-    def __init__(self, space_id, api_key):
-        super({{space_name}}, self).__init__(space_id, api_key)
+    def __init__(self, space_id, api_key, suffix=SUFFIX_JP):
+        super({{space_name}}, self).__init__(space_id, api_key, suffix=suffix)
 '''
 
 API_METHOD_TEMPLATE: str = \
@@ -217,15 +218,16 @@ def _create_init_py(space_list: List[str]) -> str:
     all_list: List[str] = []
     import_list: List[str] = []
     for space in space_list:
+        upper_space = _to_first_letter_upper(space)
         import_list.append(
-            f'from {PACKAGE_NAME}.api.{space} import {space.title()}')
-        all_list.append(f'\'{space.title()}\'')
+            f'from {PACKAGE_NAME}.api.{space} import {upper_space}')
+        all_list.append(f'\'{upper_space}\'')
     return INIT_PY_TEMPLATE.format(import_block='\n'.join(import_list),
                                    all_block=','.join(all_list))
 
 
 def _create_backlog_py(space_list: List[str]) -> str:
-    objects: str = ', '.join([o.title() for o in space_list])
+    objects: str = ', '.join(_to_first_letter_upper(o) for o in space_list)
     return BACKLOG_TEMPLATE.format(objects=objects)
 
 
@@ -245,6 +247,17 @@ def _create_dir(path: str) -> None:
             raise Exception(f"File Exists: {path}")
     else:
         os.mkdir(path)
+
+
+def _strip(func: Callable[[Any], str]) -> Callable[[Any], str]:
+    @wraps(func)
+    def inner(*args_, **kwargs) -> str:
+        return func(*args_, **kwargs).strip()
+    return inner
+
+
+def _to_first_letter_upper(value: str) -> str:
+    return value[0].upper() + value[1:]
 
 
 def _create_api_from_bs_generator(
@@ -361,6 +374,7 @@ class APIGenerator:
         return self._api_description
 
     @property
+    @_strip
     def method_type(self) -> str:
         if self._method_type:
             return self._method_type
@@ -397,6 +411,7 @@ class APIGenerator:
         raise Exception('Not Found API Path')
 
     @property
+    @_strip
     def short_path(self) -> str:
         if self._short_path:
             return self._short_path
@@ -404,6 +419,7 @@ class APIGenerator:
         return self._short_path
 
     @property
+    @_strip
     def space_name(self) -> str:
         if self._space_name:
             return self._space_name
@@ -582,9 +598,8 @@ class APIGenerator:
         return newline_and_indent + self.api_description + newline_and_indent
 
     def create_api_class(self) -> str:
-        return API_CLASS_TEMPLATE.format(
-            space_name=self.space_name.title()
-        )
+        upper_camel_name = _to_first_letter_upper(self.space_name)
+        return API_CLASS_TEMPLATE.format(space_name=upper_camel_name)
 
     @property
     def deprecated(self) -> bool:
