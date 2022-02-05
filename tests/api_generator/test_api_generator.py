@@ -240,8 +240,8 @@ class Hello(BacklogBase):
         :param str hello: hello
         :param str bye: bye
         :param int num: description
-        :param str hello: hello
-        :param str bye: bye
+        :param str or None hello: hello
+        :param str or None bye: bye
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -278,8 +278,8 @@ class Hello(BacklogBase):
         :param str hello: hello
         :param str bye: bye
         :param int num: description
-        :param str hello: hello
-        :param str bye: bye
+        :param str or None hello: hello
+        :param str or None bye: bye
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -393,8 +393,8 @@ class Hello(BacklogBase):
         :param str hello: hello
         :param str bye: bye
         :param int num: description
-        :param str hello: hello
-        :param str bye: bye
+        :param str or None hello: hello
+        :param str or None bye: bye
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -433,8 +433,8 @@ class Hello(BacklogBase):
         :param str hello: hello
         :param str bye: bye
         :param int num: description
-        :param str hello: hello
-        :param str bye: bye
+        :param str or None hello: hello
+        :param str or None bye: bye
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -480,24 +480,24 @@ class TestParameter(TestCase):
 
     def test_parameter_doc(self):
         parameter_str = api_generator.Parameter('string', 'String')
-        self.assertEqual(parameter_str.doc, ':param str string: string')
+        self.assertEqual(parameter_str.doc, ':param str or None string: string')
 
         parameter_int = api_generator.Parameter('number', 'Number')
-        self.assertEqual(parameter_int.doc, ':param int number: number')
+        self.assertEqual(parameter_int.doc, ':param int or None number: number')
 
         parameter_bool = api_generator.Parameter('boolean', 'Boolean')
-        self.assertEqual(parameter_bool.doc, ':param bool boolean: boolean')
+        self.assertEqual(parameter_bool.doc, ':param bool or None boolean: boolean')
 
         parameter_dict = api_generator.Parameter('dict', 'dict')
-        self.assertEqual(parameter_dict.doc, ':param dict dict: dict')
+        self.assertEqual(parameter_dict.doc, ':param dict or None dict: dict')
 
         parameter_str_list = api_generator.Parameter('string[]', 'String')
         self.assertEqual(parameter_str_list.doc,
-                         ':param list[str] or str string: string[]')
+                         ':param list[str] or str or None string: string[]')
 
         parameter_str_list = api_generator.Parameter('number[]', 'Number')
         self.assertEqual(parameter_str_list.doc,
-                         ':param list[int] or int number: number[]')
+                         ':param list[int] or int or None number: number[]')
 
     def test___lt__(self):
         parameter_str_1 = api_generator.Parameter('abc', 'String')
@@ -791,10 +791,10 @@ class TestAPIGenerator(TestCase):
                '</tbody></h3></body></html>'
         expect_args_doc = '''\n        :param str hello: hello
         :param str bye: bye
-        :param str hello: hello
-        :param str bye: bye
-        :param str hello: hello
-        :param str bye: bye\n        '''
+        :param str or None hello: hello
+        :param str or None bye: bye
+        :param str or None hello: hello
+        :param str or None bye: bye\n        '''
         api = api_generator.APIGenerator(get_bs(html))
         self.assertEqual(api._create_args_doc(strict=True),
                          expect_args_doc)
@@ -927,10 +927,10 @@ class Hello(BacklogBase):
         """
         hello
         
-        :param str hello: hello
-        :param str bye: bye
-        :param int num: description
-        :param bool boolean: boolean
+        :param str or None hello: hello
+        :param str or None bye: bye
+        :param int or None num: description
+        :param bool or None boolean: boolean
         
         :return:  requests Response object 
         :rtype: requests.Response
@@ -1023,11 +1023,11 @@ class Hello(BacklogBase):
         """
         hello
         
-        :param str header_hello: header description
-        :param str hello: hello
-        :param str bye: bye
-        :param int num: description
-        :param bool boolean: boolean
+        :param str or None header_hello: header description
+        :param str or None hello: hello
+        :param str or None bye: bye
+        :param int or None num: description
+        :param bool or None boolean: boolean
         
         :return:  requests Response object 
         :rtype: requests.Response
