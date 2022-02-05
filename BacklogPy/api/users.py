@@ -77,8 +77,8 @@ class Users(BacklogBase):
         Returns number of stars that user received.
 
         :param int user_id: User ID
-        :param str since: after the given date (yyyy-MM-dd)
-        :param str until: before the given date (yyyy-MM-dd)
+        :param str or None since: after the given date (yyyy-MM-dd)
+        :param str or None until: before the given date (yyyy-MM-dd)
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -119,8 +119,8 @@ class Users(BacklogBase):
         Returns the number of your watching issues.
 
         :param int user_id: User ID
-        :param bool resource_already_read: This parameter is optional. Set to false for unread watching count and true for already read watching count.
-        :param bool already_read: This parameter is optional. Set this parameter to false to get unread watching count since the last time checked by user and true for already read watching count. When both alreadyRead and resourceAlreadyRead parameters set, resourceAlreadyRead will be ignored.
+        :param bool or None resource_already_read: This parameter is optional. Set to false for unread watching count and true for already read watching count.
+        :param bool or None already_read: This parameter is optional. Set this parameter to false to get unread watching count since the last time checked by user and true for already read watching count. When both alreadyRead and resourceAlreadyRead parameters set, resourceAlreadyRead will be ignored.
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -168,9 +168,9 @@ class Users(BacklogBase):
         """
         Returns list of issues which the user viewed recently.
 
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -207,9 +207,9 @@ class Users(BacklogBase):
         """
         Returns list of projects which the user viewed recently.
 
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -246,9 +246,9 @@ class Users(BacklogBase):
         """
         Returns list of Wikis which the user viewed recently.
 
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -302,10 +302,10 @@ class Users(BacklogBase):
         Returns the list of stars that user received.
 
         :param int user_id: user ID
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -385,11 +385,11 @@ class Users(BacklogBase):
         Returns user’s recent updates
 
         :param int user_id: user ID
-        :param list[int] or int activity_type_id: type(1-17)
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
+        :param list[int] or int or None activity_type_id: type(1-17)
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -437,12 +437,12 @@ class Users(BacklogBase):
         Returns list of your watching issues.
 
         :param int user_id: User ID
-        :param str order: Order of the sort “asc” or “desc” default=“desc”
-        :param str sort: What to sort results by. The value “created”, “updated” or “issueUpdated” are allowed. default=“issueUpdated”
-        :param int count: Number of records to retrieve(1-100) default=20
-        :param int offset: Where to start returning records from the entire results. default=0
-        :param bool resource_already_read: Whether the issues already read are retrieved or not. The all watching issues are returned if this parameter is omitted. The read watching issues are returned if true. The unread watching issues are returned if false. default=null
-        :param list[int] or int issue_id: Issue ID
+        :param str or None order: Order of the sort “asc” or “desc” default=“desc”
+        :param str or None sort: What to sort results by. The value “created”, “updated” or “issueUpdated” are allowed. default=“issueUpdated”
+        :param int or None count: Number of records to retrieve(1-100) default=20
+        :param int or None offset: Where to start returning records from the entire results. default=0
+        :param bool or None resource_already_read: Whether the issues already read are retrieved or not. The all watching issues are returned if this parameter is omitted. The read watching issues are returned if true. The unread watching issues are returned if false. default=null
+        :param list[int] or int or None issue_id: Issue ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -489,10 +489,10 @@ class Users(BacklogBase):
         Updates information about user. You can’t use this API at new plan space.
 
         :param int user_id: user ID
-        :param str password: password
-        :param str name: nickname
-        :param str mail_address: Email address
-        :param int role_type: Administrator(1) Normal User(2) Reporter(3) Viewer(4) Guest Reporter(5) Guest Viewer(6)
+        :param str or None password: password
+        :param str or None name: nickname
+        :param str or None mail_address: Email address
+        :param int or None role_type: Administrator(1) Normal User(2) Reporter(3) Viewer(4) Guest Reporter(5) Guest Viewer(6)
 
         :return:  requests Response object
         :rtype: requests.Response

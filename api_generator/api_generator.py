@@ -174,7 +174,10 @@ class Parameter:
 
     @property
     def doc(self) -> str:
-        return f':param {self.type.doc} {self.name}: {self.description}'
+        if self.required or self.name in ('query_parameters', 'form_parameters'):
+            return f':param {self.type.doc} {self.name}: {self.description}'
+
+        return f':param {self.type.doc} or None {self.name}: {self.description}'
 
     def __lt__(self, other: 'Parameter') -> bool:
         return self.name < other.name

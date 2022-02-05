@@ -41,8 +41,8 @@ class Issues(BacklogBase):
 
         :param str issue_id_or_key: Issue ID or Issue Key
         :param str content: Content
-        :param list[int] or int notified_user_id: Notified User ID
-        :param list[int] or int attachment_id: Attachment file ID(Post Attachment File returns)
+        :param list[int] or int or None notified_user_id: Notified User ID
+        :param list[int] or int or None attachment_id: Attachment file ID(Post Attachment File returns)
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -92,7 +92,7 @@ class Issues(BacklogBase):
 
         :param str issue_id_or_key: Issue ID or Issue Key
         :param int comment_id: Comment ID
-        :param list[int] or int notified_user_id: UserID
+        :param list[int] or int or None notified_user_id: UserID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -147,20 +147,20 @@ class Issues(BacklogBase):
 
         :param int project_id: Project ID
         :param str summary: Summary
-        :param int parent_issue_id: Parent Issue ID
-        :param str description: Description
-        :param str start_date: Start Date (yyyy-MM-dd)
-        :param str due_date: Due Date (yyyy-MM-dd)
-        :param int estimated_hours: Estimated Hours
-        :param int actual_hours: Actual Hours
+        :param int or None parent_issue_id: Parent Issue ID
+        :param str or None description: Description
+        :param str or None start_date: Start Date (yyyy-MM-dd)
+        :param str or None due_date: Due Date (yyyy-MM-dd)
+        :param int or None estimated_hours: Estimated Hours
+        :param int or None actual_hours: Actual Hours
         :param int issue_type_id: Issue Type ID
-        :param list[int] or int category_id: Category ID
-        :param list[int] or int version_id: Version ID
-        :param list[int] or int milestone_id: Milestone ID
+        :param list[int] or int or None category_id: Category ID
+        :param list[int] or int or None version_id: Version ID
+        :param list[int] or int or None milestone_id: Milestone ID
         :param int priority_id: Priority ID
-        :param int assignee_id: Assignee ID
-        :param list[int] or int notified_user_id: Notified User ID
-        :param list[int] or int attachment_id: Attachment file ID(Post Attachment File returns)
+        :param int or None assignee_id: Assignee ID
+        :param list[int] or int or None notified_user_id: Notified User ID
+        :param list[int] or int or None attachment_id: Attachment file ID(Post Attachment File returns)
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -252,34 +252,34 @@ class Issues(BacklogBase):
         """
         Returns number of issues.
 
-        :param list[int] or int project_id: Project ID
-        :param list[int] or int issue_type_id: Issue Type ID
-        :param list[int] or int category_id: Category ID
-        :param list[int] or int version_id: Version ID
-        :param list[int] or int milestone_id: Milestone ID
-        :param list[int] or int status_id: Status ID
-        :param list[int] or int priority_id: Priority ID
-        :param list[int] or int assignee_id: Assignee ID
-        :param list[int] or int created_user_id: Created User ID
-        :param list[int] or int resolution_id: Resolution ID
-        :param int parent_child: Subtasking
-        :param bool attachment: True to make include Issue with Attachment
-        :param bool shared_file: True to make include Issue with File
-        :param str sort: What to sort results by
-        :param str order: Order of the sort “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str created_since: Created since (yyyy-MM-dd)
-        :param str created_until: Created until (yyyy-MM-dd)
-        :param str updated_since: Updated since (yyyy-MM-dd)
-        :param str updated_until: Updated until (yyyy-MM-dd)
-        :param str start_date_since: Start Date since (yyyy-MM-dd)
-        :param str start_date_until: Start Date until (yyyy-MM-dd)
-        :param str due_date_since: Due Date since (yyyy-MM-dd)
-        :param str due_date_until: Due Date until (yyyy-MM-dd)
-        :param list[int] or int id: Issue ID
-        :param list[int] or int parent_issue_id: Parent Issue ID
-        :param str keyword: Keyword
+        :param list[int] or int or None project_id: Project ID
+        :param list[int] or int or None issue_type_id: Issue Type ID
+        :param list[int] or int or None category_id: Category ID
+        :param list[int] or int or None version_id: Version ID
+        :param list[int] or int or None milestone_id: Milestone ID
+        :param list[int] or int or None status_id: Status ID
+        :param list[int] or int or None priority_id: Priority ID
+        :param list[int] or int or None assignee_id: Assignee ID
+        :param list[int] or int or None created_user_id: Created User ID
+        :param list[int] or int or None resolution_id: Resolution ID
+        :param int or None parent_child: Subtasking
+        :param bool or None attachment: True to make include Issue with Attachment
+        :param bool or None shared_file: True to make include Issue with File
+        :param str or None sort: What to sort results by
+        :param str or None order: Order of the sort “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None created_since: Created since (yyyy-MM-dd)
+        :param str or None created_until: Created until (yyyy-MM-dd)
+        :param str or None updated_since: Updated since (yyyy-MM-dd)
+        :param str or None updated_until: Updated until (yyyy-MM-dd)
+        :param str or None start_date_since: Start Date since (yyyy-MM-dd)
+        :param str or None start_date_until: Start Date until (yyyy-MM-dd)
+        :param str or None due_date_since: Due Date since (yyyy-MM-dd)
+        :param str or None due_date_until: Due Date until (yyyy-MM-dd)
+        :param list[int] or int or None id: Issue ID
+        :param list[int] or int or None parent_issue_id: Parent Issue ID
+        :param str or None keyword: Keyword
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -404,10 +404,10 @@ class Issues(BacklogBase):
         Returns list of comments in issue.
 
         :param str issue_id_or_key: Issue ID or Issue Key
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -501,34 +501,34 @@ class Issues(BacklogBase):
         """
         Returns list of issues.
 
-        :param list[int] or int project_id: Project ID
-        :param list[int] or int issue_type_id: Issue Type ID
-        :param list[int] or int category_id: Category ID
-        :param list[int] or int version_id: Version ID
-        :param list[int] or int milestone_id: Milestone ID
-        :param list[int] or int status_id: Status ID
-        :param list[int] or int priority_id: Priority ID
-        :param list[int] or int assignee_id: Assignee ID
-        :param list[int] or int created_user_id: Created User ID
-        :param list[int] or int resolution_id: Resolution ID
-        :param int parent_child: Subtasking
-        :param bool attachment: True to make include Issue with Attachment
-        :param bool shared_file: True to make include Issue with File
-        :param str sort: What to sort results by
-        :param str order: Order of the sort “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str created_since: Created since (yyyy-MM-dd)
-        :param str created_until: Created until (yyyy-MM-dd)
-        :param str updated_since: Updated since (yyyy-MM-dd)
-        :param str updated_until: Updated until (yyyy-MM-dd)
-        :param str start_date_since: Start Date since (yyyy-MM-dd)
-        :param str start_date_until: Start Date until (yyyy-MM-dd)
-        :param str due_date_since: Due Date since (yyyy-MM-dd)
-        :param str due_date_until: Due Date until (yyyy-MM-dd)
-        :param list[int] or int id: Issue ID
-        :param list[int] or int parent_issue_id: Parent Issue ID
-        :param str keyword: Keyword
+        :param list[int] or int or None project_id: Project ID
+        :param list[int] or int or None issue_type_id: Issue Type ID
+        :param list[int] or int or None category_id: Category ID
+        :param list[int] or int or None version_id: Version ID
+        :param list[int] or int or None milestone_id: Milestone ID
+        :param list[int] or int or None status_id: Status ID
+        :param list[int] or int or None priority_id: Priority ID
+        :param list[int] or int or None assignee_id: Assignee ID
+        :param list[int] or int or None created_user_id: Created User ID
+        :param list[int] or int or None resolution_id: Resolution ID
+        :param int or None parent_child: Subtasking
+        :param bool or None attachment: True to make include Issue with Attachment
+        :param bool or None shared_file: True to make include Issue with File
+        :param str or None sort: What to sort results by
+        :param str or None order: Order of the sort “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None created_since: Created since (yyyy-MM-dd)
+        :param str or None created_until: Created until (yyyy-MM-dd)
+        :param str or None updated_since: Updated since (yyyy-MM-dd)
+        :param str or None updated_until: Updated until (yyyy-MM-dd)
+        :param str or None start_date_since: Start Date since (yyyy-MM-dd)
+        :param str or None start_date_until: Start Date until (yyyy-MM-dd)
+        :param str or None due_date_since: Due Date since (yyyy-MM-dd)
+        :param str or None due_date_until: Due Date until (yyyy-MM-dd)
+        :param list[int] or int or None id: Issue ID
+        :param list[int] or int or None parent_issue_id: Parent Issue ID
+        :param str or None keyword: Keyword
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -701,7 +701,7 @@ class Issues(BacklogBase):
 
         :param str issue_id_or_key: Issue ID or Issue Key
         :param int comment_id: Comment ID
-        :param str content: content
+        :param str or None content: content
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -759,24 +759,24 @@ class Issues(BacklogBase):
         Updates information about issue.
 
         :param str issue_id_or_key: Issue ID or Issue Key
-        :param str summary: Summary
-        :param int parent_issue_id: Parent Issue ID
-        :param str description: Description
-        :param int status_id: Status ID
-        :param int resolution_id: Resolution ID
-        :param str start_date: Start Date (yyyy-MM-dd)
-        :param str due_date: Due Date (yyyy-MM-dd)
-        :param int estimated_hours: Estimated Hours
-        :param int actual_hours: Actual Hours
-        :param int issue_type_id: Issue Type ID
-        :param list[int] or int category_id: Category ID
-        :param list[int] or int version_id: Version ID
-        :param list[int] or int milestone_id: Milestone ID
-        :param int priority_id: Priority ID
-        :param int assignee_id: Assignee ID
-        :param list[int] or int notified_user_id: Notified User ID
-        :param list[int] or int attachment_id: Attachment file ID(Post Attachment File returns)
-        :param str comment: Comment
+        :param str or None summary: Summary
+        :param int or None parent_issue_id: Parent Issue ID
+        :param str or None description: Description
+        :param int or None status_id: Status ID
+        :param int or None resolution_id: Resolution ID
+        :param str or None start_date: Start Date (yyyy-MM-dd)
+        :param str or None due_date: Due Date (yyyy-MM-dd)
+        :param int or None estimated_hours: Estimated Hours
+        :param int or None actual_hours: Actual Hours
+        :param int or None issue_type_id: Issue Type ID
+        :param list[int] or int or None category_id: Category ID
+        :param list[int] or int or None version_id: Version ID
+        :param list[int] or int or None milestone_id: Milestone ID
+        :param int or None priority_id: Priority ID
+        :param int or None assignee_id: Assignee ID
+        :param list[int] or int or None notified_user_id: Notified User ID
+        :param list[int] or int or None attachment_id: Attachment file ID(Post Attachment File returns)
+        :param str or None comment: Comment
 
         :return:  requests Response object
         :rtype: requests.Response
