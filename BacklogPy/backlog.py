@@ -11,6 +11,7 @@ from BacklogPy.api import *
 
 
 class Backlog(
+        Activities,
         Groups,
         Issues,
         Notifications,
