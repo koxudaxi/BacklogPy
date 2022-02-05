@@ -46,12 +46,14 @@ class BacklogBase(object):
     def _bool_to_str(boolean):
         """
 
-        :param bool boolean: 
+        :param bool or None boolean:
         :return: boolean string
-        :rtype: str
+        :rtype: str or None
         """
 
-        if boolean:
+        if boolean is None:
+            return None
+        elif boolean:
             return TRUE
         else:
             return FALSE
