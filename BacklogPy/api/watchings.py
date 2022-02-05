@@ -34,7 +34,7 @@ class Watchings(BacklogBase):
         Adds a watching. User can add a own watching.
 
         :param str issue_id_or_key: Issue ID or Issue Key
-        :param str note: Note
+        :param str or None note: Note
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -111,7 +111,7 @@ class Watchings(BacklogBase):
         Updates a watching. User can update own note.
 
         :param int watching_id: watching ID
-        :param str note: Note
+        :param str or None note: Note
 
         :return:  requests Response object
         :rtype: requests.Response

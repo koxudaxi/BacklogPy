@@ -34,7 +34,7 @@ class Groups(BacklogBase):
         Adds new group. You can’t use this API at new plan space.
 
         :param str name: Group Name
-        :param list[int] or int members: User ID added to the group
+        :param list[int] or int or None members: User ID added to the group
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -105,9 +105,9 @@ class Groups(BacklogBase):
         """
         Returns list of groups.
 
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -145,8 +145,8 @@ class Groups(BacklogBase):
         Updates information about group. You can’t use this API at new plan space.
 
         :param int group_id: Group ID
-        :param str name: Group Name
-        :param list[int] or int members: User ID added to the group
+        :param str or None name: Group Name
+        :param list[int] or int or None members: User ID added to the group
 
         :return:  requests Response object
         :rtype: requests.Response

@@ -34,7 +34,7 @@ class Teams(BacklogBase):
         Adds new team. You can’t use this API at new plan space.
 
         :param str name: Group Name
-        :param list[int] or int members: User ID added to the group
+        :param list[int] or int or None members: User ID added to the group
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -81,9 +81,9 @@ class Teams(BacklogBase):
         """
         Returns list of teams.
 
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -145,8 +145,8 @@ class Teams(BacklogBase):
         Updates information about team. You can’t use this API at new plan space.
 
         :param int team_id: Team ID
-        :param str name: Team Name
-        :param list[int] or int members: User ID added to the team
+        :param str or None name: Team Name
+        :param list[int] or int or None members: User ID added to the team
 
         :return:  requests Response object
         :rtype: requests.Response

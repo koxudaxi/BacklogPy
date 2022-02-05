@@ -36,8 +36,8 @@ class Notifications(BacklogBase):
         """
         Returns number of Notifications.
 
-        :param bool resource_already_read: This parameter is optional. Set to false for unread notification count and true for already read notification count.
-        :param bool already_read: This parameter is optional. Set this parameter to false to get unread notification count since the last time checked by user and true for already read notification count.
+        :param bool or None resource_already_read: This parameter is optional. Set to false for unread notification count and true for already read notification count.
+        :param bool or None already_read: This parameter is optional. Set this parameter to false to get unread notification count since the last time checked by user and true for already read notification count.
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -78,11 +78,11 @@ class Notifications(BacklogBase):
         """
         Returns own notifications.
 
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc”
-        :param int sender_id: sender ID
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc”
+        :param int or None sender_id: sender ID
 
         :return:  requests Response object
         :rtype: requests.Response

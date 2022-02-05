@@ -80,9 +80,9 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param int type_id: Type ID of Custom field
         :param str name: Name
-        :param list[int] or int applicable_issue_types: Type ID to enable Custom fields
-        :param str description: Description
-        :param bool required: True to make the Custom field required
+        :param list[int] or int or None applicable_issue_types: Type ID to enable Custom fields
+        :param str or None description: Description
+        :param bool or None required: True to make the Custom field required
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -130,8 +130,8 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param str name: Issue Type name
         :param str color: Background color
-        :param str template_summary: Subject
-        :param str template_description: Description
+        :param str or None template_summary: Subject
+        :param str or None template_description: Description
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -176,7 +176,7 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Custom field ID
-        :param str name: List item name
+        :param str or None name: List item name
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -221,10 +221,10 @@ class Projects(BacklogBase):
 
         :param str name: Project Name
         :param str key: Project Key (Uppercase letters (A-Z), numbers (0-9) and underscore (_) can be used.)
-        :param bool chart_enabled: Enable chart
-        :param bool project_leader_can_edit_project_leader: Allow project administrators to manage each other
-        :param bool subtasking_enabled: Enable subtasking
-        :param str text_formatting_rule: Formatting rules “backlog” or “markdown”
+        :param bool or None chart_enabled: Enable chart
+        :param bool or None project_leader_can_edit_project_leader: Allow project administrators to manage each other
+        :param bool or None subtasking_enabled: Enable subtasking
+        :param str or None text_formatting_rule: Formatting rules “backlog” or “markdown”
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -265,7 +265,7 @@ class Projects(BacklogBase):
         Adds “Project Administrator” role to user
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int user_id: User ID
+        :param int or None user_id: User ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -301,7 +301,7 @@ class Projects(BacklogBase):
         Add group to project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int group_id: Group ID
+        :param int or None group_id: Group ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -337,7 +337,7 @@ class Projects(BacklogBase):
         Add team to project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int team_id: Team ID
+        :param int or None team_id: Team ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -373,7 +373,7 @@ class Projects(BacklogBase):
         Adds user to list of project members.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int user_id: User ID
+        :param int or None user_id: User ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -432,10 +432,10 @@ class Projects(BacklogBase):
         :param str description: Description of pull request
         :param str base: Branch name of merge base
         :param str branch: Name of merging branch
-        :param int issue_id: Related issue’s ID
-        :param int assignee_id: Assignee’s ID of pull request
-        :param list[int] or int notified_user_id: User ID to send notification when pull request is added
-        :param list[int] or int attachment_id: ID returned by “Post Attachment File” API
+        :param int or None issue_id: Related issue’s ID
+        :param int or None assignee_id: Assignee’s ID of pull request
+        :param list[int] or int or None notified_user_id: User ID to send notification when pull request is added
+        :param list[int] or int or None attachment_id: ID returned by “Post Attachment File” API
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -500,8 +500,8 @@ class Projects(BacklogBase):
         :param str repo_id_or_name: Repository ID or Repository name
         :param int number: Pull request number
         :param str content: Comment
-        :param list[int] or int attachment_id: Attachment file ID(Post Attachment File returns)
-        :param list[int] or int notified_user_id: User ID to send notification when comment is added
+        :param list[int] or int or None attachment_id: Attachment file ID(Post Attachment File returns)
+        :param list[int] or int or None notified_user_id: User ID to send notification when comment is added
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -587,9 +587,9 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param str name: Version name
-        :param str description: Version description
-        :param str start_date: Start Date (yyyy-MM-dd)
-        :param str release_due_date: End Date (yyyy-MM-dd)
+        :param str or None description: Version description
+        :param str or None start_date: Start Date (yyyy-MM-dd)
+        :param str or None release_due_date: End Date (yyyy-MM-dd)
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -635,11 +635,11 @@ class Projects(BacklogBase):
         Adds new webhook.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param str name: Name
-        :param str description: Description
-        :param str hook_url: hook URL
-        :param bool all_event: True to make all events notified
-        :param list[int] or int activity_type_ids: Event ID to be notified
+        :param str or None name: Name
+        :param str or None description: Description
+        :param str or None hook_url: hook URL
+        :param bool or None all_event: True to make all events notified
+        :param list[int] or int or None activity_type_ids: Event ID to be notified
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -785,7 +785,7 @@ class Projects(BacklogBase):
         Removes Project Administrator role from user
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int user_id: User ID
+        :param int or None user_id: User ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -821,7 +821,7 @@ class Projects(BacklogBase):
         Removes a group from the project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int group_id: Group ID
+        :param int or None group_id: Group ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -857,7 +857,7 @@ class Projects(BacklogBase):
         Removes a team from the project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int team_id: Team ID
+        :param int or None team_id: Team ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -893,7 +893,7 @@ class Projects(BacklogBase):
         Removes user from list project members.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param int user_id: User ID
+        :param int or None user_id: User ID
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1183,9 +1183,9 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project key
         :param str path: Directory path
-        :param str order: “asc” or “desc” default=“desc”
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1273,12 +1273,12 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
-        :param list[int] or int status_id: Status ID
-        :param list[int] or int assignee_id: Assignee ID
-        :param list[int] or int issue_id: Related issue ID
-        :param list[int] or int created_user_id: Created User ID
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param list[int] or int or None status_id: Status ID
+        :param list[int] or int or None assignee_id: Assignee ID
+        :param list[int] or int or None issue_id: Related issue ID
+        :param list[int] or int or None created_user_id: Created User ID
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1375,8 +1375,8 @@ class Projects(BacklogBase):
         """
         Returns list of projects.
 
-        :param bool archived: For unspecified parameters, this form returns all projects. For ‘false’ parameters, it returns unarchived projects. For ‘true’ parameters, it returns archived projects.
-        :param bool all: Only applies to administrators. If ‘true,’ it returns all projects. If ‘false,’ it returns only projects they have joined (set to ‘false’ by default).
+        :param bool or None archived: For unspecified parameters, this form returns all projects. For ‘false’ parameters, it returns unarchived projects. For ‘true’ parameters, it returns archived projects.
+        :param bool or None all: Only applies to administrators. If ‘true,’ it returns all projects. If ‘false,’ it returns only projects they have joined (set to ‘false’ by default).
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1421,11 +1421,11 @@ class Projects(BacklogBase):
         Returns recent update in the project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param list[int] or int activity_type_id: type(1-26)
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
+        :param list[int] or int or None activity_type_id: type(1-26)
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1482,7 +1482,7 @@ class Projects(BacklogBase):
         Returns list of project members.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param bool exclude_group_members: Set to true to exclude members that part of project groups and false to get all members. Default is false.
+        :param bool or None exclude_group_members: Set to true to exclude members that part of project groups and false to get all members. Default is false.
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1557,10 +1557,10 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
         :param int number: Pull request number
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1619,12 +1619,12 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
-        :param list[int] or int status_id: Status ID
-        :param list[int] or int assignee_id: Assignee ID
-        :param list[int] or int issue_id: Issue ID
-        :param list[int] or int created_user_id: Created User ID
-        :param int offset: offset
-        :param int count: number of records to retrieve(1-100) default=20
+        :param list[int] or int or None status_id: Status ID
+        :param list[int] or int or None assignee_id: Assignee ID
+        :param list[int] or int or None issue_id: Issue ID
+        :param list[int] or int or None created_user_id: Created User ID
+        :param int or None offset: offset
+        :param int or None count: number of records to retrieve(1-100) default=20
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1713,7 +1713,7 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Category ID
-        :param str name: Category name
+        :param str or None name: Category name
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1762,10 +1762,10 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Custom Field ID
-        :param str name: Name
-        :param list[int] or int applicable_issue_types: Type ID to enable Custom fields
-        :param str description: Description
-        :param bool required: True to make the Custom field required
+        :param str or None name: Name
+        :param list[int] or int or None applicable_issue_types: Type ID to enable Custom fields
+        :param str or None description: Description
+        :param bool or None required: True to make the Custom field required
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1817,10 +1817,10 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Issue Type ID
-        :param str name: Issue Type Name
-        :param str color: Background color : available
-        :param str template_summary: Subject
-        :param str template_description: Description
+        :param str or None name: Issue Type Name
+        :param str or None color: Background color : available
+        :param str or None template_summary: Subject
+        :param str or None template_description: Description
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1870,7 +1870,7 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Custom field ID
         :param int item_id: List item ID
-        :param str name: Name of list item
+        :param str or None name: Name of list item
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1909,7 +1909,7 @@ class Projects(BacklogBase):
         Updates order about Status.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param list[int] or int status_id: Status ID List to order them. You have to send all status of project. It has following restrictions as below.
+        :param list[int] or int or None status_id: Status ID List to order them. You have to send all status of project. It has following restrictions as below.
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -1954,13 +1954,13 @@ class Projects(BacklogBase):
         Updates information about project.
 
         :param str project_id_or_key: Project ID or Project Key
-        :param str name: Project Name
-        :param str key: Project Key
-        :param bool chart_enabled: Enable chart
-        :param bool subtasking_enabled: Enable subtasking
-        :param bool project_leader_can_edit_project_leader: Allow project administrators to manage each other
-        :param str text_formatting_rule: Formatting rules “backlog” or “markdown”
-        :param bool archived: archive
+        :param str or None name: Project Name
+        :param str or None key: Project Key
+        :param bool or None chart_enabled: Enable chart
+        :param bool or None subtasking_enabled: Enable subtasking
+        :param bool or None project_leader_can_edit_project_leader: Allow project administrators to manage each other
+        :param str or None text_formatting_rule: Formatting rules “backlog” or “markdown”
+        :param bool or None archived: archive
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -2023,12 +2023,12 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param str repo_id_or_name: Repository ID or Repository name
         :param int number: Pull request number
-        :param str summary: Summary of pull request
-        :param str description: Description of pull request
-        :param int issue_id: Related issue’s ID
-        :param int assignee_id: Assignee’s ID of pull request
-        :param list[int] or int notified_user_id: User ID to send notification when pull request is added
-        :param str comment: Comment
+        :param str or None summary: Summary of pull request
+        :param str or None description: Description of pull request
+        :param int or None issue_id: Related issue’s ID
+        :param int or None assignee_id: Assignee’s ID of pull request
+        :param list[int] or int or None notified_user_id: User ID to send notification when pull request is added
+        :param str or None comment: Comment
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -2094,7 +2094,7 @@ class Projects(BacklogBase):
         :param str repo_id_or_name: Repository ID or Repository name
         :param int number: Pull request number
         :param int comment_id: Comment’s ID
-        :param str content: Comment’s body
+        :param str or None content: Comment’s body
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -2138,8 +2138,8 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Status ID
-        :param str name: Status Name
-        :param str color: Background color : available
+        :param str or None name: Status Name
+        :param str or None color: Background color : available
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -2192,10 +2192,10 @@ class Projects(BacklogBase):
         :param str project_id_or_key: Project ID or Project Key
         :param int _id: Version ID
         :param str name: Version Name
-        :param str description: Version Description
-        :param str start_date: Start Date (yyyy-MM-dd)
-        :param str release_due_date: End Date (yyyy-MM-dd)
-        :param bool archived: archived
+        :param str or None description: Version Description
+        :param str or None start_date: Start Date (yyyy-MM-dd)
+        :param str or None release_due_date: End Date (yyyy-MM-dd)
+        :param bool or None archived: archived
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -2253,11 +2253,11 @@ class Projects(BacklogBase):
 
         :param str project_id_or_key: Project ID or Project Key
         :param str webhook_id: Webhook ID
-        :param str name: Name
-        :param str description: Description
-        :param str hook_url: hook URL
-        :param bool all_event: True to make all events notified
-        :param list[int] or int activity_type_ids: Event ID to be notified
+        :param str or None name: Name
+        :param str or None description: Description
+        :param str or None hook_url: hook URL
+        :param bool or None all_event: True to make all events notified
+        :param list[int] or int or None activity_type_ids: Event ID to be notified
 
         :return:  requests Response object
         :rtype: requests.Response

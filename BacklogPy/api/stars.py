@@ -39,11 +39,11 @@ class Stars(BacklogBase):
         """
         Adds star.
 
-        :param int issue_id: Issue ID
-        :param int comment_id: Comment ID
-        :param int wiki_id: Wiki Page ID
-        :param int pull_request_id: Pull request ID
-        :param int pull_request_comment_id: Pull request comment ID
+        :param int or None issue_id: Issue ID
+        :param int or None comment_id: Comment ID
+        :param int or None wiki_id: Wiki Page ID
+        :param int or None pull_request_id: Pull request ID
+        :param int or None pull_request_comment_id: Pull request comment ID
 
         :return:  requests Response object
         :rtype: requests.Response

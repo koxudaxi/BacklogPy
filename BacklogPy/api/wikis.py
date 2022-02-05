@@ -36,7 +36,7 @@ class Wikis(BacklogBase):
         :param int project_id: Project ID
         :param str name: Page Name
         :param str content: Content
-        :param bool mail_notify: True make to notify by Email
+        :param bool or None mail_notify: True make to notify by Email
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -75,7 +75,7 @@ class Wikis(BacklogBase):
         Attaches file to Wiki
 
         :param int wiki_id: Wiki page’s ID
-        :param list[int] or int attachment_id: ID returned by send attachment API
+        :param list[int] or int or None attachment_id: ID returned by send attachment API
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -109,7 +109,7 @@ class Wikis(BacklogBase):
         """
         Returns number of Wiki pages.
 
-        :param str project_id_or_key: Project ID or Project Key
+        :param str or None project_id_or_key: Project ID or Project Key
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -145,7 +145,7 @@ class Wikis(BacklogBase):
         Deletes Wiki page.
 
         :param int wiki_id: Wiki page ID
-        :param bool mail_notify: True make to notify by Email
+        :param bool or None mail_notify: True make to notify by Email
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -241,10 +241,10 @@ class Wikis(BacklogBase):
         Returns history of Wiki page.
 
         :param int wiki_id: Wiki Page ID
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=desc
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=desc
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -281,8 +281,8 @@ class Wikis(BacklogBase):
         """
         Returns list of Wiki pages.
 
-        :param str project_id_or_key: Project ID or Project Key
-        :param str keyword: Keyword
+        :param str or None project_id_or_key: Project ID or Project Key
+        :param str or None keyword: Keyword
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -329,7 +329,7 @@ class Wikis(BacklogBase):
         """
         Returns list of tags that are used in the project.
 
-        :param str project_id_or_key: Project ID or Project Key
+        :param str or None project_id_or_key: Project ID or Project Key
 
         :return:  requests Response object
         :rtype: requests.Response
@@ -434,9 +434,9 @@ class Wikis(BacklogBase):
         Updates information about Wiki page.
 
         :param int wiki_id: Wiki page ID
-        :param str name: Page Name
-        :param str content: Content
-        :param bool mail_notify: True make to notify by Email
+        :param str or None name: Page Name
+        :param str or None content: Content
+        :param bool or None mail_notify: True make to notify by Email
 
         :return:  requests Response object
         :rtype: requests.Response

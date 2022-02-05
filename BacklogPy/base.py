@@ -78,9 +78,9 @@ class BacklogBase(object):
         
         :param unicode path: 
         :param unicode method: 
-        :param dict query_parameters: 
-        :param dict form_parameters: 
-        :param dict headers: 
+        :param dict or None query_parameters:
+        :param dict or None form_parameters:
+        :param dict or None headers:
         :return: requests Response Object
         :rtype: requests.Response
         """

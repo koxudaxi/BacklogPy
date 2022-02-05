@@ -49,11 +49,11 @@ class Space(BacklogBase):
         """
         Returns recent updates in your space.
 
-        :param list[int] or int activity_type_id: type(1-26)
-        :param int min_id: minimum ID
-        :param int max_id: maximum ID
-        :param int count: number of records to retrieve(1-100) default=20
-        :param str order: “asc” or “desc” default=“desc”
+        :param list[int] or int or None activity_type_id: type(1-26)
+        :param int or None min_id: minimum ID
+        :param int or None max_id: maximum ID
+        :param int or None count: number of records to retrieve(1-100) default=20
+        :param str or None order: “asc” or “desc” default=“desc”
 
         :return:  requests Response object
         :rtype: requests.Response
