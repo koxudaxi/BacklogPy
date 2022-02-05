@@ -5,6 +5,7 @@
 """
 
 
+from BacklogPy.api.activities import Activities
 from BacklogPy.api.groups import Groups
 from BacklogPy.api.issues import Issues
 from BacklogPy.api.notifications import Notifications
@@ -21,6 +22,7 @@ from BacklogPy.api.watchings import Watchings
 from BacklogPy.api.wikis import Wikis
 
 __all__ = [
+    'Activities',
     'Groups',
     'Issues',
     'Notifications',
